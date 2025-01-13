@@ -8,8 +8,6 @@ import deps from '../package-lock.json' with { type: "json" };
 import { SentryTracer, setTracer} from '@gcorevideo/player';
 import * as Sentry from '@sentry/vue';
 
-console.log('main', import.meta.client, import.meta.env.VITE_SENTRY_DSN, import.meta.env.VITE_SENTRY_ENV, import.meta.env.VITE_SENTRY_BUILD_ID);
-
 if (import.meta.client) {
   Sentry.init({
     debug: true,
@@ -27,6 +25,10 @@ if (import.meta.client) {
     tracesSampleRate: 1.0,
   });
   setTracer(new SentryTracer(Sentry))
+
+  setTimeout(() => {
+    throw new Error('Testing Sentry')
+  })
 }
 
 useFetchSource();
