@@ -19,7 +19,7 @@
     "vue": "latest",
     "vue-router": "latest"
   },
-  "version": "0.0.1",
+  "version": "0.0.2",
   "devDependencies": {
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
