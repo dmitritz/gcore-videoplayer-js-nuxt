@@ -15,7 +15,8 @@
   gap: 0.5rem;
 }
 
-@media (min-width: 1280px) {
+/* @media (min-width: 1280px) { */
+@media (min-width: 1024px) {
   .checkbox-group {
     grid-template-columns: 1fr 1fr 1fr;
   }

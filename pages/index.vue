@@ -8,4 +8,3 @@
     <demo-player />
   </nuxt-layout>
 </template>
-

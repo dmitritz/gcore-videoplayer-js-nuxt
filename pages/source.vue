@@ -14,18 +14,20 @@
           <label for="token" class="font-medium">Token</label>
         </div>
         <div>
-          <input type="text" id="token" v-model="token" />
+          <input type="text" id="token" :value="token" @change="e => setToken(e.target.value)" />
         </div>
         <div class="font-medium">
           Kind
         </div>
         <div class="flex gap-2">
           <label for="kind_stream">
-            <input type="radio" name="kind" value="stream" v-model="kind" id="kind_stream" />
+            <input type="radio" name="kind" value="stream" :value="kind" @change="e => setStreamKind(e.target.value)"
+              id="kind_stream" />
             Live stream
           </label>
           <label for="kind_video">
-            <input type="radio" name="kind" value="video" v-model="kind" id="kind_video" />
+            <input type="radio" name="kind" value="video" :value="kind" @change="e => setStreamKind(e.target.value)"
+              id="kind_video" />
             Video
           </label>
         </div>
@@ -33,11 +35,11 @@
           <label for="stream_id" class="font-medium">ID</label>
         </div>
         <div>
-          <input type="text" id="stream_id" v-model="streamId" />
+          <input type="text" id="stream_id" :value="streamId" @change="e => setStreamId(e.target.value)" />
         </div>
         <div></div>
         <div class="flex gap-2">
-          <button @click="fetchItem" :disabled="!resourceUrl || !token || pending">Fetch</button>
+          <button @click="fetchSource" :disabled="!streamId || !token || pending">Fetch</button>
           <button @click="clear">Clear</button>
         </div>
       </div>
@@ -52,99 +54,36 @@ import { computed, onMounted, ref, watch } from 'vue';
 
 import useSettingsStore from '../store/settings';
 import type { StreamSource } from '../store/settings';
-import usePersistence from '../composables/use-persistence';
-
-console.log('sources.vue client:%s', import.meta.client);
+import { fetchStream, parseStreamDto } from '../utils/fetch-stream';
+import type { StreamDto } from '../utils/fetch-stream';
 
 const API_URL = 'https://api.gcore.com/streaming';
 
-const streamId = ref(0);
+const streamId = computed(() => settings.streamId);
 
-const token = ref('')
-
-const streamInfo = ref<Record<string, unknown> | null>(null);
+const token = computed(() => settings.apiToken)
 
 const error = ref('');
 
 const pending = ref(false);
 
-type StreamKind = 'stream' | 'video';
-
-const kind = ref<StreamKind>('stream');
-
-const resourceUrl = computed(() => {
-  return streamId.value ? `${API_URL}/${kind.value}s/${streamId.value}` : '';
-});
+const kind = computed<StreamKind>(() => settings.streamKind);
 
 const settings = useSettingsStore();
 
-const persistedId = usePersistence('source.streamId', String, Number, 0);
+const streamInfo = computed<StreamDto | null>(() => settings.streamDto);
+
 const id = <T = string>(a: string) => (a as T);
-const persistedToken = usePersistence('source.token', id, id, '');
-const persistKind = usePersistence<StreamKind>('source.kind', id, id, 'stream');
 
-watch(streamId, (val) => {
-  if (val) {
-    persistedId.set(val)
-  }
-});
-
-watch(token, (val) => {
-  if (val) {
-    persistedToken.set(val);
-  }
-})
-
-watch(kind, (val) => {
-  persistKind.set(val);
-})
-
-watch(streamInfo, (val) => {
-  if (val) {
-    settings.setStreamSource(parseStreamDto(val, kind.value));
-  }
-})
-
-onMounted(() => {
-  streamId.value = persistedId.get() as number;
-  token.value = persistedToken.get() as string;
-  kind.value = persistKind.get();
-});
-
-function setStreamInfo(si: Record<string, unknown>, sk: StreamKind) {
-  streamInfo.value = si;
+function setStreamInfo(si: StreamDto, sk: StreamKind) {
   settings.setStreamSource(parseStreamDto(si, sk));
 }
 
-function parseStreamDto(data: Record<string, unknown>, sk: StreamKind): StreamSource {
-  return {
-    master: (data.uri || data.hls_url) as string,
-    dash: data.dash_url as string,
-    hlsCmaf: data.hls_cmaf_url as string,
-    hlsMpegts: data.hls_mpegts_url as string,
-    poster: (data.screenshot || data.poster) as string,
-  };
-}
-
-function fetchItem() {
+function fetchSource() {
   pending.value = true;
   error.value = '';
-  console.log("fetchItem", resourceUrl.value, token.value);
-
-  fetch(resourceUrl.value, {
-    headers: {
-      authorization: `APIKey ${token.value}`
-    },
-    mode: 'cors',
-  }).then((res) => {
-    if (!res.ok) {
-      throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
-    }
-    return res.json()
-  })
-    .then((data) => {
-      setStreamInfo(data, kind.value);
-    })
+  fetchStream(token.value, streamId.value, kind.value)
+    .then(s => settings.setStreamDto(s, kind.value))
     .catch(e => {
       error.value = String(e);
     })
@@ -154,10 +93,23 @@ function fetchItem() {
 }
 
 function clear() {
-  streamInfo.value = null;
-  token.value = '';
-  streamId.value = 0;
+  settings.setStreamDto(null);
+  setToken('');
+  setStreamKind('stream');
+  setStreamId(0);
   error.value = '';
+}
+
+function setToken(value: string) {
+  settings.setApiToken(value)
+}
+
+function setStreamKind(value: StreamKind) {
+  settings.setStreamKind(value);
+}
+
+function setStreamId(value: string) {
+  settings.setStreamId(Number(value))
 }
 </script>
 
@@ -175,9 +127,21 @@ function clear() {
 
 pre {
   word-wrap: break-word;
+  overflow-y: auto;
+  max-height: var(--content-height);
 }
 
 input[type="text"] {
   @apply px-4 py-1 border border-slate-300;
+}
+
+@media (min-width: 1024px) {
+  .source-settings {
+    --form-height: 150px;
+  }
+
+  pre {
+    max-height: calc(var(--content-height) - var(--form-height));
+  }
 }
 </style>

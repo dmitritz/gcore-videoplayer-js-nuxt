@@ -8,6 +8,9 @@
 
 :root {
   --view-height: calc(100vh - 4rem);
+  --footer-height: 2.5rem;
+  --content-height: var(--view-height);
+
   --color-emergency: #911;
   --color-error: var(--color-emergency);
 }
@@ -16,8 +19,6 @@
 #__nuxt {
   max-width: 1280px;
   margin: 0 auto;
-  /* padding: 2rem; */
-  /* padding: 0; */
   font-weight: normal;
   min-height: 100vh;
   box-sizing: border-box;
@@ -29,8 +30,6 @@
 a,
 .primary {
   text-decoration: none;
-  /* color: hsla(160, 100%, 37%, 1); */
-  /* color: var(--gcore-primary); */
   transition: 0.4s;
   padding: 3px;
 }
@@ -41,14 +40,6 @@ h1 {
 
 button {
   @apply py-1 px-2;
-  /* background-color: #000;
-  background-image: url('/img/slick-bg.svg');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  color: #fff; */
-  /* text-transform: uppercase;
-  font-weight: bold; */
   @apply text-slate-900 border rounded border-slate-500;
 }
 
@@ -85,12 +76,16 @@ a:hover {
 
 @media (hover: hover) {
   a:hover {
-    /* background-color: hsla(160, 100%, 37%, 0.2); */
     background-color: hsla(18, 100%, 50%, 0.1);
   }
 }
 
 @media (min-width: 1024px) {
+  :root {
+    --view-height: 100vh;
+    --content-height: calc(var(--view-height) - var(--footer-height));
+  }
+
   body {
     display: flex;
     place-items: center;
@@ -101,9 +96,5 @@ a:hover {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto 100px;
     padding: 0 2rem;
-  }
-
-  :root {
-    --view-height: 100vh;
   }
 }

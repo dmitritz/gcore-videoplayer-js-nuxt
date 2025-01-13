@@ -2,8 +2,11 @@ import type { PlayerDebugTag, StreamMediaSource, TransportPreference } from '@gc
 import { defineStore } from 'pinia'
 
 import usePersistence from '@/composables/use-persistence';
+import type { StreamDto, StreamKind } from '~/types';
+import { parseStreamDto } from '~/utils/fetch-stream';
 
 type State = {
+  apiToken: string | null;
   autoplay: boolean;
   debug: PlayerDebugTag;
   loop: boolean;
@@ -11,6 +14,9 @@ type State = {
   plugins: string[];
   priorityTransport: TransportPreference;
   source: StreamSource;
+  streamDto: StreamDto | null;
+  streamId: number | null;
+  streamKind: StreamKind;
 }
 
 export type StreamSource = {
@@ -35,10 +41,14 @@ type Getters = {
 type Actions = {
   addPlugin(name: string): void;
   removePlugin(name: string): void;
+  setApiToken(value: string): void;
   setAutoplay(value: boolean): void;
   setLoop(value: boolean): void;
   setMute(value: boolean): void;
   setPriorityTransport(value: TransportPreference): void;
+  setStreamDto(value: StreamDto | null, kind: StreamKind): void;
+  setStreamId(value: number | null): void;
+  setStreamKind(value: StreamKind): void;
   setStreamSource(value: StreamSource): void;
   reset(): void;
 }
@@ -52,19 +62,25 @@ const DEFAULT_MAIN_SETTINGS: MainSettings = {
 
 const DEFAULT_PLUGINS = ['media_control', 'level_selector', 'bottom_gear', 'error_screen', 'poster']
 
-const DEFAULT_SOURCE: StreamSource = {
+const NO_SOURCE: StreamSource = {
   master: null,
 }
 
+const DEFAULT_STREAM_KIND: StreamKind = 'stream'
+
 const useSettingsStore = () => {
-  const persistedSource = usePersistence<StreamSource>('settings.source', JSON.stringify, JSON.parse, DEFAULT_SOURCE);
+  const persistedSource = usePersistence<StreamSource>('settings.source', JSON.stringify, JSON.parse, NO_SOURCE);
   const persistedPlugins = usePersistence<string[]>(
     'settings.plugins',
     (a: string[]) => a.join(),
     (v: string) => v.split(','),
     DEFAULT_PLUGINS
   );
+
   const persistedMain = usePersistence<MainSettings>('settings.basic', JSON.stringify, JSON.parse, DEFAULT_MAIN_SETTINGS);
+  const persistedId = usePersistence('settings.streamId', String, Number, 0);
+  const persistedToken = usePersistence('settings.apiToken', id, id, '');
+  const persistKind = usePersistence<StreamKind>('settings.streamKind', id, id, 'stream');
 
   const url = useRequestURL()
   if (url.searchParams.has('autoplay') || url.searchParams.has('mute') || url.searchParams.has('loop') || url.searchParams.has('priority_transport')) {
@@ -77,10 +93,13 @@ const useSettingsStore = () => {
     })
   }
   const debug = debugTag(url.searchParams.get('debug') || 'all') ?? 'all';
-  // const autoplay = parseBoolean(url.searchParams.get('autoplay'), false);
-  // const mute = parseBoolean(url.searchParams.get('mute'), true);
-  // const loop = parseBoolean(url.searchParams.get('loop'), false);
-  // const priorityTransport = transportPreference(url.searchParams.get('priority_transport') || 'auto')
+  const apiToken = url.searchParams.get('token') ?? '';
+  const parsedStreamId = parseStreamId(url.searchParams.get('source') ?? '');
+  persistedToken.set(apiToken);
+  persistKind.set(parsedStreamId[0]);
+  persistedId.set(parsedStreamId[1]);
+  const streamKind = persistKind.get();
+  const streamId = persistedId.get();
   const {
     autoplay,
     mute,
@@ -94,6 +113,7 @@ const useSettingsStore = () => {
 
   return defineStore<'settings', State, Getters, Actions>('settings', {
     state: () => ({
+      apiToken,
       autoplay,
       debug,
       loop,
@@ -101,6 +121,9 @@ const useSettingsStore = () => {
       plugins,
       priorityTransport,
       source,
+      streamDto: null,
+      streamId,
+      streamKind,
     }),
     getters: {
       multisources() {
@@ -149,6 +172,9 @@ const useSettingsStore = () => {
         }
         persistedPlugins.set(this.plugins);
       },
+      setApiToken(value: string) {
+        this.apiToken = value;
+      },
       setAutoplay(value: boolean) {
         this.autoplay = value;
         persistedMain.set({ autoplay: value, mute: this.mute, loop: this.loop, priorityTransport: this.priorityTransport });
@@ -164,6 +190,20 @@ const useSettingsStore = () => {
       setPriorityTransport(value: TransportPreference) {
         this.priorityTransport = value;
         persistedMain.set({ autoplay: this.autoplay, mute: this.mute, loop: this.loop, priorityTransport: value });
+      },
+      setStreamDto(value: StreamDto | null, kind: StreamKind = 'stream') {
+        this.streamDto = value;
+        if (value) {
+          this.setStreamSource(parseStreamDto(value, kind));
+        } else {
+          this.setStreamSource(NO_SOURCE);
+        }
+      },
+      setStreamId(value: number | null) {
+        this.streamId = value
+      },
+      setStreamKind(value: StreamKind) {
+        this.streamKind = value
       },
       setStreamSource(value: StreamSource) {
         this.source = value;
@@ -198,6 +238,18 @@ function parseBoolean(val: string | null, defaultValue: boolean): boolean {
     return defaultValue;
   }
   return ['true', 'yes', '1'].includes(val);
+}
+
+function parseStreamId(input: string): [StreamKind, number] {
+  const parts = input.split(':');
+  if (parts.length !== 2) {
+    return [DEFAULT_STREAM_KIND, 0];
+  }
+  return [parts[0] as StreamKind, Number(parts[1])];
+}
+
+function id<T = string>(a: string) {
+  return a as T
 }
 
 export default useSettingsStore;

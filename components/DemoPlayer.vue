@@ -198,10 +198,8 @@ onMounted(() => {
   if (!container.value) {
     return;
   }
-  console.log('DemoPlayer.vue onMounted autoplay:%s', settings.autoplay);
   const con = container.value;
   setTimeout(() => {
-    console.log('DemoPlayer.vue onMounted initalizing player autoplay:%s', settings.autoplay);
     player.init(con);
   }, 0)
 })
@@ -211,7 +209,6 @@ onBeforeMount(() => {
 })
 
 watch(config, (newConfig) => {
-  console.log('DemoPlayer.vue config has changed, reconfiguring autoplay:%s', settings.autoplay);
   player.configure(newConfig);
   if (container.value) {
     player.destroy();

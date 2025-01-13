@@ -15,7 +15,7 @@ const query = route.query
 
 <template>
   <NuxtRouteAnnouncer />
-  <div class="flex flex-col md:grid md:grid-cols-2 h-screen md:grid-rows-2 md:py-4">
+  <div class="flex flex-col md:grid md:grid-cols-2 h-screen xmd:grid-rows-2 md:py-4 g-container">
     <header class="w-full py-2 md:py-8 px-2 flex flex-wrap md:flex-col md:flex-nowrap gap-2">
       <div class="flex basis-1/4 items-center gap-4 md:basis-auto">
         <img src="~/assets/img/gcore_orange_001.svg" alt="Gcore logo" class="logo" width="40" height="40" />
@@ -34,7 +34,8 @@ const query = route.query
     <main class="basis-full md:pt-1 px-2 w-full md:h-full">
       <slot></slot>
     </main>
-    <footer class="w-full mt-8 mb-4 mx-auto basis-auto md:col-span-2 flex md:items-end justify-between gap-4 px-2 items-center">
+    <footer
+      class="w-full py-2 mx-auto basis-auto md:col-span-2 flex md:items-end justify-between gap-4 px-2 items-center">
       <div class="m:w-6 flex justify-evenly gap-4">
         <a href="https://dashjs.org" target="_blank" rel="noopener noreferrer" title="DASH.js">
           DASH.js
@@ -54,10 +55,6 @@ const query = route.query
 
 <style scoped>
 @tailwind components;
-
-:root {
-  --footer-height: 30px;
-}
 
 header,
 header .wrapper {
@@ -140,10 +137,14 @@ footer b {
   }
 
   main {
-    min-height: calc(var(--view-height) - var(--footer-height));
+    min-height: var(--content-height);
     display: flex;
     flex-direction: column;
     justify-content: center;
+  }
+
+  .g-container {
+    grid-template-rows: max-content var(--footer-height);
   }
 }
 </style>
