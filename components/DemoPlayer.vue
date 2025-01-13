@@ -195,12 +195,8 @@ player.on(PlayerEvent.Stop, () => {
 });
 
 onMounted(() => {
-  if (!container.value) {
-    return;
-  }
-  const con = container.value;
   setTimeout(() => {
-    player.init(con);
+    player.init(container.value);
   }, 0)
 })
 
