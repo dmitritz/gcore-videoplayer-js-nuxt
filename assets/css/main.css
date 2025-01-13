@@ -47,7 +47,7 @@ button:disabled {
   @apply bg-slate-300 text-slate-700;
 }
 
-button.primary {
+button.playback {
   @apply py-1 px-4 font-semibold text-white bg-black;
   background-color: #000;
   background-image: url('/img/slick-bg.svg');
@@ -55,9 +55,10 @@ button.primary {
   background-position: center;
   background-size: cover;
   text-transform: uppercase;
+  min-width: 86px;
 }
 
-button.primary:disabled {
+button.playback:disabled {
   opacity: 0.5;
 }
 

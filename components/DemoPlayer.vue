@@ -3,9 +3,9 @@
     <div ref="container" class="container"></div>
     <div class="settings controls">
       <div class="buttons label flex gap-1">
-        <button @click="play" v-if="ready && !playing" class="primary" :disabled="noSource">Play</button>
-        <button @click="pause" v-if="playing" class="primary">Pause</button>
-        <button @click="stop" v-if="ready && !stopped" class="primary">Stop</button>
+        <button @click="play" v-show="ready && !playing" class="playback" :disabled="noSource">Play</button>
+        <button @click="pause" v-show="playing" class="playback">Pause</button>
+        <button @click="stop" v-show="ready && !stopped" class="playback">Stop</button>
       </div>
       <div class="playback-status">
         <span class="no-source text-slate-600" v-if="noSource">no source</span>
