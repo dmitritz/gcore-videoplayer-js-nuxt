@@ -4,6 +4,7 @@
 
 <script lang="ts" setup>
 import { SentryTracer, setTracer} from '@gcorevideo/player';
+import { setTracer as setTracerPlugins} from '@gcorevideo/player-plugins';
 import * as Sentry from '@sentry/vue';
 import pkg from './package.json';
 import deps from './package-lock.json';
@@ -24,8 +25,12 @@ if (import.meta.client) {
     release: deps.packages['node_modules/@gcorevideo/player'].version,
     tracesSampleRate: 1.0,
   });
-  // @ts-ignore
-  setTracer(new SentryTracer(client, Sentry.getGlobalScope()))
+  if (client) {
+    setTracer(new SentryTracer(client, Sentry.getGlobalScope()))
+    setTracerPlugins(new SentryTracer(client, Sentry.getGlobalScope()))
+  } else {
+    console.error("Sentry client is not initialized")
+  }
 }
 
 useFetchSource();
