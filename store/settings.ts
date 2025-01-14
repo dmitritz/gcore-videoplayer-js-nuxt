@@ -15,7 +15,7 @@ type State = {
   priorityTransport: TransportPreference;
   source: StreamSource;
   streamDto: StreamDto | null;
-  streamId: number | null;
+  streamId: number;
   streamKind: StreamKind;
 }
 
@@ -47,7 +47,7 @@ type Actions = {
   setMute(value: boolean): void;
   setPriorityTransport(value: TransportPreference): void;
   setStreamDto(value: StreamDto | null, kind: StreamKind): void;
-  setStreamId(value: number | null): void;
+  setStreamId(value: number): void;
   setStreamKind(value: StreamKind): void;
   setStreamSource(value: StreamSource): void;
   reset(): void;
@@ -199,7 +199,7 @@ const useSettingsStore = () => {
           this.setStreamSource(NO_SOURCE);
         }
       },
-      setStreamId(value: number | null) {
+      setStreamId(value: number) {
         this.streamId = value
       },
       setStreamKind(value: StreamKind) {

@@ -14,19 +14,19 @@
           <label for="token" class="font-medium">Token</label>
         </div>
         <div>
-          <input type="text" id="token" :value="token" @change="e => setToken(e.target.value)" />
+          <input type="text" id="token" :value="token" @change="e => setToken((e.target as HTMLInputElement).value)" />
         </div>
         <div class="font-medium">
           Kind
         </div>
         <div class="flex gap-2">
           <label for="kind_stream">
-            <input type="radio" name="kind" value="stream" :value="kind" @change="e => setStreamKind(e.target.value)"
+            <input type="radio" name="kind" value="stream" @change="e => setStreamKind((e.target as HTMLInputElement).value)"
               id="kind_stream" />
             Live stream
           </label>
           <label for="kind_video">
-            <input type="radio" name="kind" value="video" :value="kind" @change="e => setStreamKind(e.target.value)"
+            <input type="radio" name="kind" value="video" @change="e => setStreamKind((e.target as HTMLInputElement).value)"
               id="kind_video" />
             Video
           </label>
@@ -35,7 +35,7 @@
           <label for="stream_id" class="font-medium">ID</label>
         </div>
         <div>
-          <input type="text" id="stream_id" :value="streamId" @change="e => setStreamId(e.target.value)" />
+          <input type="text" id="stream_id" :value="streamId" @change="e => setStreamId((e.target as HTMLInputElement).value)" />
         </div>
         <div></div>
         <div class="flex gap-2">
@@ -53,11 +53,8 @@
 import { computed, onMounted, ref, watch } from 'vue';
 
 import useSettingsStore from '../store/settings';
-import type { StreamSource } from '../store/settings';
-import { fetchStream, parseStreamDto } from '../utils/fetch-stream';
-import type { StreamDto } from '../utils/fetch-stream';
-
-const API_URL = 'https://api.gcore.com/streaming';
+import { fetchStream } from '../utils/fetch-stream';
+import type { StreamDto, StreamKind } from '../types';
 
 const streamId = computed(() => settings.streamId);
 
@@ -73,15 +70,12 @@ const settings = useSettingsStore();
 
 const streamInfo = computed<StreamDto | null>(() => settings.streamDto);
 
-const id = <T = string>(a: string) => (a as T);
-
-function setStreamInfo(si: StreamDto, sk: StreamKind) {
-  settings.setStreamSource(parseStreamDto(si, sk));
-}
-
 function fetchSource() {
   pending.value = true;
   error.value = '';
+  if (!token.value || !streamId.value) {
+    return;
+  }
   fetchStream(token.value, streamId.value, kind.value)
     .then(s => settings.setStreamDto(s, kind.value))
     .catch(e => {
@@ -93,10 +87,10 @@ function fetchSource() {
 }
 
 function clear() {
-  settings.setStreamDto(null);
+  settings.setStreamDto(null, kind.value);
   setToken('');
   setStreamKind('stream');
-  setStreamId(0);
+  setStreamId('');
   error.value = '';
 }
 
@@ -104,8 +98,8 @@ function setToken(value: string) {
   settings.setApiToken(value)
 }
 
-function setStreamKind(value: StreamKind) {
-  settings.setStreamKind(value);
+function setStreamKind(value: string) {
+  settings.setStreamKind(value as StreamKind);
 }
 
 function setStreamId(value: string) {

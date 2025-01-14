@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { version } from "@gcorevideo/player";
-// TODO
-// import pkg from "../package.json" with { "type": "json" };
-
-const pkg = {
-  version: "1.2.3",
-};
+import pkg from "../package.json";
 
 const ver = version();
 

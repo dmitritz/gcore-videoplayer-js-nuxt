@@ -13,7 +13,7 @@ export function parseStreamDto(data: StreamDto, sk: StreamKind): StreamSource {
   };
 }
 
-export function fetchStream(token: string, streamId: string, kind: StreamKind): Promise<StreamDto> {
+export function fetchStream(token: string, streamId: number, kind: StreamKind): Promise<StreamDto> {
   const resourceUrl = `${API_URL}/${kind}s/${streamId}`
 
   return fetch(resourceUrl, {
