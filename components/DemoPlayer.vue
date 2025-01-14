@@ -2,18 +2,18 @@
   <div class="demo-player h-full">
     <div ref="container" class="container"></div>
     <div class="settings controls">
-      <div class="buttons label flex gap-1">
+      <div class="buttons font-semibold flex gap-1">
         <button @click="play" v-show="ready && !playing" class="playback" :disabled="noSource">Play</button>
         <button @click="pause" v-show="playing" class="playback">Pause</button>
         <button @click="stop" v-show="ready && !stopped" class="playback">Stop</button>
       </div>
-      <div class="playback-status">
+      <div class="flex gap-2 items-center content-center justify-end">
         <span class="no-source text-slate-600" v-if="noSource">no source</span>
-        <span class="latency" v-if="latency">{{ formatLatency(latency) }}</span>
-        <span class="bitrate" v-if="bitrate">{{ formatBitrate(bitrate) }}</span>
-        <span class="quality" v-if="width && height">{{ formatQuality(width, height) }}</span>
-        <span class="playback" v-if="playbackType">{{ playbackType }}</span>
-        <span class="playback" v-if="playback">{{ playback }}</span>
+        <span class="text-sm" v-if="width && height">{{ formatQuality(width, height) }}</span>
+        <span class="text-sm" v-if="bitrate">{{ formatBitrate(bitrate) }}</span>
+        <span class="local-time text-sm text-left" v-if="showTime">{{ formatTime(currentTime) }}</span>
+        <span class="font-semibold uppercase" v-if="playbackType">{{ playbackType }}</span>
+        <span class="font-semibold uppercase" v-if="playback">{{ playback }}</span>
       </div>
     </div>
   </div>
@@ -44,6 +44,9 @@ const bitrate = ref(0)
 const width = ref(0)
 const height = ref(0)
 const playbackType = ref('')
+const showTime = computed(() => playing.value);
+
+const currentTime = ref<Date>(new Date());
 
 const settings = useSettingsStore()
 
@@ -196,8 +199,14 @@ player.on(PlayerEvent.Stop, () => {
 
 onMounted(() => {
   setTimeout(() => {
+    if (!container.value) {
+      return;
+    }
     player.init(container.value);
   }, 0)
+  setInterval(() => {
+    currentTime.value = new Date();
+  }, 1000);
 })
 
 onBeforeMount(() => {
@@ -253,6 +262,10 @@ function formatLatency(val: number): string {
 function formatQuality(width: number, height: number): string {
   return `${width}×${height}`;
 }
+
+function formatTime(date: Date): string {
+  return date.toLocaleTimeString();
+}
 </script>
 
 <style lang="css" scoped>
@@ -276,31 +289,13 @@ function formatQuality(width: number, height: number): string {
   margin: 0.5rem 0;
 }
 
-.label,
-h3 {
-  font-weight: 500;
-}
-
 .status {
   margin: 0.5rem 0;
 }
 
-.playback-status {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  align-content: center;
-  justify-content: flex-end;
+.local-time {
+  width: 4rem;
+  text-align: left;
 }
 
-.playback-status .playback,
-.playback-status .hd {
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.playback-status .bitrate,
-.playback-status .quality {
-  font-size: 0.8rem;
-}
 </style>
