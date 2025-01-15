@@ -10,6 +10,7 @@ type TimerId = ReturnType<typeof setTimeout>
 
 export class RemoteTracer implements Tracer {
   private buffer: Array<TraceRecord> = []
+
   private timerId: TimerId | null = null
 
   constructor(
@@ -26,32 +27,32 @@ export class RemoteTracer implements Tracer {
       e instanceof Error && 'detail' in e
         ? (e.detail as Record<string, unknown>)
         : undefined
-    this.send(message, detail)
+    this.push(message, detail)
   }
 
   trace(message: string, detail: Record<string, unknown>): void {
     if (this.baseTracer) {
       this.baseTracer.trace(message, detail)
     }
-    this.send(message, detail)
+    this.push(message, detail)
   }
 
-  private send(message: string, detail?: Record<string, unknown>) {
+  private push(message: string, detail?: Record<string, unknown>) {
     const time = new Date().getTime()
     this.buffer.push({ message, detail, time })
     if (!this.timerId) {
       this.timerId = setTimeout(() => {
         this.timerId = null
-        this.flush()
+        this.send(this.buffer.splice(0, this.buffer.length))
       }, 1000)
     }
   }
 
-  private flush() {
+  private send(records: TraceRecord[]) {
     fetch('/api/traceb', {
       method: 'POST',
       body: JSON.stringify({
-        records: this.buffer.splice(0, this.buffer.length),
+        records,
         tags: this.tags,
       }),
       headers: {
