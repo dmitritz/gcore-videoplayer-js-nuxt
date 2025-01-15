@@ -37,6 +37,10 @@ export class RemoteTracer implements Tracer {
     this.push(message, detail)
   }
 
+  setTag(key: string, value: unknown): void {
+    this.tags[key] = value
+  }
+
   private push(message: string, detail?: Record<string, unknown>) {
     const time = new Date().getTime()
     this.buffer.push({ message, detail, time })

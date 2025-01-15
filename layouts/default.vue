@@ -26,7 +26,7 @@ const query = route.query
       </nav>
       <slot name="header"></slot>
     </header>
-    <main class="basis-full md:pt-1 px-2 w-full md:h-full">
+    <main class="basis-full md:pt-1 md:px-2 w-full md:h-full">
       <slot></slot>
     </main>
     <footer

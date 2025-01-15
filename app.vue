@@ -10,6 +10,7 @@ import pkg from './package.json'
 import deps from './package-lock.json'
 import { RemoteTracer } from './utils/RemoteTracer'
 import { Browser } from '@clappr/core'
+import Fingerprint from '@fingerprintjs/fingerprintjs';
 
 if (import.meta.client) {
   const tags = {
@@ -47,6 +48,11 @@ if (import.meta.client) {
     )
     setTracer(tracer)
     setTracerPlugins(tracer)
+    Fingerprint.load()
+      .then(agent => agent.get())
+      .then((res) => {
+        tracer.setTag('visitorId', res.visitorId)
+      });
   } else {
     console.error('Sentry client is not initialized')
   }
