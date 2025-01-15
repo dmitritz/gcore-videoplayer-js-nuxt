@@ -9,6 +9,7 @@ type State = {
   apiToken: string | null;
   autoplay: boolean;
   debug: PlayerDebugTag;
+  experimental: Record<string, unknown>;
   loop: boolean;
   mute: boolean;
   plugins: string[];
@@ -116,6 +117,9 @@ const useSettingsStore = () => {
       apiToken,
       autoplay,
       debug,
+      experimental: {
+        autoplay: parseBoolean(url.searchParams.get('xautoplay'), false),
+      }
       loop,
       mute,
       plugins,
@@ -233,7 +237,7 @@ function transportPreference(input: string): TransportPreference {
   return 'auto';
 }
 
-function parseBoolean(val: string | null, defaultValue: boolean): boolean {
+function parseBoolean(val: string | null, defaultValue = false): boolean {
   if (val === null) {
     return defaultValue;
   }
