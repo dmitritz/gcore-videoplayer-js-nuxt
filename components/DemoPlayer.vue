@@ -72,6 +72,7 @@ usePluginsConfig()
 
 const config = computed(() => ({
   autoPlay: settings.autoplay,
+  xAutoPlay: url.searchParams.has('xautoplay'),
   debug: settings.debug,
   poster: "https://static.gvideo.co/videoplatform/streams/2675/19146/screenshots/last.jpg",
   // TODO

@@ -19,14 +19,16 @@
         <div class="font-medium">
           Kind
         </div>
-        <div class="flex gap-2">
+        <div class="flex gap-4">
           <label for="kind_stream">
             <input type="radio" name="kind" value="stream" @change="e => setStreamKind((e.target as HTMLInputElement).value)"
+              :checked="kind === 'stream'"
               id="kind_stream" />
             Live stream
           </label>
           <label for="kind_video">
             <input type="radio" name="kind" value="video" @change="e => setStreamKind((e.target as HTMLInputElement).value)"
+              :checked="kind === 'video'"
               id="kind_video" />
             Video
           </label>
