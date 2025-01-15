@@ -119,7 +119,7 @@ const useSettingsStore = () => {
       debug,
       experimental: {
         autoplay: parseBoolean(url.searchParams.get('xautoplay'), false),
-      }
+      },
       loop,
       mute,
       plugins,
