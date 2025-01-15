@@ -5,7 +5,8 @@ const API_URL = 'https://api.gcore.com/streaming';
 
 export function parseStreamDto(data: StreamDto, sk: StreamKind): StreamSource {
   return {
-    master: (data.uri || data.hls_url) as string,
+    // master: (data.uri || data.hls_url) as string,
+    master: (data.hls_url || '') as string, // TODO
     dash: data.dash_url as string,
     hlsCmaf: data.hls_cmaf_url as string,
     hlsMpegts: data.hls_mpegts_url as string,
