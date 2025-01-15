@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@clappr/core": "^0.11.4",
-    "@gcorevideo/player": "^2.1.1",
+    "@gcorevideo/player": "^2.1.5",
     "@gcorevideo/player-plugins": "^0.1.0",
     "@pinia/nuxt": "^0.9.0",
     "@sentry/vue": "^8.48.0",
