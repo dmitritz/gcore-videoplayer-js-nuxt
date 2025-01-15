@@ -265,7 +265,7 @@ function formatQuality(width: number, height: number): string {
 }
 
 function formatTime(date: Date): string {
-  return date.toLocaleTimeString();
+  return `${date.getUTCMinutes().toFixed(0).padStart(2, '0')}:${date.getUTCSeconds().toFixed(0).padEnd(2, '0')}`;
 }
 </script>
 
