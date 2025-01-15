@@ -1,20 +1,20 @@
 <template>
-  <div class="demo-player h-full">
+  <div class="demo-player md:h-full">
     <div ref="container" class="container"></div>
   </div>
-  <div class="settings controls my-1 px-2">
-    <div class="buttons font-semibold flex gap-1">
+  <div class="settings controls my-1 px-2 items-baseline">
+    <div class="buttons font-semibold flex gap-1 flex-column sm:flex-row">
       <button @click="play" v-show="ready && !playing" class="playback" :disabled="noSource">Play</button>
       <button @click="pause" v-show="playing" class="playback">Pause</button>
       <button @click="stop" v-show="ready && !stopped" class="playback">Stop</button>
     </div>
     <div class="flex gap-2 items-center content-center justify-end">
-      <span class="no-source text-slate-600" v-if="noSource">no source</span>
-      <span class="text-sm" v-if="width && height">{{ formatQuality(width, height) }}</span>
-      <span class="text-sm" v-if="bitrate">{{ formatBitrate(bitrate) }}</span>
-      <span class="local-time text-sm text-left" v-if="showTime">{{ formatTime(currentTime) }}</span>
-      <span class="font-semibold uppercase" v-if="playbackType">{{ playbackType }}</span>
-      <span class="font-semibold uppercase" v-if="playback">{{ playback }}</span>
+      <span class="text-slate-600 text-sm" v-if="noSource">no source</span>
+      <span class="text-xs sm:text-sm" v-if="width && height">{{ formatQuality(width, height) }}</span>
+      <span class="text-xs sm:text-sm" v-if="bitrate">{{ formatBitrate(bitrate) }}</span>
+      <span class="local-time text-xs sm:text-sm text-left" v-if="showTime">{{ formatTime(currentTime) }}</span>
+      <span class="font-semibold text-sm uppercase" v-if="playbackType">{{ playbackType }}</span>
+      <span class="font-semibold text-sm sm:text-md uppercase" v-if="playback">{{ playback }}</span>
     </div>
   </div>
 </template>
@@ -279,7 +279,6 @@ function formatTime(date: Date): string {
 
 .local-time {
   width: 4rem;
-  text-align: left;
 }
 
 </style>
