@@ -32,16 +32,15 @@ if (import.meta.client) {
     const tracer = new RemoteTracer(
       new SentryTracer(client, Sentry.getGlobalScope()),
       {
-        ...tags,
-        device: Browser.device.replace(/ /g, '_'),
+        device: Browser.device?.replace(/ /g, '_'),
         browser: Browser.name,
         browser_ver: Browser.version,
         ios: Browser.isiOS,
         android: Browser.isAndroid,
         mobile: Browser.isMobile,
         localstorage: Browser.hasLocalstorage,
-        os: Browser.os.group.replace(/ /g, '_'),
-        os_name: Browser.os.name.replace(/ /g, '_'),
+        os: Browser.os.group?.replace(/ /g, '_'),
+        os_name: Browser.os.name?.replace(/ /g, '_'),
         width: Browser.viewport.width,
         height: Browser.viewport.height,
       }
