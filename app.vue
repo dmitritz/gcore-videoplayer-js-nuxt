@@ -8,6 +8,7 @@ import { setTracer as setTracerPlugins} from '@gcorevideo/player-plugins';
 import * as Sentry from '@sentry/vue';
 import pkg from './package.json';
 import deps from './package-lock.json';
+import { RemoteTracer } from "./utils/RemoteTracer";
 
 if (import.meta.client) {
   const client = Sentry.init({
@@ -26,8 +27,9 @@ if (import.meta.client) {
     tracesSampleRate: 1.0,
   });
   if (client) {
-    setTracer(new SentryTracer(client, Sentry.getGlobalScope()))
-    setTracerPlugins(new SentryTracer(client, Sentry.getGlobalScope()))
+    const tracer = new RemoteTracer(new SentryTracer(client, Sentry.getGlobalScope()));
+    setTracer(tracer);
+    setTracerPlugins(tracer);
   } else {
     console.error("Sentry client is not initialized")
   }
