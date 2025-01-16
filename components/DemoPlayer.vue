@@ -3,7 +3,7 @@
     <div ref="container" class="video-container"></div>
   </div>
   <div class="settings controls my-1 px-2 items-baseline">
-    <div class="buttons font-semibold flex gap-1 flex-column sm:flex-row">
+    <div class="buttons font-semibold flex flex-col gap-1 sm:flex-row">
       <button
         @click="play"
         v-show="ready && !playing"
@@ -17,7 +17,7 @@
         Stop
       </button>
     </div>
-    <div class="flex gap-2 items-center content-center justify-end">
+    <div class="flex gap-2 items-center content-center justify-end flex-wrap">
       <span class="text-slate-600 text-sm" v-if="noSource">no source</span>
       <span class="text-xs sm:text-sm" v-if="width && height">{{
         formatQuality(width, height)
@@ -31,12 +31,14 @@
       <span class="font-semibold text-sm uppercase" v-if="playbackType">{{
         playbackType
       }}</span>
-      <span
+      <button
         class="font-semibold text-sm sm:text-md uppercase"
         v-if="playback"
-        >{{ playback }}</span
+        @click="showSource = !showSource"
+        >{{ playback }}</button
       >
     </div>
+    <div class="absolute p-4 rounded bg-white opacity-90 left-0 w-full overflow-x-scroll z-10" @click="showSource = false" v-if="showSource">{{ activeSource }}</div>
   </div>
 </template>
 
@@ -56,7 +58,6 @@ const starting = ref(false)
 const stopped = ref(true)
 const playback = ref('')
 const hd = ref(false)
-const latency = ref(0)
 const bitrate = ref(0)
 const width = ref(0)
 const height = ref(0)
@@ -68,6 +69,10 @@ const currentTime = ref<Date>(new Date())
 const settings = useSettingsStore()
 
 const noSource = computed(() => !settings.multisources.length)
+
+const showSource = ref(false)
+
+const activeSource = ref<string | null>(null)
 
 usePluginsConfig()
 
@@ -150,7 +155,7 @@ player.on(PlayerEvent.Ended, () => {
   starting.value = false
 })
 
-let bitrateTimerId: ReturnType<typeof setInterval> | null = null
+let playbackMonitorTimerId: ReturnType<typeof setInterval> | null = null
 
 player.on(PlayerEvent.Play, () => {
   playing.value = true
@@ -158,11 +163,11 @@ player.on(PlayerEvent.Play, () => {
   starting.value = false
   playback.value = player.activePlayback || ''
   playbackType.value = player.playbackType || ''
-  if (bitrateTimerId) {
-    clearInterval(bitrateTimerId)
-    bitrateTimerId = null
+  if (playbackMonitorTimerId) {
+    clearInterval(playbackMonitorTimerId)
+    playbackMonitorTimerId = null
   }
-  bitrateTimerId = setInterval(() => {
+  playbackMonitorTimerId = setInterval(() => {
     hd.value = player.hd
     if (player.bitrate) {
       bitrate.value = player.bitrate.bitrate
@@ -173,6 +178,7 @@ player.on(PlayerEvent.Play, () => {
       width.value = 0
       height.value = 0
     }
+    activeSource.value = player.activeSource
   }, 1000)
 })
 
@@ -195,9 +201,9 @@ player.on(PlayerEvent.Stop, () => {
   height.value = 0
   paused.value = false
   starting.value = false
-  if (bitrateTimerId) {
-    clearInterval(bitrateTimerId)
-    bitrateTimerId = null
+  if (playbackMonitorTimerId) {
+    clearInterval(playbackMonitorTimerId)
+    playbackMonitorTimerId = null
   }
 })
 
@@ -254,13 +260,6 @@ function formatBitrate(val: number): string {
     return `${(val / 1000).toFixed(0)}K`
   }
   return `${(val / 1000_000).toFixed(1)}M`
-}
-
-function formatLatency(val: number): string {
-  if (!val) {
-    return ''
-  }
-  return `${val.toFixed(1)}s`
 }
 
 function formatQuality(width: number, height: number): string {

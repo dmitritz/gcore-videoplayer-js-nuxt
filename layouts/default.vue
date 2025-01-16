@@ -12,9 +12,9 @@ const query = route.query
   <NuxtRouteAnnouncer />
   <div class="flex flex-col md:grid md:grid-cols-2 h-screen xmd:grid-rows-2 md:py-4 g-container">
     <header class="w-full py-2 md:py-8 px-2 flex flex-wrap md:flex-col md:flex-nowrap gap-2">
-      <div class="flex basis-1/4 items-center gap-4 md:basis-auto">
+      <div class="flex basis-auto items-center gap-4">
         <img src="~/assets/img/gcore_orange_001.svg" alt="Gcore logo" class="logo" width="40" height="40" />
-        <div class="text-lg invisible md:visible">Gcore video player</div>
+        <div class="text-lg hidden md:block">Gcore video player</div>
       </div>
       <nav class="flex gap-2 basis-1/2 md:justify-center md:items-start md:basis-auto">
         <router-link :to="{ path: '/', query }" id="nav_home" class="r">Home</router-link>
@@ -30,18 +30,10 @@ const query = route.query
       <slot></slot>
     </main>
     <footer
-      class="w-full py-2 mx-auto basis-auto md:col-span-2 flex md:items-end justify-between gap-4 px-2 items-center">
-      <div class="m:w-6 flex justify-evenly gap-4">
-        <a href="https://dashjs.org" target="_blank" rel="noopener noreferrer" title="DASH.js">
-          DASH.js
-        </a>
-        <a href="https://hlsjs.video-dev.org/demo/" target="_blank" rel="noopener noreferrer" title="HLS.js">
-          HLS.js
-        </a>
-      </div>
+      class="w-full py-2 mx-auto basis-auto md:col-span-2 flex md:items-end justify-end gap-4 px-2 items-center">
       <div class="text-end text-slate-700 text-sm">
         <p>
-          {{ pkg.version }}/gplayer {{ ver.gplayer }}/clappr {{ ver.clappr }}
+          {{ pkg.version }}/{{ ver.gplayer }}/clappr {{ ver.clappr }}/<a href="https://dashjs.org" target="_blank" rel="noopener noreferrer" class="p-0">dash.js</a> {{ ver.dashjs }}/<a href="https://hlsjs.video-dev.org/demo/" target="_blank" rel="noopener noreferrer" class="p-0">hls.js</a> {{ ver.hlsjs }}
         </p>
       </div>
     </footer>

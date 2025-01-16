@@ -3,14 +3,13 @@
 </template>
 
 <script lang="ts" setup>
-import { SentryTracer, setTracer } from '@gcorevideo/player'
+import { SentryTracer, setTracer, version } from '@gcorevideo/player'
 import { setTracer as setTracerPlugins } from '@gcorevideo/player-plugins'
 import * as Sentry from '@sentry/vue'
 import pkg from './package.json'
-import deps from './package-lock.json'
 import { RemoteTracer } from './utils/RemoteTracer'
 import { Browser } from '@clappr/core'
-import Fingerprint from '@fingerprintjs/fingerprintjs';
+import Fingerprint from '@fingerprintjs/fingerprintjs'
 
 if (import.meta.client) {
   const tags = {
@@ -26,7 +25,7 @@ if (import.meta.client) {
       return scope
     },
     integrations: [Sentry.browserTracingIntegration()],
-    release: deps.packages['node_modules/@gcorevideo/player'].version,
+    release: version().gplayer,
     tracesSampleRate: 1.0,
   })
   if (client) {
@@ -49,10 +48,10 @@ if (import.meta.client) {
     setTracer(tracer)
     setTracerPlugins(tracer)
     Fingerprint.load()
-      .then(agent => agent.get())
+      .then((agent) => agent.get())
       .then((res) => {
         tracer.setTag('visitorId', res.visitorId)
-      });
+      })
   } else {
     console.error('Sentry client is not initialized')
   }

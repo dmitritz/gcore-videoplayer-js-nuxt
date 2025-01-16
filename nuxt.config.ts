@@ -3,7 +3,6 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   css: [
     '~/assets/css/main.css',
-    '~/node_modules/@gcorevideo/player/dist/index.css',
     '~/node_modules/@gcorevideo/player-plugins/dist/index.css',
   ],
   devtools: { enabled: true },
