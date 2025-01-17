@@ -1,5 +1,5 @@
 <template>
-  <div class="demo-player md:h-full">
+  <div class="demo-player">
     <div ref="container" class="video-container"></div>
   </div>
   <div class="settings controls my-1 px-2 items-baseline">
@@ -35,10 +35,17 @@
         class="font-semibold text-sm sm:text-md uppercase"
         v-if="playback"
         @click="showSource = !showSource"
-        >{{ playback }}</button
       >
+        {{ playback }}
+      </button>
     </div>
-    <div class="absolute p-4 rounded bg-white opacity-90 left-0 w-full overflow-x-scroll z-10" @click="showSource = false" v-if="showSource">{{ activeSource }}</div>
+    <div
+      class="absolute p-4 rounded bg-white opacity-90 left-0 w-full overflow-x-scroll z-10"
+      @click="showSource = false"
+      v-if="showSource"
+    >
+      {{ activeSource }}
+    </div>
   </div>
 </template>
 
@@ -49,6 +56,7 @@ import { Player, PlayerEvent, type PlaybackType } from '@gcorevideo/player'
 
 import usePluginsConfig from '../composables/use-plugins-config'
 import useSettingsStore from '../store/settings'
+import { SPEEDTEST_SERVERS } from '../constants'
 
 const container = ref<HTMLDivElement>()
 const playing = ref(false)
@@ -101,6 +109,9 @@ const config = computed(() => ({
   // language: "en", // strings plugin
   loop: settings.loop,
   pluginSettings: {
+    clapprNerdStats: {
+      speedTestServers: SPEEDTEST_SERVERS,
+    },
     // contextMenu: {
     //   label: '',
     //   preventShowContextMenu: true,
@@ -125,6 +136,7 @@ const config = computed(() => ({
       },
     },
     // multicameraPlay: true, // multi_camera
+    multisources: settings.multisources,
     multisourcesMode: 'show_all', // multi_camera
     // shareURL: "https://gvideo.co", // share plugin
     subtitles: {
@@ -143,6 +155,10 @@ const config = computed(() => ({
   multisources: settings.multisources,
   playbackType: 'vod' as PlaybackType,
   priorityTransport: settings.priorityTransport,
+  sources:
+    settings.multisources.length && settings.multisources[0].sourceDash
+      ? [settings.multisources[0].sourceDash]
+      : [],
   strings: { en: {} },
   // strings: JSON.parse(document.head.querySelector("[name=translations]").content),
 }))
