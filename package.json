@@ -23,7 +23,7 @@
     "vue": "latest",
     "vue-router": "latest"
   },
-  "version": "0.1.3",
+  "version": "0.2.0",
   "devDependencies": {
     "@types/ms": "^0.7.34",
     "autoprefixer": "^10.4.20",
