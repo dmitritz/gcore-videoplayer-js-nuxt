@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 import usePersistence from '@/composables/use-persistence';
 import type { StreamDto, StreamKind } from '~/types';
 import { parseStreamDto } from '~/utils/fetch-stream';
+// import { parseSources } from '~/utils/sources';
 
 type State = {
   apiToken: string | null;
@@ -15,6 +16,7 @@ type State = {
   plugins: string[];
   priorityTransport: TransportPreference;
   source: StreamSource;
+  sources: string[];
   streamDto: StreamDto | null;
   streamId: number;
   streamKind: StreamKind;
@@ -47,6 +49,7 @@ type Actions = {
   setLoop(value: boolean): void;
   setMute(value: boolean): void;
   setPriorityTransport(value: TransportPreference): void;
+  setSources(value: string[]): void;
   setStreamDto(value: StreamDto | null, kind: StreamKind): void;
   setStreamId(value: number): void;
   setStreamKind(value: StreamKind): void;
@@ -71,6 +74,7 @@ const DEFAULT_STREAM_KIND: StreamKind = 'stream'
 
 const useSettingsStore = () => {
   const persistedSource = usePersistence<StreamSource>('settings.source', JSON.stringify, JSON.parse, NO_SOURCE);
+  const persistedSources = usePersistence<string[]>('settings.sources', String, s => s.split(',').filter(Boolean), []);
   const persistedPlugins = usePersistence<string[]>(
     'settings.plugins',
     (a: string[]) => a.join(),
@@ -111,6 +115,7 @@ const useSettingsStore = () => {
   const usePersistedPlugins = !url.searchParams.has('plugins')
   const plugins = (usePersistedPlugins ? persistedPlugins.get() : url.searchParams.get('plugins')?.split(',')) ?? []
   const source = persistedSource.get();
+  const sources = persistedSources.get();
 
   return defineStore<'settings', State, Getters, Actions>('settings', {
     state: () => ({
@@ -125,6 +130,7 @@ const useSettingsStore = () => {
       plugins,
       priorityTransport,
       source,
+      sources,
       streamDto: null,
       streamId,
       streamKind,
@@ -194,6 +200,10 @@ const useSettingsStore = () => {
       setPriorityTransport(value: TransportPreference) {
         this.priorityTransport = value;
         persistedMain.set({ autoplay: this.autoplay, mute: this.mute, loop: this.loop, priorityTransport: value });
+      },
+      setSources(value: string[]) {
+        this.sources = value;
+        persistedSources.set(value);
       },
       setStreamDto(value: StreamDto | null, kind: StreamKind = 'stream') {
         this.streamDto = value;

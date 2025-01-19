@@ -87,7 +87,8 @@ usePluginsConfig()
 const config = computed(() => ({
   autoPlay: settings.autoplay,
   debug: settings.debug,
-  poster: settings.multisources[0]?.poster || '',
+  // poster: settings.multisources[0]?.poster || '',
+  poster: 'https://static.gvideo.co/videoplatform/streams/2675/21960/screenshots/last.jpg',
   // 'https://static.gvideo.co/videoplatform/streams/2675/19146/screenshots/last.jpg',
   // TODO
   // realtimeApi: "wss://realtime-api.gvideo.co/ws/subscribe/message/2675_live_19146_0_GWxvgWFBHP3eEter8V9g",
@@ -151,13 +152,13 @@ const config = computed(() => ({
         'https://static.gvideo.co/videoplatform/sprites/2675/2452164_3dk4NsRt6vWsffEr.mp4_sprite.jpg',
     },
   },
-  multisources: settings.multisources,
+  // multisources: settings.multisources,
   playbackType: 'vod' as PlaybackType,
   priorityTransport: settings.priorityTransport,
-  sources:
-    settings.multisources.length && settings.multisources[0].sourceDash
-      ? [settings.multisources[0].sourceDash]
-      : [],
+  sources: settings.sources,
+    // settings.multisources.length && settings.multisources[0].sourceDash
+    //   ? [settings.multisources[0].sourceDash]
+    //   : [],
   strings: { en: {} },
   // strings: JSON.parse(document.head.querySelector("[name=translations]").content),
 }))

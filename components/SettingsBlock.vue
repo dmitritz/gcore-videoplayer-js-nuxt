@@ -24,7 +24,7 @@
         Loop
       </label>
     </div>
-    <div class="heading font-semibold">Priority transport</div>
+    <!-- <div class="heading font-semibold">Priority transport</div>
     <div class="grid grid-cols-4 mb-4">
       <label v-for="t of TRANSPORTS" :key="t" :for="`priority_transport_${t}`">
         <input type="radio" :id="`priority_transport_${t}`" name="priority_transport" :value="t"
@@ -34,7 +34,7 @@
         >
         {{ TRANSPORT_LABELS[t] }}
       </label>
-    </div>
+    </div> -->
     <div class="font-semibold">UI</div>
     <plugin-settings class="block mb-4" />
     <div class="heading font-semibold"></div>
@@ -46,7 +46,7 @@
 
 <script lang="ts" setup>
 
-import type { TransportPreference } from "@gcorevideo/player";
+// import type { TransportPreference } from "@gcorevideo/player";
 import useSettingsStore from "../store/settings";
 
 const TRANSPORTS = ['dash', 'hls', 'mpegts', 'auto']

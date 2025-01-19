@@ -22,7 +22,7 @@ const query = route.query
           path: '/settings',
           query,
         }" id="nav_settings">Settings</router-link>
-        <router-link :to="{ path: '/source', query }" id="nav_source">Source</router-link>
+        <router-link :to="{ path: '/arbitrary-source', query }" id="nav_source">Source</router-link>
       </nav>
       <slot name="header"></slot>
     </header>
