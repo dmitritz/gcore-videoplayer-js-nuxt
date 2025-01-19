@@ -24,6 +24,22 @@
         Loop
       </label>
     </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 mb-4">
+      <label for="option_playbacktype_vod" class="text-bold">
+        <input type="radio" id="option_playbacktype_vod" :checked="settings.playbackType === 'vod'"
+          @change="settings.setPlaybackType('vod')"
+          class="mr-2"
+        >
+        VOD
+      </label>
+      <label for="option_playbacktype_live">
+        <input type="radio" id="option_playbacktype_live" :checked="settings.playbackType === 'live'"
+          @change="settings.setPlaybackType('live')"
+          class="mr-2"
+        >
+        Live
+      </label>
+    </div>
     <!-- <div class="heading font-semibold">Priority transport</div>
     <div class="grid grid-cols-4 mb-4">
       <label v-for="t of TRANSPORTS" :key="t" :for="`priority_transport_${t}`">
@@ -37,6 +53,8 @@
     </div> -->
     <div class="font-semibold">UI</div>
     <plugin-settings class="block mb-4" />
+    <div class="heading font-semibold">DASH</div>
+    <dash-settings class="block mb-4" />
     <div class="heading font-semibold"></div>
     <div class="buttons">
       <button @click="settings.reset()">Reset</button>

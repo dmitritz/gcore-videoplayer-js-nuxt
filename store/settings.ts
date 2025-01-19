@@ -1,18 +1,23 @@
-import type { PlayerDebugTag, StreamMediaSource, TransportPreference } from '@gcorevideo/player';
+import type { PlaybackType, PlayerDebugTag, StreamMediaSource, TransportPreference } from '@gcorevideo/player';
 import { defineStore } from 'pinia'
 
 import usePersistence from '@/composables/use-persistence';
 import type { StreamDto, StreamKind } from '~/types';
 import { parseStreamDto } from '~/utils/fetch-stream';
-// import { parseSources } from '~/utils/sources';
+
+type DashSettings = {
+  maxBitrate: number;
+}
 
 type State = {
   apiToken: string | null;
   autoplay: boolean;
+  dash: DashSettings;
   debug: PlayerDebugTag;
   experimental: Record<string, unknown>;
   loop: boolean;
   mute: boolean;
+  playbackType: PlaybackType;
   plugins: string[];
   priorityTransport: TransportPreference;
   source: StreamSource;
@@ -34,6 +39,7 @@ type MainSettings = {
   autoplay: boolean;
   loop: boolean;
   mute: boolean;
+  playbackType: PlaybackType;
   priorityTransport: TransportPreference;
 }
 
@@ -47,7 +53,9 @@ type Actions = {
   setApiToken(value: string): void;
   setAutoplay(value: boolean): void;
   setLoop(value: boolean): void;
+  setDashSettings(value: Partial<DashSettings>): void;
   setMute(value: boolean): void;
+  setPlaybackType(value: PlaybackType): void;
   setPriorityTransport(value: TransportPreference): void;
   setSources(value: string[]): void;
   setStreamDto(value: StreamDto | null, kind: StreamKind): void;
@@ -61,6 +69,7 @@ const DEFAULT_MAIN_SETTINGS: MainSettings = {
   autoplay: false,
   loop: false,
   mute: true,
+  playbackType: 'vod',
   priorityTransport: 'auto',
 }
 
@@ -72,6 +81,10 @@ const NO_SOURCE: StreamSource = {
 
 const DEFAULT_STREAM_KIND: StreamKind = 'stream'
 
+const DEFAULT_DASH_SETTINGS = {
+  maxBitrate: 0,
+}
+
 const useSettingsStore = () => {
   const persistedSource = usePersistence<StreamSource>('settings.source', JSON.stringify, JSON.parse, NO_SOURCE);
   const persistedSources = usePersistence<string[]>('settings.sources', String, s => s.split(',').filter(Boolean), []);
@@ -82,19 +95,21 @@ const useSettingsStore = () => {
     DEFAULT_PLUGINS
   );
 
-  const persistedMain = usePersistence<MainSettings>('settings.basic', JSON.stringify, JSON.parse, DEFAULT_MAIN_SETTINGS);
+  const persistedBasic = usePersistence<MainSettings>('settings.basic', JSON.stringify, JSON.parse, DEFAULT_MAIN_SETTINGS);
   const persistedId = usePersistence('settings.streamId', String, Number, 0);
   const persistedToken = usePersistence('settings.apiToken', id, id, '');
   const persistKind = usePersistence<StreamKind>('settings.streamKind', id, id, 'stream');
 
   const url = useRequestURL()
-  if (url.searchParams.has('autoplay') || url.searchParams.has('mute') || url.searchParams.has('loop') || url.searchParams.has('priority_transport')) {
-    persistedMain.set({
-      ...persistedMain.get(),
-      autoplay: parseBoolean(url.searchParams.get('autoplay'), DEFAULT_MAIN_SETTINGS.autoplay),
-      mute: parseBoolean(url.searchParams.get('mute'), DEFAULT_MAIN_SETTINGS.mute),
-      loop: parseBoolean(url.searchParams.get('loop'), DEFAULT_MAIN_SETTINGS.loop),
-      priorityTransport: transportPreference(url.searchParams.get('priority_transport') ?? ''),
+  if (url.searchParams.has('autoplay') || url.searchParams.has('mute') || url.searchParams.has('loop') || url.searchParams.has('priority_transport') || url.searchParams.has('playback_type')) {
+    const pm = persistedBasic.get();
+    persistedBasic.set({
+      ...persistedBasic.get(),
+      autoplay: parseBoolean(url.searchParams.get('autoplay'), pm.autoplay ?? DEFAULT_MAIN_SETTINGS.autoplay),
+      loop: parseBoolean(url.searchParams.get('loop'), pm.loop ?? DEFAULT_MAIN_SETTINGS.loop),
+      mute: parseBoolean(url.searchParams.get('mute'), pm.mute ?? DEFAULT_MAIN_SETTINGS.mute),
+      playbackType: parseSelectOption<PlaybackType>(['vod', 'live'], url.searchParams.get('playback_type'), 'vod') ?? pm.playbackType ?? DEFAULT_MAIN_SETTINGS.playbackType, // TODO sanitize
+      priorityTransport: transportPreference(url.searchParams.get('priority_transport'), pm.priorityTransport),
     })
   }
   const debug = debugTag(url.searchParams.get('debug') || 'all') ?? 'all';
@@ -109,8 +124,9 @@ const useSettingsStore = () => {
     autoplay,
     mute,
     loop,
+    playbackType = 'vod',
     priorityTransport
-  } = persistedMain.get();
+  } = persistedBasic.get();
 
   const usePersistedPlugins = !url.searchParams.has('plugins')
   const plugins = (usePersistedPlugins ? persistedPlugins.get() : url.searchParams.get('plugins')?.split(',')) ?? []
@@ -121,12 +137,12 @@ const useSettingsStore = () => {
     state: () => ({
       apiToken,
       autoplay,
+      dash: DEFAULT_DASH_SETTINGS,
       debug,
-      experimental: {
-        autoplay: parseBoolean(url.searchParams.get('xautoplay'), false),
-      },
+      experimental: {},
       loop,
       mute,
+      playbackType,
       plugins,
       priorityTransport,
       source,
@@ -187,19 +203,26 @@ const useSettingsStore = () => {
       },
       setAutoplay(value: boolean) {
         this.autoplay = value;
-        persistedMain.set({ autoplay: value, mute: this.mute, loop: this.loop, priorityTransport: this.priorityTransport });
+        persistBasicSettings(this)
+      },
+      setDashSettings(value: Partial<DashSettings>) {
+        this.dash = { ...this.dash, ...value };
       },
       setLoop(value: boolean) {
         this.loop = value;
-        persistedMain.set({ autoplay: this.autoplay, mute: this.mute, loop: value, priorityTransport: this.priorityTransport });
+        persistBasicSettings(this)
       },
       setMute(value: boolean) {
         this.mute = value;
-        persistedMain.set({ autoplay: this.autoplay, mute: value, loop: this.loop, priorityTransport: this.priorityTransport });
+        persistBasicSettings(this)
+      },
+      setPlaybackType(value: PlaybackType) {
+        this.playbackType = value;
+        persistBasicSettings(this)
       },
       setPriorityTransport(value: TransportPreference) {
         this.priorityTransport = value;
-        persistedMain.set({ autoplay: this.autoplay, mute: this.mute, loop: this.loop, priorityTransport: value });
+        persistBasicSettings(this)
       },
       setSources(value: string[]) {
         this.sources = value;
@@ -232,6 +255,16 @@ const useSettingsStore = () => {
       }
     },
   })();
+
+  function persistBasicSettings(state: State) {
+    persistedBasic.set({
+      autoplay: state.autoplay,
+      loop: state.loop,
+      mute: state.mute,
+      playbackType: state.playbackType,
+      priorityTransport: state.priorityTransport,
+    })
+  }
 }
 
 function debugTag(input: string): PlayerDebugTag | undefined {
@@ -240,11 +273,15 @@ function debugTag(input: string): PlayerDebugTag | undefined {
   }
 }
 
-function transportPreference(input: string): TransportPreference {
-  if (['hls', 'dash', 'mpegts'].includes(input)) {
-    return input as TransportPreference;
+function transportPreference(input: string | null, def: TransportPreference = 'auto'): TransportPreference {
+  return parseSelectOption<TransportPreference>(['auto', 'hls', 'dash', 'mpegts'], input, def)
+}
+
+function parseSelectOption<T extends string>(options: string[], input: string | null, def: T): T {
+  if (input === null) {
+    return def;
   }
-  return 'auto';
+  return options.includes(input) ? input as T : def;
 }
 
 function parseBoolean(val: string | null, defaultValue = false): boolean {

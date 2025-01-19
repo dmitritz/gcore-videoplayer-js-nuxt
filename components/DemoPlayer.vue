@@ -40,7 +40,7 @@
       </button>
     </div>
     <div
-      class="absolute p-4 rounded bg-white opacity-90 left-0 w-full overflow-x-scroll z-10"
+      class="absolute p-4 rounded bg-white opacity-90 right-0 w-full overflow-x-scroll z-10 max-w-96"
       @click="showSource = false"
       v-if="showSource"
     >
@@ -52,7 +52,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
 
-import { Player, PlayerEvent, type PlaybackType } from '@gcorevideo/player'
+import { Player, PlayerEvent } from '@gcorevideo/player'
 
 import usePluginsConfig from '../composables/use-plugins-config'
 import useSettingsStore from '../store/settings'
@@ -86,6 +86,7 @@ usePluginsConfig()
 
 const config = computed(() => ({
   autoPlay: settings.autoplay,
+  dash: settings.dash,
   debug: settings.debug,
   // poster: settings.multisources[0]?.poster || '',
   poster: 'https://static.gvideo.co/videoplatform/streams/2675/21960/screenshots/last.jpg',
@@ -153,7 +154,7 @@ const config = computed(() => ({
     },
   },
   // multisources: settings.multisources,
-  playbackType: 'vod' as PlaybackType,
+  playbackType: settings.playbackType,
   priorityTransport: settings.priorityTransport,
   sources: settings.sources,
     // settings.multisources.length && settings.multisources[0].sourceDash
@@ -169,6 +170,7 @@ player.on(PlayerEvent.Ended, () => {
   playing.value = false
   paused.value = false
   starting.value = false
+  stopped.value = true
 })
 
 let playbackMonitorTimerId: ReturnType<typeof setInterval> | null = null
@@ -176,12 +178,12 @@ let playbackMonitorTimerId: ReturnType<typeof setInterval> | null = null
 player.on(PlayerEvent.Play, () => {
   playing.value = true
   paused.value = false
+  stopped.value = false
   starting.value = false
   playback.value = player.activePlayback || ''
   playbackType.value = player.playbackType || ''
   if (playbackMonitorTimerId) {
     clearInterval(playbackMonitorTimerId)
-    playbackMonitorTimerId = null
   }
   playbackMonitorTimerId = setInterval(() => {
     hd.value = player.hd
@@ -211,6 +213,7 @@ player.on(PlayerEvent.Stop, () => {
   playing.value = false
   playback.value = ''
   playbackType.value = ''
+  stopped.value = true
   hd.value = false
   bitrate.value = 0
   width.value = 0
@@ -261,7 +264,6 @@ function play() {
   }
   starting.value = true
   player.play()
-  stopped.value = false
 }
 
 function pause() {
@@ -275,7 +277,6 @@ function stop() {
   if (!player) {
     return
   }
-  stopped.value = true
   player.stop()
 }
 
