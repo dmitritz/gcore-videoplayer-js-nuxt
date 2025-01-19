@@ -86,7 +86,6 @@ usePluginsConfig()
 
 const config = computed(() => ({
   autoPlay: settings.autoplay,
-  xAutoPlay: !!settings.experimental.autoplay,
   debug: settings.debug,
   poster: settings.multisources[0]?.poster || '',
   // 'https://static.gvideo.co/videoplatform/streams/2675/19146/screenshots/last.jpg',
@@ -223,6 +222,10 @@ player.on(PlayerEvent.Stop, () => {
   }
 })
 
+const rob = useResizeObserver(({ width, height }) => {
+  player.resize({ width, height })
+})
+
 onMounted(() => {
   setTimeout(() => {
     if (!container.value) {
@@ -233,9 +236,13 @@ onMounted(() => {
   setInterval(() => {
     currentTime.value = new Date()
   }, 1000)
+  if (container.value) {
+    rob.start(container.value)
+  }
 })
 
 onBeforeMount(() => {
+  rob.stop()
   player.destroy()
 })
 
