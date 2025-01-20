@@ -1,44 +1,61 @@
 <template>
   <div class="settings">
     <div class="heading font-semibold">Basic</div>
-    <div class="grid grid-cols-2 md:grid-cols-3 mb-4">
-      <label for="option_autoplay" class="text-bold">
-        <input type="checkbox" id="option_autoplay" :checked="settings.autoplay"
-          @change="e => settings.setAutoplay((e.target as HTMLInputElement)?.checked)"
-          class="mr-2"
-        >
-        Autoplay
-      </label>
-      <label for="option_mute">
-        <input type="checkbox" id="option_mute" :checked="settings.mute"
-          @change="e => settings.setMute((e.target as HTMLInputElement)?.checked)"
-          class="mr-2"
-        >
-        Mute
-      </label>
-      <label for="option_loop">
-        <input type="checkbox" id="option_loop" :checked="settings.loop"
-          @change="e => settings.setLoop((e.target as HTMLInputElement)?.checked)"
-          class="mr-2"
-        >
-        Loop
-      </label>
-    </div>
-    <div class="grid grid-cols-2 md:grid-cols-3 mb-4">
-      <label for="option_playbacktype_vod" class="text-bold">
-        <input type="radio" id="option_playbacktype_vod" :checked="settings.playbackType === 'vod'"
-          @change="settings.setPlaybackType('vod')"
-          class="mr-2"
-        >
-        VOD
-      </label>
-      <label for="option_playbacktype_live">
-        <input type="radio" id="option_playbacktype_live" :checked="settings.playbackType === 'live'"
-          @change="settings.setPlaybackType('live')"
-          class="mr-2"
-        >
-        Live
-      </label>
+    <div class="mb-4">
+      <div class="grid grid-cols-2 md:grid-cols-3">
+        <label for="option_autoplay" class="text-bold">
+          <input
+            type="checkbox"
+            id="option_autoplay"
+            :checked="settings.autoplay"
+            @change="e => settings.setAutoplay((e.target as HTMLInputElement)?.checked)"
+            class="mr-2"
+          />
+          Autoplay
+        </label>
+        <label for="option_mute">
+          <input
+            type="checkbox"
+            id="option_mute"
+            :checked="settings.mute"
+            @change="e => settings.setMute((e.target as HTMLInputElement)?.checked)"
+            class="mr-2"
+          />
+          Mute
+        </label>
+        <label for="option_loop">
+          <input
+            type="checkbox"
+            id="option_loop"
+            :checked="settings.loop"
+            @change="e => settings.setLoop((e.target as HTMLInputElement)?.checked)"
+            class="mr-2"
+          />
+          Loop
+        </label>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3">
+        <label for="option_playbacktype_vod" class="text-bold">
+          <input
+            type="radio"
+            id="option_playbacktype_vod"
+            :checked="settings.playbackType === 'vod'"
+            @change="settings.setPlaybackType('vod')"
+            class="mr-2"
+          />
+          VOD
+        </label>
+        <label for="option_playbacktype_live">
+          <input
+            type="radio"
+            id="option_playbacktype_live"
+            :checked="settings.playbackType === 'live'"
+            @change="settings.setPlaybackType('live')"
+            class="mr-2"
+          />
+          Live
+        </label>
+      </div>
     </div>
     <!-- <div class="heading font-semibold">Priority transport</div>
     <div class="grid grid-cols-4 mb-4">
@@ -63,18 +80,17 @@
 </template>
 
 <script lang="ts" setup>
-
 // import type { TransportPreference } from "@gcorevideo/player";
-import useSettingsStore from "../store/settings";
+import useSettingsStore from '../store/settings'
 
 const TRANSPORTS = ['dash', 'hls', 'mpegts', 'auto']
 
 type ElementType<T> = T extends (infer E)[] ? E : never
 const TRANSPORT_LABELS: Record<ElementType<typeof TRANSPORTS>, string> = {
-  'dash': 'DASH',
-  'hls': 'HLS',
-  'mpegts': 'No-LL',
-  'auto': 'Auto',
+  dash: 'DASH',
+  hls: 'HLS',
+  mpegts: 'No-LL',
+  auto: 'Auto',
 }
 
 const settings = useSettingsStore()

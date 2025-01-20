@@ -16,9 +16,13 @@
       </reference-links>
     </template>
     <div class="source-settings w-full px-2">
-      <div class="controls flex flex-col md:grid md:grid-cols-2 gap-2 gap-y-3 mb-4 gap-1">
+      <div class="controls flex flex-col gap-2 gap-y-3 mb-4 gap-1">
         <div>
           <label for="sources" class="font-medium">Sources</label>
+          <span class="text-sm text-slate-600">
+            one per line in the priority order. The first supported one will be
+            used
+          </span>
         </div>
         <div>
           <textarea
@@ -29,15 +33,11 @@
           ></textarea>
         </div>
         <div class="flex gap-2 items-center">
-          <button
-            @click="load"
-            :disabled="!hasValidSources"
-            v-show="!loaded"
-          >
+          <button @click="load" :disabled="!hasValidSources" v-show="!loaded">
             Load
           </button>
           <span v-show="loaded" class="text-slate-700">Loaded</span>
-          <button @click="clear">Clear</button>
+          <button @click="clear" :disabled="!rawSources.length">Clear</button>
         </div>
       </div>
       <div v-if="error" class="text-red-950">{{ error }}</div>
@@ -58,7 +58,11 @@ const rawSources = ref(settings.sources.join('\n'))
 
 const parsedSources = computed(() => parseSources(rawSources.value))
 
-const loaded = computed(() => parsedSources.value.length && sameItems(parsedSources.value, settings.sources))
+const loaded = computed(
+  () =>
+    parsedSources.value.length &&
+    sameItems(parsedSources.value, settings.sources)
+)
 
 const hasValidSources = computed(() => parsedSources.value.length > 0)
 
@@ -74,7 +78,6 @@ function load() {
 function sameItems(a: string[], b: string[]) {
   return a.length === b.length && a.every((item) => b.includes(item))
 }
-
 </script>
 
 <style lang="css" scoped>
