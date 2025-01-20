@@ -1,8 +1,11 @@
 <template>
+  <div class="flex mb-2">
+      <player-link />
+    </div>
   <div class="demo-player">
     <div ref="container" class="video-container"></div>
   </div>
-  <div class="settings controls my-1 px-2 items-baseline">
+  <div class="settings grid grid-cols-2 my-1 px-2 items-baseline">
     <div class="buttons font-semibold flex flex-col gap-1 sm:flex-row">
       <button
         @click="play"
@@ -76,7 +79,7 @@ const currentTime = ref<Date>(new Date())
 
 const settings = useSettingsStore()
 
-const noSource = computed(() => !settings.multisources.length)
+const noSource = computed(() => !settings.sources.length)
 
 const showSource = ref(false)
 
@@ -295,7 +298,7 @@ function formatTime(date: Date): string {
   return `${date.getUTCMinutes().toFixed(0).padStart(2, '0')}:${date
     .getUTCSeconds()
     .toFixed(0)
-    .padEnd(2, '0')}`
+    .padStart(2, '0')}`
 }
 </script>
 
@@ -312,8 +315,6 @@ function formatTime(date: Date): string {
 }
 
 .settings {
-  display: grid;
-  grid-template-columns: max-content auto;
   grid-auto-rows: minmax(1.5rem, auto);
   gap: 0.5rem 1rem;
 }

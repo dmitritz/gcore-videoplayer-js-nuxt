@@ -80,18 +80,20 @@
 </template>
 
 <script lang="ts" setup>
+// import { ClipboardIcon, ClipboardDocumentCheckIcon } from '@heroicons/vue/24/outline'
+
 // import type { TransportPreference } from "@gcorevideo/player";
 import useSettingsStore from '../store/settings'
 
-const TRANSPORTS = ['dash', 'hls', 'mpegts', 'auto']
+// const TRANSPORTS = ['dash', 'hls', 'mpegts', 'auto']
 
-type ElementType<T> = T extends (infer E)[] ? E : never
-const TRANSPORT_LABELS: Record<ElementType<typeof TRANSPORTS>, string> = {
-  dash: 'DASH',
-  hls: 'HLS',
-  mpegts: 'No-LL',
-  auto: 'Auto',
-}
+// type ElementType<T> = T extends (infer E)[] ? E : never
+// const TRANSPORT_LABELS: Record<ElementType<typeof TRANSPORTS>, string> = {
+//   dash: 'DASH',
+//   hls: 'HLS',
+//   mpegts: 'No-LL',
+//   auto: 'Auto',
+// }
 
 const settings = useSettingsStore()
 </script>

@@ -54,7 +54,7 @@ const error = ref('')
 
 const settings = useSettingsStore()
 
-const rawSources = ref(settings.sources.join('\n'))
+const rawSources = ref<string>('')
 
 const parsedSources = computed(() => parseSources(rawSources.value))
 
@@ -65,6 +65,10 @@ const loaded = computed(
 )
 
 const hasValidSources = computed(() => parsedSources.value.length > 0)
+
+onMounted(() => {
+  rawSources.value = settings.sources.join('\n')
+})
 
 function clear() {
   rawSources.value = ''
