@@ -56,6 +56,4 @@ if (import.meta.client) {
     console.error('Sentry client is not initialized')
   }
 }
-
-useFetchSource()
 </script>

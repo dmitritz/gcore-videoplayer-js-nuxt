@@ -1,28 +1,66 @@
 <script setup lang="ts">
-import { version } from "@gcorevideo/player";
-import pkg from "../package.json";
+import { reportError, version } from '@gcorevideo/player'
+import pkg from '../package.json'
+import { BugAntIcon, CheckIcon } from '@heroicons/vue/16/solid'
 
-const ver = version();
+const ver = version()
 
 const route = useRoute()
 const query = route.query
+const reported = ref(false)
+function report() {
+  reported.value = true
+  reportError(new Error('User error report'))
+  setTimeout(() => {
+    reported.value = false
+  }, 1000)
+}
 </script>
 
 <template>
   <NuxtRouteAnnouncer />
-  <div class="flex flex-col md:grid md:grid-cols-2 h-screen xmd:grid-rows-2 md:py-4 g-container">
-    <header class="w-full py-2 md:py-8 px-2 flex flex-wrap md:flex-col md:flex-nowrap gap-2">
+  <div
+    class="flex flex-col md:grid md:grid-cols-2 h-screen xmd:grid-rows-2 md:py-4 g-container"
+  >
+    <header
+      class="w-full py-2 md:py-8 px-2 flex flex-wrap md:flex-col md:flex-nowrap gap-2"
+    >
       <div class="flex basis-auto items-center gap-4">
-        <img src="~/assets/img/gcore_orange_001.svg" alt="Gcore logo" class="logo" width="40" height="40" />
+        <img
+          src="~/assets/img/gcore_orange_001.svg"
+          alt="Gcore logo"
+          class="logo"
+          width="40"
+          height="40"
+        />
         <div class="text-lg hidden md:block">Gcore video player</div>
+        <button
+          class="rounded border border-slate-600 text-sm inline-flex"
+          @click="report"
+          :disabled="reported"
+          title="Report error"
+        >
+          <bug-ant-icon class="w-4 h-4 text-red-500" v-if="!reported"/>
+          <check-icon class="w-4 h-4 text-green-500" title="Reported" v-else/>
+        </button>
       </div>
-      <nav class="flex gap-2 basis-1/2 md:justify-center md:items-start md:basis-auto">
-        <router-link :to="{ path: '/', query }" id="nav_home" class="r">Home</router-link>
-        <router-link :to="{
-          path: '/settings',
-          query,
-        }" id="nav_settings">Settings</router-link>
-        <router-link :to="{ path: '/arbitrary-source', query }" id="nav_source">Source</router-link>
+      <nav
+        class="flex gap-2 basis-1/2 md:justify-center md:items-start md:basis-auto"
+      >
+        <router-link :to="{ path: '/', query }" id="nav_home" class="r"
+          >Home</router-link
+        >
+        <router-link
+          :to="{
+            path: '/settings',
+            query,
+          }"
+          id="nav_settings"
+          >Settings</router-link
+        >
+        <router-link :to="{ path: '/arbitrary-source', query }" id="nav_source"
+          >Source</router-link
+        >
       </nav>
       <slot name="header"></slot>
     </header>
@@ -30,10 +68,25 @@ const query = route.query
       <slot></slot>
     </main>
     <footer
-      class="w-full py-2 mx-auto basis-auto md:col-span-2 flex md:items-end justify-end gap-4 px-2 items-center">
+      class="w-full py-2 mx-auto basis-auto md:col-span-2 flex md:items-end justify-end gap-4 px-2 items-center"
+    >
       <div class="text-end text-slate-700 text-sm">
         <p>
-          {{ pkg.version }}/{{ ver.gplayer }}/clappr {{ ver.clappr }}/<a href="https://dashjs.org" target="_blank" rel="noopener noreferrer" class="p-0">dash.js</a> {{ ver.dashjs }}/<a href="https://hlsjs.video-dev.org/demo/" target="_blank" rel="noopener noreferrer" class="p-0">hls.js</a> {{ ver.hlsjs }}
+          {{ pkg.version }}/{{ ver.gplayer }}/clappr {{ ver.clappr }}/<a
+            href="https://dashjs.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="p-0"
+            >dash.js</a
+          >
+          {{ ver.dashjs }}/<a
+            href="https://hlsjs.video-dev.org/demo/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="p-0"
+            >hls.js</a
+          >
+          {{ ver.hlsjs }}
         </p>
       </div>
     </footer>
