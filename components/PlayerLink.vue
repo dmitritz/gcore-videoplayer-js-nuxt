@@ -10,7 +10,7 @@
     >
       <clipboard-icon class="h-4 w-4" v-if="!copied" />
       <clipboard-document-check-icon class="h-4 w-4" v-else />
-      {{ copied ? 'Copied' : 'Link' }}
+      {{ copied ? 'copied' : 'link' }}
     </button>
   </div>
 </template>
