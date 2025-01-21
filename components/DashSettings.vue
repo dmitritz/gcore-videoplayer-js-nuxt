@@ -96,7 +96,7 @@
       </button>
     </div>
     <div class="mb-2 col-span-3"></div>
-    <div class="label col-span-3 mb:col-span-1">Live catchup</div>
+    <div class="label col-span-1">Live catchup</div>
     <div class="row md:col-start-3">
       <button
         @click="disableLiveCatchup"
@@ -121,7 +121,7 @@
         class="textfield"
         @change="e => setMaxDrift((e.target as HTMLInputElement).value)"
       />
-      <span class="field-suffix"></span>
+      <span class="field-suffix">sec</span>
     </div>
     <label for="dash_playback_rate_max" class="sub-label"
       >playback rate max</label
@@ -157,8 +157,8 @@
     </div>
     <div class="mb-2 col-span-3"></div>
     <div class="label col-span-3">ABR</div>
-    <div class="sub-label col-span-3 md:col-span-1">strategy</div>
-    <div class="col-span-3 md:col-span-2 grid grid-cols-3 gap-1 text-sm">
+    <div class="sub-label col-span-3 md:col-span-1 self-start">strategy</div>
+    <div class="col-span-3 md:col-span-2 grid grid-cols-2 lg:grid-cols-3 gap-1 text-sm">
       <label
         v-for="strategy of ABR_STRATEGIES"
         :key="strategy"
@@ -175,13 +175,13 @@
         {{ ABR_STRATEGY_LABELS[strategy] }}
       </label>
     </div>
-    <div class="sub-label col-span-3 md:col-span-1">additional rules</div>
-    <div class="col-span-3 md:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-1">
+    <div class="sub-label col-span-3 md:col-span-1 self-start">additional rules</div>
+    <div class="col-span-3 md:col-span-2 grid grid-cols-2 lg:grid-cols-3 gap-1">
       <label
         v-for="rule of ABR_RULES"
         :key="rule"
         :for="`dash_rule_${rule}`"
-        class="flex items-center gap-1 text-xs"
+        class="flex items-center gap-1 text-sm"
       >
         <input
           type="checkbox"
@@ -564,6 +564,6 @@ function setAbrStrategy(strategy: DashAbrStrategy) {
 }
 .sub-label {
   @apply label;
-  @apply md:text-right text-left;
+  @apply text-sm text-left md:text-right;
 }
 </style>
