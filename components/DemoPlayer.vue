@@ -1,7 +1,7 @@
 <template>
-  <div class="flex mb-2">
-      <player-link />
-    </div>
+  <div class="flex mb-2 px-2 my-1">
+    <player-link />
+  </div>
   <div class="demo-player">
     <div ref="container" class="video-container"></div>
   </div>
@@ -92,7 +92,8 @@ const config = computed(() => ({
   dash: settings.dash,
   debug: settings.debug,
   // poster: settings.multisources[0]?.poster || '',
-  poster: 'https://static.gvideo.co/videoplatform/streams/2675/21960/screenshots/last.jpg',
+  poster:
+    'https://static.gvideo.co/videoplatform/streams/2675/21960/screenshots/last.jpg',
   // 'https://static.gvideo.co/videoplatform/streams/2675/19146/screenshots/last.jpg',
   // TODO
   // realtimeApi: "wss://realtime-api.gvideo.co/ws/subscribe/message/2675_live_19146_0_GWxvgWFBHP3eEter8V9g",
@@ -160,9 +161,9 @@ const config = computed(() => ({
   playbackType: settings.playbackType,
   priorityTransport: settings.priorityTransport,
   sources: settings.sources,
-    // settings.multisources.length && settings.multisources[0].sourceDash
-    //   ? [settings.multisources[0].sourceDash]
-    //   : [],
+  // settings.multisources.length && settings.multisources[0].sourceDash
+  //   ? [settings.multisources[0].sourceDash]
+  //   : [],
   strings: { en: {} },
   // strings: JSON.parse(document.head.querySelector("[name=translations]").content),
 }))

@@ -12,14 +12,36 @@ import usePersistence from '@/composables/use-persistence'
 import type { StreamDto, StreamKind } from '~/types'
 import { parseStreamDto } from '~/utils/fetch-stream'
 
-type DashSettings = {
+export type AdditionalAbrRulesSettings = {
+  insufficientBufferRule?: boolean
+  droppedFramesRule?: boolean
+  switchHistoryRule?: boolean
+  abandonRequestsRule?: boolean
+}
+
+export type DashAbrStrategy = 'abrDynamic' | 'abrThroughput' | 'abrBola'
+
+export const DASH_DEFAULT_LIVE_DELAY = 2.2
+export const DASH_DEFAULT_MAX_DRIFT = 1
+export const DASH_DEFAULT_LC_PLAYBACK_RATE_MAX = 0.1
+export const DASH_DEFAULT_LC_PLAYBACK_RATE_MIN = -0.1
+
+export type DashSettings = {
   streaming: {
     abr?: {
-      maxBitrate?: number
-      rules?: {
-        [key: string]: {
-          active: boolean
-        } & Record<string, unknown>
+      ABRStrategy?: DashAbrStrategy;
+      additionalAbrRules?: AdditionalAbrRulesSettings
+      autoSwitchBitrate?: {
+        audio?: boolean
+        video?: boolean
+      }
+      initialBitrate?: {
+        audio?: number
+        video?: number
+      }
+      maxBitrate?: {
+        audio?: number
+        video?: number
       }
     }
     delay?: {
@@ -117,14 +139,21 @@ const DEFAULT_STREAM_KIND: StreamKind = 'stream'
 const DEFAULT_DASH_SETTINGS: DashSettings = {
   streaming: {
     abr: {
-      maxBitrate: -1,
+      ABRStrategy: 'abrDynamic',
+      maxBitrate: { video: -1 },
+      initialBitrate: { video: -1 },
+      autoSwitchBitrate: { video: true },
     },
-    // delay: {
-    //   liveDelay: NaN,
-    // },
-    // liveCatchup: {
-    //   maxDrift: NaN,
-    // }
+    delay: {
+      liveDelay: DASH_DEFAULT_LIVE_DELAY,
+    },
+    liveCatchup: {
+      maxDrift: DASH_DEFAULT_MAX_DRIFT,
+      playbackRate: {
+        max: DASH_DEFAULT_LC_PLAYBACK_RATE_MAX,
+        min: DASH_DEFAULT_LC_PLAYBACK_RATE_MIN,
+      },
+    },
   },
 }
 
@@ -473,9 +502,12 @@ function id<T = string>(a: string) {
 }
 
 function isCustomDashSettings(settings: DashSettings): boolean {
+  // TODO
   return (
-    settings.streaming.abr?.maxBitrate !== -1 ||
-    Object.keys(settings.streaming.abr?.rules ?? {}).length > 0 ||
+    settings.streaming.abr?.maxBitrate?.video !== -1 ||
+    settings.streaming.abr?.initialBitrate?.video !== -1 ||
+    settings.streaming.abr?.autoSwitchBitrate?.video !== true ||
+    Object.keys(settings.streaming.abr?.additionalAbrRules ?? {}).length > 0 ||
     settings.streaming.delay?.liveDelay !== undefined ||
     settings.streaming.liveCatchup?.maxDrift !== undefined ||
     settings.streaming.liveCatchup?.playbackRate?.max !== undefined ||
@@ -501,15 +533,27 @@ function sanitizeDashSettings(settings: unknown): DashSettings {
   const schema = z.object({
     streaming: z.object({
       abr: z.object({
-        maxBitrate: z.number().optional(),
-        rules: z.record(
-          z.object({
-            throughputRule: ruleSchema.optional(),
-            bolaRule: ruleSchema.optional(),
+        ABRStrategy: z.enum(['abrDynamic', 'abrThroughput', 'abrBola']).optional(),
+        additionalAbrRules: z
+          .object({
+            throughputRule: z.boolean().optional(),
             insufficientBufferRule: ruleSchema.optional(),
-            // TODO ...
+            droppedFramesRule: ruleSchema.optional(),
+            switchHistoryRule: ruleSchema.optional(),
           })
-        ),
+          .optional(),
+        autoSwitchBitrate: z.object({
+          audio: z.boolean().optional(),
+          video: z.boolean().optional(),
+        }).optional(),
+        initialBitrate: z.object({
+          audio: z.number().optional(),
+          video: z.number().optional(),
+        }).optional(),
+        maxBitrate: z.object({
+          audio: z.number().optional(),
+          video: z.number().optional(),
+        }).optional(),
       }),
       delay: z.object({ liveDelay: z.number().optional() }).optional(),
       liveCatchup: z
