@@ -25,7 +25,7 @@ function report() {
     <header
       class="w-full py-2 md:py-8 px-2 flex flex-wrap md:flex-col md:flex-nowrap gap-2"
     >
-      <div class="flex basis-auto items-center gap-4">
+      <div class="flex basis-auto items-center gap-4 w-full pl-5">
         <img
           src="~/assets/img/gcore_orange_001.svg"
           alt="Gcore logo"
@@ -34,18 +34,19 @@ function report() {
           height="40"
         />
         <div class="text-lg hidden md:block">Gcore video player</div>
+        <player-link />
         <button
-          class="rounded border text-sm inline-flex border-red-300"
+          class="rounded border text-sm inline-flex border-red-300 justify-self-end"
           @click="report"
           :disabled="reported"
-          title="Report error"
+          title="Report a bug"
         >
-          <bug-ant-icon class="w-4 h-4 text-red-500" v-if="!reported"/>
-          <check-icon class="w-4 h-4 text-red-500" title="Reported" v-else/>
+          <bug-ant-icon class="w-4 h-4 text-red-500" v-if="!reported" />
+          <check-icon class="w-4 h-4 text-red-500" title="Reported" v-else />
         </button>
       </div>
       <nav
-        class="flex gap-2 basis-1/2 md:justify-center md:items-start md:basis-auto"
+        class="flex gap-2 basis-1/2 md:justify-start md:items-start md:basis-auto w-full"
       >
         <router-link :to="{ path: '/', query }" id="nav_home" class="r"
           >Home</router-link

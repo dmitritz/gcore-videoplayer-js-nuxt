@@ -1,7 +1,4 @@
 <template>
-  <div class="flex mb-2 px-2 my-1">
-    <player-link />
-  </div>
   <div class="demo-player">
     <div ref="container" class="video-container"></div>
   </div>
