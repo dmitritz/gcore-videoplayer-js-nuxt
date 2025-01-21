@@ -35,13 +35,13 @@ function report() {
         />
         <div class="text-lg hidden md:block">Gcore video player</div>
         <button
-          class="rounded border border-slate-600 text-sm inline-flex"
+          class="rounded border text-sm inline-flex border-red-300"
           @click="report"
           :disabled="reported"
           title="Report error"
         >
           <bug-ant-icon class="w-4 h-4 text-red-500" v-if="!reported"/>
-          <check-icon class="w-4 h-4 text-green-500" title="Reported" v-else/>
+          <check-icon class="w-4 h-4 text-red-500" title="Reported" v-else/>
         </button>
       </div>
       <nav

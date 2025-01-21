@@ -29,28 +29,28 @@ if (import.meta.client) {
     tracesSampleRate: 1.0,
   })
   if (client) {
-    const tracer = new RemoteTracer(
-      new SentryTracer(client, Sentry.getGlobalScope()),
-      {
-        device: Browser.device?.replace(/ /g, '_'),
-        browser: Browser.name,
-        browser_ver: Browser.version,
-        ios: Browser.isiOS,
-        android: Browser.isAndroid,
-        mobile: Browser.isMobile,
-        localstorage: Browser.hasLocalstorage,
-        os: Browser.os.group?.replace(/ /g, '_'),
-        os_name: Browser.os.name?.replace(/ /g, '_'),
-        width: Browser.viewport.width,
-        height: Browser.viewport.height,
-      }
-    )
+    const sentryScope = Sentry.getGlobalScope()
+    const st = new SentryTracer(client, sentryScope)
+    const tracer = new RemoteTracer(st, {
+      device: Browser.device?.replace(/ /g, '_'),
+      browser: Browser.name,
+      browser_ver: Browser.version,
+      ios: Browser.isiOS,
+      android: Browser.isAndroid,
+      mobile: Browser.isMobile,
+      localstorage: Browser.hasLocalstorage,
+      os: Browser.os.group?.replace(/ /g, '_'),
+      os_name: Browser.os.name?.replace(/ /g, '_'),
+      width: Browser.viewport.width,
+      height: Browser.viewport.height,
+    })
     setTracer(tracer)
     setTracerPlugins(tracer)
     Fingerprint.load()
       .then((agent) => agent.get())
       .then((res) => {
         tracer.setTag('visitorId', res.visitorId)
+        sentryScope.setTag('visitorId', res.visitorId)
       })
   } else {
     console.error('Sentry client is not initialized')
