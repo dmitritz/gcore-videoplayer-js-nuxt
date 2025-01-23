@@ -1,5 +1,5 @@
 <template>
-  <label :for="`plugin_${props.name}`">
+  <label :for="`plugin_${props.name}`" class="flex items-center gap-1">
     <input type="checkbox" :id="`plugin_${props.name}`" :checked="checked" @change="togglePlugin" class="mr-2" />
     <slot></slot>
   </label>

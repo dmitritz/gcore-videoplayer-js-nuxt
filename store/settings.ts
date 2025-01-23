@@ -123,11 +123,14 @@ const DEFAULT_MAIN_SETTINGS: MainSettings = {
 }
 
 const DEFAULT_PLUGINS = [
+  'bottom_gear',
+  'dvr_controls',
   'media_control',
   'level_selector',
-  'bottom_gear',
   'error_screen',
+  'example_ui',
   'poster',
+  'spinner',
 ]
 
 const NO_SOURCE: StreamSource = {
@@ -434,11 +437,12 @@ const useSettingsStore = () => {
         persistedSource.set(value)
       },
       reset() {
-        this.autoplay = false
+        this.autoplay = true
         this.mute = true
         this.loop = false
-        this.plugins = DEFAULT_PLUGINS
+        this.plugins = DEFAULT_PLUGINS.slice()
         this.priorityTransport = 'auto'
+        this.playbackType = 'vod'
       },
     },
   })()

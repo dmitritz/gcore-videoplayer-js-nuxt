@@ -23,6 +23,7 @@ import {
 } from '@gcorevideo/player-plugins';
 
 import useSettingsStore from '../store/settings';
+import { ExampleUI } from '../components/plugins/ExampleUI';
 
 const PLUGINS: Record<string, PlayerPlugin> = {
   big_mute_button: BigMuteButton,
@@ -33,6 +34,7 @@ const PLUGINS: Record<string, PlayerPlugin> = {
   disable_controls: DisableControls,
   dvr_controls: DvrControls,
   error_screen: ErrorScreen,
+  example_ui: ExampleUI,
   level_selector: LevelSelector,
   media_control: MediaControl,
   multi_camera: MultiCamera,

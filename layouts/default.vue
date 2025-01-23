@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import { reportError, version } from '@gcorevideo/player'
 import pkg from '../package.json'
-import { BugAntIcon, CheckIcon } from '@heroicons/vue/16/solid'
+import { BugAntIcon, CheckIcon, ExclamationCircleIcon } from '@heroicons/vue/16/solid'
+import useSettingsStore from '~/store/settings'
 
 const ver = version()
 
 const route = useRoute()
 const query = route.query
 const reported = ref(false)
+const settings = useSettingsStore()
+const noSource = computed(() => !settings.sources.length)
+
 function report() {
   reported.value = true
   reportError(new Error('User error report'))
@@ -23,7 +27,7 @@ function report() {
     class="flex flex-col md:grid md:grid-cols-2 h-screen xmd:grid-rows-2 md:py-4 g-container"
   >
     <header
-      class="w-full py-2 md:py-8 px-2 flex flex-wrap md:flex-col md:flex-nowrap gap-2"
+      class="w-full py-2 md:py-8 px-2 flex flex-wrap md:flex-col md:flex-nowrap gap-2 md:gap-4"
     >
       <div class="flex basis-auto items-center gap-4 w-full pl-5">
         <img
@@ -59,9 +63,9 @@ function report() {
           id="nav_settings"
           >Settings</router-link
         >
-        <router-link :to="{ path: '/arbitrary-source', query }" id="nav_source"
-          >Source</router-link
-        >
+        <router-link :to="{ path: '/arbitrary-source', query }" id="nav_source">
+          Source<exclamation-circle-icon v-if="noSource" class="w-3 h-3 ml-1 inline align-baseline"/>
+        </router-link>
       </nav>
       <slot name="header"></slot>
     </header>

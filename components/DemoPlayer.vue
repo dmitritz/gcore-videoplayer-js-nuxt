@@ -1,6 +1,7 @@
 <template>
-  <div class="demo-player">
+  <div class="demo-player relative">
     <div ref="container" class="video-container"></div>
+    <span class="absolute inset-1/2 text-white w-20 text-center text-sm no-source" v-if="noSource">Source not configured</span>
   </div>
   <div class="settings grid grid-cols-2 my-1 px-2 items-baseline">
     <div class="buttons font-semibold flex flex-col gap-1 sm:flex-row">
@@ -52,11 +53,12 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
 
-import { Player, PlayerEvent } from '@gcorevideo/player'
+import { Player, PlayerEvent, type PlaybackModule, type PlaybackType } from '@gcorevideo/player'
 
-import usePluginsConfig from '../composables/use-plugins-config'
+import usePluginsConfig from '~/composables/use-plugins-config'
 import useSettingsStore from '../store/settings'
 import { SPEEDTEST_SERVERS } from '../constants'
+import type { ExampleUIOptions } from '../components/plugins/ExampleUI'
 
 const container = ref<HTMLDivElement>()
 const playing = ref(false)
@@ -64,15 +66,15 @@ const paused = ref(false)
 const ready = ref(false)
 const starting = ref(false)
 const stopped = ref(true)
-const playback = ref('')
+const playback = ref<PlaybackModule | null>(null)
 const hd = ref(false)
 const bitrate = ref(0)
 const width = ref(0)
 const height = ref(0)
-const playbackType = ref('')
+const playbackType = ref<PlaybackType | null>(null)
 const showTime = computed(() => playing.value)
 
-const currentTime = ref<Date>(new Date())
+const currentTime = ref<number>(0)
 
 const settings = useSettingsStore()
 
@@ -88,26 +90,9 @@ const config = computed(() => ({
   autoPlay: settings.autoplay,
   dash: settings.dash,
   debug: settings.debug,
-  // poster: settings.multisources[0]?.poster || '',
-  poster:
-    'https://static.gvideo.co/videoplatform/streams/2675/21960/screenshots/last.jpg',
-  // 'https://static.gvideo.co/videoplatform/streams/2675/19146/screenshots/last.jpg',
-  // TODO
-  // realtimeApi: "wss://realtime-api.gvideo.co/ws/subscribe/message/2675_live_19146_0_GWxvgWFBHP3eEter8V9g",
   mute: settings.mute,
   width: '100%',
   height: '100%',
-  // dash: {
-  //   streaming: {
-  //     lowLatencyEnabled: true,
-  //     liveDelay: 3,
-  //     abr: {
-  //       initialBitrate: {
-  //         video: 2000
-  //       }
-  //     }
-  //   }
-  // },
   // language: "en", // strings plugin
   loop: settings.loop,
   pluginSettings: {
@@ -129,6 +114,21 @@ const config = computed(() => ({
     // disableClickOnPause: true, // vast_ads
     // disableMediaControl: true, // disable_controls, ...
     // embed: true, // share plugin
+    exampleUI: {
+      activeSource,
+      bitrate,
+      currentTime,
+      hd,
+      height,
+      paused,
+      playback,
+      playbackType,
+      playing,
+      ready,
+      starting,
+      stopped,
+      width,
+    } as ExampleUIOptions,
     // fullscreenDisable: true, // media_control
     levelSelector: {
       labels: {
@@ -137,9 +137,13 @@ const config = computed(() => ({
         '720': 'HD',
       },
     },
-    // multicameraPlay: true, // multi_camera
     multisources: settings.multisources,
     multisourcesMode: 'show_all', // multi_camera
+    poster: {
+      // showForNoOp: true,
+      url:
+    'https://static.gvideo.co/videoplatform/streams/2675/21960/screenshots/last.jpg',
+    },
     // shareURL: "https://gvideo.co", // share plugin
     subtitles: {
       language: 'en',
@@ -154,93 +158,29 @@ const config = computed(() => ({
         'https://static.gvideo.co/videoplatform/sprites/2675/2452164_3dk4NsRt6vWsffEr.mp4_sprite.jpg',
     },
   },
-  // multisources: settings.multisources,
   playbackType: settings.playbackType,
   priorityTransport: settings.priorityTransport,
   sources: settings.sources,
-  // settings.multisources.length && settings.multisources[0].sourceDash
-  //   ? [settings.multisources[0].sourceDash]
-  //   : [],
   strings: { en: {} },
   // strings: JSON.parse(document.head.querySelector("[name=translations]").content),
 }))
 
 const player = new Player(config.value)
 
-player.on(PlayerEvent.Ended, () => {
-  playing.value = false
-  paused.value = false
-  starting.value = false
-  stopped.value = true
-})
-
-let playbackMonitorTimerId: ReturnType<typeof setInterval> | null = null
-
-player.on(PlayerEvent.Play, () => {
-  playing.value = true
-  paused.value = false
-  stopped.value = false
-  starting.value = false
-  playback.value = player.activePlayback || ''
-  playbackType.value = player.playbackType || ''
-  if (playbackMonitorTimerId) {
-    clearInterval(playbackMonitorTimerId)
-  }
-  playbackMonitorTimerId = setInterval(() => {
-    hd.value = player.hd
-    if (player.bitrate) {
-      bitrate.value = player.bitrate.bitrate
-      width.value = player.bitrate.width
-      height.value = player.bitrate.height
-    } else {
-      bitrate.value = 0
-      width.value = 0
-      height.value = 0
-    }
-    activeSource.value = player.activeSource
-  }, 1000)
-})
-
-player.on(PlayerEvent.Pause, () => {
-  playing.value = false
-  paused.value = true
-})
-
-player.on(PlayerEvent.Ready, () => {
-  ready.value = true
-})
-
-player.on(PlayerEvent.Stop, () => {
-  playing.value = false
-  playback.value = ''
-  playbackType.value = ''
-  stopped.value = true
-  hd.value = false
-  bitrate.value = 0
-  width.value = 0
-  height.value = 0
-  paused.value = false
-  starting.value = false
-  if (playbackMonitorTimerId) {
-    clearInterval(playbackMonitorTimerId)
-    playbackMonitorTimerId = null
-  }
-})
-
 const rob = useResizeObserver(({ width, height }) => {
   player.resize({ width, height })
 })
 
 onMounted(() => {
+  if (!settings.sources.length) {
+    return
+  }
   setTimeout(() => {
     if (!container.value) {
       return
     }
     player.init(container.value)
   }, 0)
-  setInterval(() => {
-    currentTime.value = new Date()
-  }, 1000)
   if (container.value) {
     rob.start(container.value)
   }
@@ -252,6 +192,9 @@ onBeforeMount(() => {
 })
 
 watch(config, (newConfig) => {
+  if (!newConfig.sources.length) {
+    return
+  }
   player.configure(newConfig)
   if (container.value) {
     player.destroy()
@@ -292,7 +235,8 @@ function formatQuality(width: number, height: number): string {
   return `${width}×${height}`
 }
 
-function formatTime(date: Date): string {
+function formatTime(time: number): string {
+  const date = new Date(time)
   return `${date.getUTCMinutes().toFixed(0).padStart(2, '0')}:${date
     .getUTCSeconds()
     .toFixed(0)
@@ -323,5 +267,10 @@ function formatTime(date: Date): string {
 
 .local-time {
   width: 4rem;
+}
+
+.no-source {
+  margin-left: -40px;
+  margin-top: -1rem;
 }
 </style>

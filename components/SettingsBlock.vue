@@ -1,5 +1,9 @@
 <template>
   <div class="settings">
+    <div class="flex justify-end">
+      <button @click="settings.reset()">Reset</button>
+    </div>
+    <div class="heading font-semibold mb-2"></div>
     <div class="heading font-semibold">Basic</div>
     <div class="mb-4">
       <div class="grid grid-cols-2 md:grid-cols-3">
@@ -34,66 +38,16 @@
           Loop
         </label>
       </div>
-      <div class="grid grid-cols-2 md:grid-cols-3">
-        <label for="option_playbacktype_vod" class="text-bold">
-          <input
-            type="radio"
-            id="option_playbacktype_vod"
-            :checked="settings.playbackType === 'vod'"
-            @change="settings.setPlaybackType('vod')"
-            class="mr-2"
-          />
-          VOD
-        </label>
-        <label for="option_playbacktype_live">
-          <input
-            type="radio"
-            id="option_playbacktype_live"
-            :checked="settings.playbackType === 'live'"
-            @change="settings.setPlaybackType('live')"
-            class="mr-2"
-          />
-          Live
-        </label>
-      </div>
     </div>
-    <!-- <div class="heading font-semibold">Priority transport</div>
-    <div class="grid grid-cols-4 mb-4">
-      <label v-for="t of TRANSPORTS" :key="t" :for="`priority_transport_${t}`">
-        <input type="radio" :id="`priority_transport_${t}`" name="priority_transport" :value="t"
-          :checked="settings.priorityTransport === t"
-          @change="e => settings.setPriorityTransport((e.target as HTMLInputElement)?.value as TransportPreference)"
-          class="mr-2"
-        >
-        {{ TRANSPORT_LABELS[t] }}
-      </label>
-    </div> -->
     <div class="font-semibold">UI</div>
     <plugin-settings class="block mb-4" />
     <div class="heading font-semibold">DASH</div>
     <dash-settings class="block mb-4" />
-    <div class="heading font-semibold"></div>
-    <div class="buttons">
-      <button @click="settings.reset()">Reset</button>
-    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-// import { ClipboardIcon, ClipboardDocumentCheckIcon } from '@heroicons/vue/24/outline'
-
-// import type { TransportPreference } from "@gcorevideo/player";
 import useSettingsStore from '../store/settings'
-
-// const TRANSPORTS = ['dash', 'hls', 'mpegts', 'auto']
-
-// type ElementType<T> = T extends (infer E)[] ? E : never
-// const TRANSPORT_LABELS: Record<ElementType<typeof TRANSPORTS>, string> = {
-//   dash: 'DASH',
-//   hls: 'HLS',
-//   mpegts: 'No-LL',
-//   auto: 'Auto',
-// }
 
 const settings = useSettingsStore()
 </script>
