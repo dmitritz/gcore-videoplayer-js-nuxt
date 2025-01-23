@@ -32,7 +32,19 @@
             cols="4"
           ></textarea>
         </div>
-        <div class="flex gap-2 items-center">
+        <div>
+          <label for="poster" class="font-medium">Poster</label>
+        </div>
+        <div>
+          <input
+            type="text"
+            id="poster"
+            v-model="poster"
+            class="w-full"
+            placeholder="URL"
+          />
+        </div>
+        <div class="flex gap-2 items-center mt-2">
           <button @click="load" :disabled="!hasValidSources" v-show="!loaded">
             Load
           </button>
@@ -56,27 +68,33 @@ const settings = useSettingsStore()
 
 const rawSources = ref<string>('')
 
+const poster = ref('')
+
 const parsedSources = computed(() => parseSources(rawSources.value))
 
 const loaded = computed(
   () =>
     parsedSources.value.length &&
-    sameItems(parsedSources.value, settings.sources)
+    sameItems(parsedSources.value, settings.sources) &&
+    poster.value === settings.poster
 )
 
 const hasValidSources = computed(() => parsedSources.value.length > 0)
 
 onMounted(() => {
   rawSources.value = settings.sources.join('\n')
+  poster.value = settings.poster
 })
 
 function clear() {
   rawSources.value = ''
   error.value = ''
+  poster.value = ''
 }
 
 function load() {
   settings.setSources(parsedSources.value)
+  settings.setPoster(poster.value)
 }
 
 function sameItems(a: string[], b: string[]) {
@@ -87,22 +105,15 @@ function sameItems(a: string[], b: string[]) {
 <style lang="css" scoped>
 @tailwind components;
 
-.controls {
-  /* display: grid; */
-  /* grid-auto-rows: auto; */
-  /* grid-template-columns: max-content auto; */
-  /* gap: 0.5rem 1rem; */
-  /* margin-bottom: 1rem; */
-}
-
 pre {
   word-wrap: break-word;
   overflow-y: auto;
   max-height: var(--content-height);
 }
 
-input[type='text'] {
-  @apply px-4 py-1 border border-slate-300;
+input[type='text'],
+textarea {
+  @apply px-2 py-1 border border-slate-300;
 }
 
 @media (min-width: 1024px) {

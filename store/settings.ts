@@ -2,15 +2,12 @@ import { $ } from '@clappr/core'
 import type {
   PlaybackType,
   PlayerDebugTag,
-  StreamMediaSource,
   TransportPreference,
 } from '@gcorevideo/player'
 import { defineStore } from 'pinia'
 import { z } from 'zod'
 
 import usePersistence from '@/composables/use-persistence'
-import type { StreamDto, StreamKind } from '~/types'
-import { parseStreamDto } from '~/utils/fetch-stream'
 
 export type AdditionalAbrRulesSettings = {
   insufficientBufferRule?: boolean
@@ -29,7 +26,7 @@ export const DASH_DEFAULT_LC_PLAYBACK_RATE_MIN = -0.1
 export type DashSettings = {
   streaming: {
     abr?: {
-      ABRStrategy?: DashAbrStrategy;
+      ABRStrategy?: DashAbrStrategy
       additionalAbrRules?: AdditionalAbrRulesSettings
       autoSwitchBitrate?: {
         audio?: boolean
@@ -58,7 +55,6 @@ export type DashSettings = {
 }
 
 type State = {
-  apiToken: string | null
   autoplay: boolean
   dash: DashSettings
   debug: PlayerDebugTag
@@ -67,20 +63,9 @@ type State = {
   mute: boolean
   playbackType: PlaybackType
   plugins: string[]
+  poster: string
   priorityTransport: TransportPreference
-  source: StreamSource
   sources: string[]
-  streamDto: StreamDto | null
-  streamId: number
-  streamKind: StreamKind
-}
-
-export type StreamSource = {
-  master: string | null
-  dash?: string
-  hlsMpegts?: string
-  hlsCmaf?: string
-  poster?: string
 }
 
 type MainSettings = {
@@ -92,25 +77,20 @@ type MainSettings = {
 }
 
 type Getters = {
-  multisources: () => StreamMediaSource[]
   serialized: () => string
 }
 
 type Actions = {
   addPlugin(name: string): void
   removePlugin(name: string): void
-  setApiToken(value: string): void
   setAutoplay(value: boolean): void
   setLoop(value: boolean): void
   setDashSettings(value: Partial<DashSettings>): void
   setMute(value: boolean): void
   setPlaybackType(value: PlaybackType): void
   setPriorityTransport(value: TransportPreference): void
+  setPoster(value: string): void
   setSources(value: string[]): void
-  setStreamDto(value: StreamDto | null, kind: StreamKind): void
-  setStreamId(value: number): void
-  setStreamKind(value: StreamKind): void
-  setStreamSource(value: StreamSource): void
   reset(): void
 }
 
@@ -132,12 +112,6 @@ const DEFAULT_PLUGINS = [
   'poster',
   'spinner',
 ]
-
-const NO_SOURCE: StreamSource = {
-  master: null,
-}
-
-const DEFAULT_STREAM_KIND: StreamKind = 'stream'
 
 const DEFAULT_DASH_SETTINGS: DashSettings = {
   streaming: {
@@ -161,12 +135,6 @@ const DEFAULT_DASH_SETTINGS: DashSettings = {
 }
 
 const useSettingsStore = () => {
-  const persistedSource = usePersistence<StreamSource>(
-    'settings.source',
-    JSON.stringify,
-    JSON.parse,
-    NO_SOURCE
-  )
   const persistedSources = usePersistence<string[]>(
     'settings.sources',
     String,
@@ -186,14 +154,8 @@ const useSettingsStore = () => {
     JSON.parse,
     DEFAULT_MAIN_SETTINGS
   )
-  const persistedId = usePersistence('settings.streamId', String, Number, 0)
-  const persistedToken = usePersistence('settings.apiToken', id, id, '')
-  const persistKind = usePersistence<StreamKind>(
-    'settings.streamKind',
-    id,
-    id,
-    'stream'
-  )
+
+  const persistedPoster = usePersistence('settings.poster', id, id, '')
 
   const url = useRequestURL()
   if (
@@ -234,13 +196,6 @@ const useSettingsStore = () => {
   }
   persistedSources.set(url.searchParams.get('sources')?.split(',') ?? [])
   const debug = debugTag(url.searchParams.get('debug') || 'all') ?? 'all'
-  const apiToken = url.searchParams.get('token') ?? ''
-  const parsedStreamId = parseStreamId(url.searchParams.get('source') ?? '')
-  persistedToken.set(apiToken)
-  persistKind.set(parsedStreamId[0])
-  persistedId.set(parsedStreamId[1])
-  const streamKind = persistKind.get()
-  const streamId = persistedId.get()
   const {
     autoplay,
     mute,
@@ -254,12 +209,15 @@ const useSettingsStore = () => {
     (usePersistedPlugins
       ? persistedPlugins.get()
       : url.searchParams.get('plugins')?.split(',')) ?? []
-  const source = persistedSource.get()
   const sources = persistedSources.get()
+
+  if (url.searchParams.has('poster')) {
+    persistedPoster.set(url.searchParams.get('poster') ?? '')
+  }
+  const poster = persistedPoster.get()
 
   return defineStore<'settings', State, Getters, Actions>('settings', {
     state: () => ({
-      apiToken,
       autoplay,
       dash: deserializeDashSettings(url.searchParams.get('dash') ?? '{}'),
       debug,
@@ -269,41 +227,10 @@ const useSettingsStore = () => {
       playbackType,
       plugins,
       priorityTransport,
-      source,
+      poster,
       sources,
-      streamDto: null,
-      streamId,
-      streamKind,
     }),
     getters: {
-      multisources() {
-        if (
-          !this.source.master &&
-          !this.source.dash &&
-          !this.source.hlsMpegts &&
-          !this.source.hlsCmaf
-        ) {
-          return []
-        }
-        const item = {
-          description: '',
-          dvr: false,
-          hlsCmafUrl: this.source.hlsCmaf ?? null,
-          hlsMpegtsUrl: this.source.hlsMpegts ?? null,
-          id: 1,
-          live: true,
-          priorityTransport: this.priorityTransport,
-          poster: this.source.poster ?? null,
-          projection: null,
-          screenshot: null,
-          source: this.source.master,
-          sourceDash: this.source.dash ?? null,
-          sprite: null,
-          title: 'Live stream',
-          vtt: null,
-        }
-        return [item]
-      },
       serialized() {
         const items: string[] = []
         if (this.autoplay) {
@@ -324,27 +251,6 @@ const useSettingsStore = () => {
         if (this.plugins.length > 0) {
           items.push(`plugins=${this.plugins.join(',')}`)
         }
-        // if (this.apiToken) {
-        //   items.push(`token=${this.apiToken}`)
-        // }
-        // if (this.streamKind !== 'stream' || this.streamId !== 0) {
-        //   items.push(`source=${this.streamKind}:${this.streamId}`)
-        // }
-        // if (this.source.master) {
-        //   items.push(`master=${this.source.master}`)
-        // }
-        // if (this.source.dash) {
-        //   items.push(`dash=${this.source.dash}`)
-        // }
-        // if (this.source.hlsMpegts) {
-        //   items.push(`hlsMpegts=${this.source.hlsMpegts}`)
-        // }
-        // if (this.source.hlsCmaf) {
-        //   items.push(`hlsCmaf=${this.source.hlsCmaf}`)
-        // }
-        // if (this.source.poster) {
-        //   items.push(`poster=${this.source.poster}`)
-        // }
         if (this.sources.length > 0) {
           items.push(`sources=${encodeURIComponent(this.sources.join(','))}`)
         }
@@ -387,9 +293,6 @@ const useSettingsStore = () => {
         }
         persistedPlugins.set(this.plugins)
       },
-      setApiToken(value: string) {
-        this.apiToken = value
-      },
       setAutoplay(value: boolean) {
         this.autoplay = value
         persistBasicSettings(this)
@@ -410,6 +313,10 @@ const useSettingsStore = () => {
         this.playbackType = value
         persistBasicSettings(this)
       },
+      setPoster(value: string) {
+        this.poster = value
+        persistedPoster.set(value)
+      },
       setPriorityTransport(value: TransportPreference) {
         this.priorityTransport = value
         persistBasicSettings(this)
@@ -418,24 +325,6 @@ const useSettingsStore = () => {
         this.sources = value
         persistedSources.set(value)
       },
-      setStreamDto(value: StreamDto | null, kind: StreamKind = 'stream') {
-        this.streamDto = value
-        if (value) {
-          this.setStreamSource(parseStreamDto(value, kind))
-        } else {
-          this.setStreamSource(NO_SOURCE)
-        }
-      },
-      setStreamId(value: number) {
-        this.streamId = value
-      },
-      setStreamKind(value: StreamKind) {
-        this.streamKind = value
-      },
-      setStreamSource(value: StreamSource) {
-        this.source = value
-        persistedSource.set(value)
-      },
       reset() {
         this.autoplay = true
         this.mute = true
@@ -443,6 +332,7 @@ const useSettingsStore = () => {
         this.plugins = DEFAULT_PLUGINS.slice()
         this.priorityTransport = 'auto'
         this.playbackType = 'vod'
+        this.dash = structuredClone(DEFAULT_DASH_SETTINGS)
       },
     },
   })()
@@ -493,18 +383,6 @@ function parseBoolean(val: string | null, defaultValue = false): boolean {
   return ['true', 'yes', '1'].includes(val)
 }
 
-function parseStreamId(input: string): [StreamKind, number] {
-  const parts = input.split(':')
-  if (parts.length !== 2) {
-    return [DEFAULT_STREAM_KIND, 0]
-  }
-  return [parts[0] as StreamKind, Number(parts[1])]
-}
-
-function id<T = string>(a: string) {
-  return a as T
-}
-
 function isCustomDashSettings(settings: DashSettings): boolean {
   // TODO
   return (
@@ -537,7 +415,9 @@ function sanitizeDashSettings(settings: unknown): DashSettings {
   const schema = z.object({
     streaming: z.object({
       abr: z.object({
-        ABRStrategy: z.enum(['abrDynamic', 'abrThroughput', 'abrBola']).optional(),
+        ABRStrategy: z
+          .enum(['abrDynamic', 'abrThroughput', 'abrBola'])
+          .optional(),
         additionalAbrRules: z
           .object({
             throughputRule: z.boolean().optional(),
@@ -546,18 +426,24 @@ function sanitizeDashSettings(settings: unknown): DashSettings {
             switchHistoryRule: ruleSchema.optional(),
           })
           .optional(),
-        autoSwitchBitrate: z.object({
-          audio: z.boolean().optional(),
-          video: z.boolean().optional(),
-        }).optional(),
-        initialBitrate: z.object({
-          audio: z.number().optional(),
-          video: z.number().optional(),
-        }).optional(),
-        maxBitrate: z.object({
-          audio: z.number().optional(),
-          video: z.number().optional(),
-        }).optional(),
+        autoSwitchBitrate: z
+          .object({
+            audio: z.boolean().optional(),
+            video: z.boolean().optional(),
+          })
+          .optional(),
+        initialBitrate: z
+          .object({
+            audio: z.number().optional(),
+            video: z.number().optional(),
+          })
+          .optional(),
+        maxBitrate: z
+          .object({
+            audio: z.number().optional(),
+            video: z.number().optional(),
+          })
+          .optional(),
       }),
       delay: z.object({ liveDelay: z.number().optional() }).optional(),
       liveCatchup: z
@@ -578,3 +464,7 @@ function sanitizeDashSettings(settings: unknown): DashSettings {
 }
 
 export default useSettingsStore
+
+function id<T = string>(a: string) {
+  return a as T
+}

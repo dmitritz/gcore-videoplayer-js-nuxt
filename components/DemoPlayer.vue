@@ -53,7 +53,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
 
-import { Player, PlayerEvent, type PlaybackModule, type PlaybackType } from '@gcorevideo/player'
+import { Player, type PlaybackModule, type PlaybackType } from '@gcorevideo/player'
 
 import usePluginsConfig from '~/composables/use-plugins-config'
 import useSettingsStore from '../store/settings'
@@ -137,12 +137,11 @@ const config = computed(() => ({
         '720': 'HD',
       },
     },
-    multisources: settings.multisources,
+    // multisources: settings.multisources,
     multisourcesMode: 'show_all', // multi_camera
     poster: {
       // showForNoOp: true,
-      url:
-    'https://static.gvideo.co/videoplatform/streams/2675/21960/screenshots/last.jpg',
+      url: settings.poster,
     },
     // shareURL: "https://gvideo.co", // share plugin
     subtitles: {
