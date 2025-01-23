@@ -1,22 +1,26 @@
 import { Events as CoreEvents, UICorePlugin, UIObject } from '@clappr/core'
-import { type PlaybackModule, type PlaybackType, type QualityLevel } from '@gcorevideo/player'
+import {
+  type PlaybackModule,
+  type PlaybackType,
+  type QualityLevel,
+} from '@gcorevideo/player'
 import assert from 'assert'
 import type { Ref } from 'vue'
 
 export type ExampleUIOptions = {
-  activeSource: Ref<string>;
-  bitrate: Ref<number>;
-  currentTime: Ref<number>;
-  hd: Ref<boolean>;
-  height : Ref<number>;
-  paused: Ref<boolean>;
+  activeSource: Ref<string>
+  bitrate: Ref<number>
+  currentTime: Ref<number>
+  hd: Ref<boolean>
+  height: Ref<number>
+  paused: Ref<boolean>
   playback: Ref<PlaybackModule | null>
-  playbackType: Ref<PlaybackType | null>;
-  playing: Ref<boolean>;
-  ready: Ref<boolean>;
-  starting: Ref<boolean>;
-  stopped: Ref<boolean>;
-  width: Ref<number>;
+  playbackType: Ref<PlaybackType | null>
+  playing: Ref<boolean>
+  ready: Ref<boolean>
+  starting: Ref<boolean>
+  stopped: Ref<boolean>
+  width: Ref<number>
 }
 
 const T = 'plugins.example_ui'
@@ -67,7 +71,11 @@ export class ExampleUI extends UICorePlugin {
     this.listenTo(container, CoreEvents.CONTAINER_PLAY, this.onPlay)
     this.listenTo(container, CoreEvents.CONTAINER_PAUSE, this.onPause)
     this.listenTo(container, CoreEvents.CONTAINER_STOP, this.onStop)
-    this.listenTo(this.core, CoreEvents.CORE_ACTIVE_CONTAINER_CHANGED, this.bindBitrateChangeListener)
+    this.listenTo(
+      this.core,
+      CoreEvents.CORE_ACTIVE_CONTAINER_CHANGED,
+      this.bindBitrateChangeListener
+    )
     this.bindBitrateChangeListener()
   }
 
@@ -125,23 +133,23 @@ export class ExampleUI extends UICorePlugin {
   }
 
   private bindBitrateChangeListener() {
-    const activeContainer = this.core.activeContainer;
-    const activePlayback = this.core.activePlayback;
+    const activeContainer = this.core.activeContainer
+    const activePlayback = this.core.activePlayback
     assert(activeContainer, 'Active container is not available')
     assert(activePlayback, 'Active playback is not available')
 
     this.pins.activeSource.value = activePlayback.options.src
-    activePlayback.on(CoreEvents.PLAYBACK_LEVELS_AVAILABLE, (levels: QualityLevel[]) => {
-      assert(levels.length > 0, 'No quality levels available')
-      const qLevel = levels[0]
-      this.setQualityLevel(qLevel)
-    });
-    activeContainer.on(
-      CoreEvents.CONTAINER_BITRATE,
-      (level: QualityLevel) => {
-        this.setQualityLevel(level)
-      },
+    activePlayback.on(
+      CoreEvents.PLAYBACK_LEVELS_AVAILABLE,
+      (levels: QualityLevel[]) => {
+        assert(levels.length > 0, 'No quality levels available')
+        const qLevel = levels[0]
+        this.setQualityLevel(qLevel)
+      }
     )
+    activeContainer.on(CoreEvents.CONTAINER_BITRATE, (level: QualityLevel) => {
+      this.setQualityLevel(level)
+    })
   }
 
   private setQualityLevel(level: QualityLevel) {

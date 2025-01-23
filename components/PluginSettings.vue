@@ -1,12 +1,8 @@
 <template>
   <div class="grid grid-cols-2 md:grid-cols-3">
-    <plugin-item
-      v-for="plugin of PLUGIN_NAMES"
-      :key="plugin"
-      :name="plugin"
-      >
-        {{ PLUGIN_LABELS[plugin] }}
-        <star-icon class="w-3 h-3" v-if="PLUGIN_OPTIONS[plugin]?.starred" />
+    <plugin-item v-for="plugin of PLUGIN_NAMES" :key="plugin" :name="plugin">
+      {{ PLUGIN_LABELS[plugin] }}
+      <star-icon class="w-3 h-3" v-if="PLUGIN_OPTIONS[plugin]?.starred" />
     </plugin-item>
   </div>
 </template>

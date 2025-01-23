@@ -1,16 +1,22 @@
 <template>
   <label :for="`plugin_${props.name}`" class="flex items-center gap-1">
-    <input type="checkbox" :id="`plugin_${props.name}`" :checked="checked" @change="togglePlugin" class="mr-2" />
+    <input
+      type="checkbox"
+      :id="`plugin_${props.name}`"
+      :checked="checked"
+      @change="togglePlugin"
+      class="mr-2"
+    />
     <slot></slot>
   </label>
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
-import useSettingsStore from "../store/settings";
+import { computed } from 'vue'
+import useSettingsStore from '../store/settings'
 
 const props = defineProps<{
-  name: string;
+  name: string
 }>()
 
 const store = useSettingsStore()

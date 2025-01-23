@@ -1,7 +1,11 @@
 <template>
   <div class="demo-player relative">
     <div ref="container" class="video-container"></div>
-    <span class="absolute inset-1/2 text-white w-20 text-center text-sm no-source" v-if="noSource">Source not configured</span>
+    <span
+      class="absolute inset-1/2 text-white w-20 text-center text-sm no-source"
+      v-if="noSource"
+      >Source not configured</span
+    >
   </div>
   <div class="settings grid grid-cols-2 my-1 px-2 items-baseline">
     <div class="buttons font-semibold flex flex-col gap-1 sm:flex-row">
@@ -53,7 +57,11 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
 
-import { Player, type PlaybackModule, type PlaybackType } from '@gcorevideo/player'
+import {
+  Player,
+  type PlaybackModule,
+  type PlaybackType,
+} from '@gcorevideo/player'
 
 import usePluginsConfig from '~/composables/use-plugins-config'
 import useSettingsStore from '../store/settings'
@@ -137,7 +145,6 @@ const config = computed(() => ({
         '720': 'HD',
       },
     },
-    // multisources: settings.multisources,
     multisourcesMode: 'show_all', // multi_camera
     poster: {
       // showForNoOp: true,

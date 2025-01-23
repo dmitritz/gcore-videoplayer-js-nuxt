@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { reportError, version } from '@gcorevideo/player'
 import pkg from '../package.json'
-import { BugAntIcon, CheckIcon, ExclamationCircleIcon } from '@heroicons/vue/16/solid'
+import {
+  BugAntIcon,
+  CheckIcon,
+  ExclamationCircleIcon,
+} from '@heroicons/vue/16/solid'
 import useSettingsStore from '~/store/settings'
 
 const ver = version()
@@ -64,7 +68,10 @@ function report() {
           >Settings</router-link
         >
         <router-link :to="{ path: '/arbitrary-source', query }" id="nav_source">
-          Source<exclamation-circle-icon v-if="noSource" class="w-3 h-3 ml-1 inline align-baseline"/>
+          Source<exclamation-circle-icon
+            v-if="noSource"
+            class="w-3 h-3 ml-1 inline align-baseline"
+          />
         </router-link>
       </nav>
       <slot name="header"></slot>
@@ -77,7 +84,14 @@ function report() {
     >
       <div class="text-end text-slate-700 text-sm">
         <p>
-          {{ pkg.version }}/{{ ver.gplayer }}/clappr {{ ver.clappr }}/<a
+          {{ pkg.version }}/{{ ver.gplayer }}/<a
+            href="https://clappr.github.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="p-0"
+            >clappr</a
+          >
+          {{ ver.clappr }}/<a
             href="https://dashjs.org"
             target="_blank"
             rel="noopener noreferrer"

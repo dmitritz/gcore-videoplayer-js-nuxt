@@ -158,7 +158,9 @@
     <div class="mb-2 col-span-3"></div>
     <div class="label col-span-3">ABR</div>
     <div class="sub-label col-span-3 md:col-span-1 self-start">strategy</div>
-    <div class="col-span-3 md:col-span-2 grid grid-cols-2 lg:grid-cols-3 gap-1 text-sm">
+    <div
+      class="col-span-3 md:col-span-2 grid grid-cols-2 lg:grid-cols-3 gap-1 text-sm"
+    >
       <label
         v-for="strategy of ABR_STRATEGIES"
         :key="strategy"
@@ -175,7 +177,9 @@
         {{ ABR_STRATEGY_LABELS[strategy] }}
       </label>
     </div>
-    <div class="sub-label col-span-3 md:col-span-1 self-start">additional rules</div>
+    <div class="sub-label col-span-3 md:col-span-1 self-start">
+      additional rules
+    </div>
     <div class="col-span-3 md:col-span-2 grid grid-cols-2 lg:grid-cols-3 gap-1">
       <label
         v-for="rule of ABR_RULES"
