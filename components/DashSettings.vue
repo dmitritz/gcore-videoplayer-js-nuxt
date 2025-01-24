@@ -180,12 +180,12 @@
     <div class="sub-label col-span-3 md:col-span-1 self-start">
       additional rules
     </div>
-    <div class="col-span-3 md:col-span-2 grid grid-cols-2 lg:grid-cols-3 gap-1">
+    <div class="col-span-3 md:col-span-2 grid grid-cols-2 lg:grid-cols-3 gap-2">
       <label
-        v-for="rule of ABR_RULES"
+        v-for="rule of ABR_EXTRA_RULES"
         :key="rule"
         :for="`dash_rule_${rule}`"
-        class="flex items-center gap-1 text-sm"
+        class="flex items-center gap-1 text-sm items-baseline leading-4"
       >
         <input
           type="checkbox"
@@ -265,17 +265,13 @@ const liveCatchupDefault = computed(
 
 const abrStrategy = computed(() => settings.dash.streaming?.abr?.ABRStrategy)
 
-const ABR_RULES = [
-  // 'throughput',
+const ABR_EXTRA_RULES = [
   'insufficientBuffer',
   'droppedFrames',
   'switchHistory',
   'abandonRequest',
-  // 'bola',
-  // 'lolp',
-  // 'l2a',
 ]
-const RULE_LABELS: Record<(typeof ABR_RULES)[number], string> = {
+const RULE_LABELS: Record<(typeof ABR_EXTRA_RULES)[number], string> = {
   throughput: 'Throughput',
   insufficientBuffer: 'Insufficient buffer',
   droppedFrames: 'Dropped frames',
@@ -292,11 +288,15 @@ const ABR_STRATEGIES: DashAbrStrategy[] = [
   'abrDynamic',
   'abrThroughput',
   'abrBola',
+  'abrL2A',
+  'abrLoLP'
 ]
 const ABR_STRATEGY_LABELS: Record<DashAbrStrategy, string> = {
   abrDynamic: 'Dynamic',
   abrThroughput: 'Throughput',
   abrBola: 'BOLA',
+  abrL2A: 'L2A',
+  abrLoLP: 'LoLP',
 }
 
 type BitrateFieldKey = 'maxBitrate' | 'initialBitrate'
@@ -485,14 +485,10 @@ function toggleRule(rule: string, on: boolean) {
 
 function getAdditionalRules(allRules: string[]): AdditionalAbrRulesSettings {
   return {
-    // throughputRule: allRules.includes('throughput'),
     insufficientBufferRule: allRules.includes('insufficientBuffer'),
     droppedFramesRule: allRules.includes('droppedFrames'),
     switchHistoryRule: allRules.includes('switchHistory'),
     abandonRequestsRule: allRules.includes('abandonRequest'),
-    // bola: allRules.includes('bola'),
-    // lolp: allRules.includes('lolp'),
-    // l2a: allRules.includes('l2a'),
   }
 }
 

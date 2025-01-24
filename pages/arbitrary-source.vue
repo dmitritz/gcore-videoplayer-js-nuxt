@@ -29,6 +29,7 @@
             id="sources"
             v-model="rawSources"
             class="border p-2 w-full"
+            :class="{ error: !hasValidSources }"
             cols="4"
           ></textarea>
         </div>
@@ -114,6 +115,9 @@ pre {
 input[type='text'],
 textarea {
   @apply px-2 py-1 border border-slate-300;
+}
+.error {
+  @apply border-red-500
 }
 
 @media (min-width: 1024px) {

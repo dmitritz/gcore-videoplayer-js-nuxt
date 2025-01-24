@@ -16,7 +16,7 @@ export type AdditionalAbrRulesSettings = {
   abandonRequestsRule?: boolean
 }
 
-export type DashAbrStrategy = 'abrDynamic' | 'abrThroughput' | 'abrBola'
+export type DashAbrStrategy = 'abrDynamic' | 'abrBola' | 'abrL2A' | 'abrLoLP' | 'abrThroughput'
 
 export const DASH_DEFAULT_LIVE_DELAY = 2.2
 export const DASH_DEFAULT_MAX_DRIFT = 1
@@ -116,7 +116,7 @@ const DEFAULT_PLUGINS = [
 const DEFAULT_DASH_SETTINGS: DashSettings = {
   streaming: {
     abr: {
-      ABRStrategy: 'abrDynamic',
+      ABRStrategy: 'abrL2A',
       maxBitrate: { video: -1 },
       initialBitrate: { video: -1 },
       autoSwitchBitrate: { video: true },
