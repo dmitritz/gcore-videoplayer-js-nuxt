@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { reportError, version } from '@gcorevideo/player'
+import { version } from '@gcorevideo/player'
+import { reportError } from '@gcorevideo/utils'
 import pkg from '../package.json'
 import {
   BugAntIcon,

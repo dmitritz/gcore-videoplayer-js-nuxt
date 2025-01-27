@@ -3,11 +3,11 @@
 </template>
 
 <script lang="ts" setup>
-import { SentryTracer, setTracer, version } from '@gcorevideo/player'
+import { setTracer, version } from '@gcorevideo/player'
 import { setTracer as setTracerPlugins } from '@gcorevideo/player-plugins'
+import { RemoteTracer, SentryTracer } from '@gcorevideo/utils'
 import * as Sentry from '@sentry/vue'
 import pkg from './package.json'
-import { RemoteTracer } from './utils/RemoteTracer'
 import { Browser } from '@clappr/core'
 import Fingerprint from '@fingerprintjs/fingerprintjs'
 
