@@ -51,6 +51,9 @@
     >
       {{ activeSource }}
     </div>
+    <div class="my-2" v-if="errors.length">
+      <div v-for="error of errors" :key="error" class="text-red-500 p-2">{{ error }}</div>
+    </div>
   </div>
 </template>
 
@@ -92,6 +95,8 @@ const showSource = ref(false)
 
 const activeSource = ref<string | null>(null)
 
+const errors = ref<string[]>([])
+
 usePluginsConfig()
 
 const config = computed(() => ({
@@ -123,6 +128,9 @@ const config = computed(() => ({
     hover_color: 'rgba(239,144,71,1)',
     text_color: 'rgba(255,255,255,1)',
   },
+  errorScreen: {
+    reloadOnError: false,
+  },
   // disableClickOnPause: true, // vast_ads
   // disableMediaControl: true, // disable_controls, ...
   // embed: true, // share plugin
@@ -130,6 +138,7 @@ const config = computed(() => ({
     activeSource,
     bitrate,
     currentTime,
+    errors,
     hd,
     height,
     paused,
@@ -153,6 +162,11 @@ const config = computed(() => ({
   poster: {
     // showForNoOp: true,
     url: settings.poster,
+    showOnError: false,
+  },
+  spinner: {
+    showOnError: true,
+    showOnStart: true,
   },
   // shareURL: "https://gvideo.co", // share plugin
   subtitles: {

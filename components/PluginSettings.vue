@@ -27,6 +27,7 @@ const PLUGIN_LABELS: Record<string, string> = {
   playback_rate: 'Playback rate',
   poster: 'Poster',
   spinner: 'Spinner',
+  source_controller: 'Source controller',
   subtitles: 'Subtitles',
   thumbnails: 'Thumbnails',
   volume_fade: 'Volume fade',

@@ -195,7 +195,7 @@ const useSettingsStore = () => {
     })
   }
   persistedSources.set(url.searchParams.get('sources')?.split(',') ?? [])
-  const debug = debugTag(url.searchParams.get('debug') || 'all') ?? 'all'
+  const debug = debugTag(url.searchParams.get('debug') || 'clappr') ?? 'all'
   const {
     autoplay,
     mute,

@@ -11,6 +11,7 @@ export type ExampleUIOptions = {
   activeSource: Ref<string>
   bitrate: Ref<number>
   currentTime: Ref<number>
+  errors: Ref<string[]>
   hd: Ref<boolean>
   height: Ref<number>
   paused: Ref<boolean>
@@ -42,7 +43,7 @@ export class ExampleUI extends UICorePlugin {
       case 'hls':
         return 'hls'
       default:
-        return 'native'
+        return 'html5_video'
     }
   }
 
@@ -74,9 +75,9 @@ export class ExampleUI extends UICorePlugin {
     this.listenTo(
       this.core,
       CoreEvents.CORE_ACTIVE_CONTAINER_CHANGED,
-      this.bindBitrateChangeListener
+      this.bindActiveContainerListeners
     )
-    this.bindBitrateChangeListener()
+    this.bindActiveContainerListeners()
   }
 
   private onEnded() {
@@ -132,7 +133,7 @@ export class ExampleUI extends UICorePlugin {
     return super.destroy()
   }
 
-  private bindBitrateChangeListener() {
+  private bindActiveContainerListeners() {
     const activeContainer = this.core.activeContainer
     const activePlayback = this.core.activePlayback
     assert(activeContainer, 'Active container is not available')
@@ -149,6 +150,10 @@ export class ExampleUI extends UICorePlugin {
     )
     activeContainer.on(CoreEvents.CONTAINER_BITRATE, (level: QualityLevel) => {
       this.setQualityLevel(level)
+    })
+    activePlayback.on(CoreEvents.PLAYBACK_ERROR, (error: Error) => {
+      console.log('playback error', error)
+      // this.pins.errors.value.push(error.message || error.description)
     })
   }
 
