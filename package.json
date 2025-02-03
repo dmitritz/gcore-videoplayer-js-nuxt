@@ -13,7 +13,7 @@
     "@clappr/core": "^0.11.4",
     "@fingerprintjs/fingerprintjs": "^4.5.1",
     "@gcorevideo/player": "^2.14.1",
-    "@gcorevideo/player-plugins": "^0.8.2",
+    "@gcorevideo/player-plugins": "^0.8.4",
     "@gcorevideo/utils": "^0.2.0",
     "@heroicons/vue": "^2.2.0",
     "@pinia/nuxt": "^0.9.0",
