@@ -6,7 +6,7 @@
       @click="copySettingsUrl()"
       :disabled="copied"
       class="inline-flex items-center gap-1 text-sm"
-      title="Copy link to the configured player"
+      title="Copy link to the current player configuration"
     >
       <clipboard-icon class="h-4 w-4" v-if="!copied" />
       <clipboard-document-check-icon class="h-4 w-4" v-else />

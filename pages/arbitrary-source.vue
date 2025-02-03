@@ -16,7 +16,7 @@
       </reference-links>
     </template>
     <div class="source-settings w-full px-2">
-      <div class="controls flex flex-col gap-2 gap-y-3 mb-4 gap-1">
+      <div class="controls flex flex-col gap-y-3 mb-4 gap-1">
         <div>
           <label for="sources" class="font-medium">Sources</label>
           <span class="text-sm text-slate-600">
@@ -32,6 +32,27 @@
             :class="{ error: !hasValidSources }"
             cols="4"
           ></textarea>
+        </div>
+        <div class="flex gap-2">
+          <div class="font-medium mr-4">Prefer</div>
+          <label for="priority_transport_dash" class="font-medium text-slate-600">
+            <input
+              type="radio"
+              id="priority_transport_dash"
+              v-model="settings.priorityTransport"
+              value="dash"
+            />
+            DASH
+          </label>
+          <label for="priority_transport_hls" class="font-medium text-slate-600">
+            <input
+              type="radio"
+              id="priority_transport_hls"
+              v-model="settings.priorityTransport"
+              value="hls"
+            />
+            HLS
+          </label>
         </div>
         <div>
           <label for="poster" class="font-medium">Poster</label>
