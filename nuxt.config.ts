@@ -1,3 +1,4 @@
+import tailwindcss from '@tailwindcss/vite'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
@@ -7,16 +8,13 @@ export default defineNuxtConfig({
   ],
   devtools: { enabled: true },
   modules: ['@pinia/nuxt'],
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
-    },
-  },
   // routeRules: {
   //   '/': {
   //     ssr: false,
   //   },
   // },
   ssr: false,
+  vite: {
+    plugins: [tailwindcss()],
+  },
 })

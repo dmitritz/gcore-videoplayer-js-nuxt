@@ -69,9 +69,10 @@ function report() {
           >Settings</router-link
         >
         <router-link :to="{ path: '/arbitrary-source', query }" id="nav_source">
-          Source<exclamation-circle-icon
+          Source
+          <exclamation-circle-icon
             v-if="noSource"
-            class="w-3 h-3 ml-1 inline align-baseline"
+            class="w-3 h-3 inline align-baseline"
           />
         </router-link>
       </nav>
@@ -114,7 +115,7 @@ function report() {
 </template>
 
 <style scoped>
-@tailwind components;
+@import "tailwindcss";
 
 header,
 header .wrapper {
@@ -136,7 +137,6 @@ h1 {
 }
 
 nav a.router-link-exact-active {
-  /* color: var(--color-text); */
   @apply text-slate-600;
 }
 

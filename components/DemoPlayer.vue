@@ -7,7 +7,7 @@
       >Source not configured</span
     >
   </div>
-  <div class="settings grid grid-cols-2 my-1 px-2 items-baseline">
+  <div class="settings grid grid-cols-2 my-1 mb-2 px-2 items-baseline">
     <div class="buttons font-semibold flex flex-col gap-1 sm:flex-row">
       <button
         @click="play"
@@ -41,7 +41,7 @@
         v-if="playback"
         @click="showSource = !showSource"
       >
-        {{ playback }}
+        {{ formatPlaybackModule(playback) }}
       </button>
     </div>
     <div
@@ -261,10 +261,19 @@ function formatTime(time: number): string {
     .toFixed(0)
     .padStart(2, '0')}`
 }
+
+function formatPlaybackModule(module: PlaybackModule): string {
+  switch (module) {
+    case 'html5_video':
+      return 'native'
+    default:
+      return module
+  }
+}
 </script>
 
 <style lang="css" scoped>
-@tailwind components;
+@import "tailwindcss";
 
 .video-container {
   width: 100%;

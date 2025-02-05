@@ -185,7 +185,7 @@
         v-for="rule of ABR_EXTRA_RULES"
         :key="rule"
         :for="`dash_rule_${rule}`"
-        class="flex items-center gap-1 text-sm items-baseline leading-4"
+        class="flex gap-1 text-sm items-baseline leading-4"
       >
         <input
           type="checkbox"
@@ -544,6 +544,8 @@ function setAbrStrategy(strategy: DashAbrStrategy) {
 </script>
 
 <style lang="css" scoped>
+@import "tailwindcss";
+
 .label {
   @apply font-medium text-slate-600;
 }
@@ -563,7 +565,7 @@ function setAbrStrategy(strategy: DashAbrStrategy) {
   @apply text-xs text-slate-600;
 }
 .sub-label {
-  @apply label;
+  @apply font-medium text-slate-600;
   @apply text-sm text-left md:text-right;
 }
 </style>

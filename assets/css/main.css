@@ -1,18 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind interactivity;
-@tailwind utilities;
+@import "tailwindcss";
 
 @import './base.css';
-@import './controls.css';
 
 :root {
   --view-height: calc(100vh - 4rem);
   --footer-height: 2.5rem;
   --content-height: var(--view-height);
-
-  --color-emergency: #911;
-  --color-error: var(--color-emergency);
 }
 
 #app,

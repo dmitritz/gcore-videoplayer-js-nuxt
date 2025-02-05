@@ -22,7 +22,7 @@ export const DASH_DEFAULT_LIVE_DELAY = 2.2
 export const DASH_DEFAULT_MAX_DRIFT = 1
 export const DASH_DEFAULT_LC_PLAYBACK_RATE_MAX = 0.1
 export const DASH_DEFAULT_LC_PLAYBACK_RATE_MIN = -0.1
-export const DEFAULT_MEDIA_TRANSPORT: TransportPreference = 'dash'
+export const DEFAULT_PRIORITY_TRANSPORT: TransportPreference = 'dash'
 export type DashSettings = {
   streaming: {
     abr?: {
@@ -99,7 +99,7 @@ const DEFAULT_MAIN_SETTINGS: MainSettings = {
   loop: false,
   mute: true,
   playbackType: 'vod',
-  priorityTransport: DEFAULT_MEDIA_TRANSPORT,
+  priorityTransport: DEFAULT_PRIORITY_TRANSPORT,
 }
 
 const DEFAULT_PLUGINS = [
@@ -225,7 +225,7 @@ const useSettingsStore = () => {
       mute,
       playbackType,
       plugins,
-      priorityTransport: transportPreference(priorityTransport, 'dash'),
+      priorityTransport: transportPreference(priorityTransport, DEFAULT_PRIORITY_TRANSPORT),
       poster,
       sources,
     }),
@@ -244,7 +244,7 @@ const useSettingsStore = () => {
         if (this.playbackType !== 'vod') {
           items.push(`playback_type=${this.playbackType}`)
         }
-        if (this.priorityTransport !== DEFAULT_MEDIA_TRANSPORT) {
+        if (this.priorityTransport !== DEFAULT_PRIORITY_TRANSPORT) {
           items.push(`priority_transport=${this.priorityTransport}`)
         }
         if (this.plugins.length > 0) {
@@ -329,7 +329,7 @@ const useSettingsStore = () => {
         this.mute = true
         this.loop = false
         this.plugins = DEFAULT_PLUGINS.slice()
-        this.priorityTransport = DEFAULT_MEDIA_TRANSPORT
+        this.priorityTransport = DEFAULT_PRIORITY_TRANSPORT
         this.playbackType = 'vod'
         this.dash = structuredClone(DEFAULT_DASH_SETTINGS)
       },

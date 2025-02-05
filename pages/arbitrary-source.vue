@@ -18,7 +18,7 @@
     <div class="source-settings w-full px-2">
       <div class="controls flex flex-col gap-y-3 mb-4 gap-1">
         <div>
-          <label for="sources" class="font-medium">Sources</label>
+          <label for="sources" class="font-medium text-black">Sources</label>
           <span class="text-sm text-slate-600">
             one per line in the priority order. The first supported one will be
             used
@@ -34,7 +34,7 @@
           ></textarea>
         </div>
         <div class="flex gap-2">
-          <div class="font-medium mr-4">Prefer</div>
+          <div class="font-medium mr-4 text-black">Prefer</div>
           <label for="priority_transport_dash" class="font-medium text-slate-600">
             <input
               type="radio"
@@ -55,7 +55,7 @@
           </label>
         </div>
         <div>
-          <label for="poster" class="font-medium">Poster</label>
+          <label for="poster" class="font-medium text-black">Poster</label>
         </div>
         <div>
           <input
@@ -66,7 +66,7 @@
             placeholder="URL"
           />
         </div>
-        <div class="flex gap-2 items-center mt-2">
+        <div class="flex gap-2 items-center mt-2 mb-4">
           <button @click="load" :disabled="!hasValidSources" v-show="!loaded">
             Load
           </button>
@@ -125,7 +125,7 @@ function sameItems(a: string[], b: string[]) {
 </script>
 
 <style lang="css" scoped>
-@tailwind components;
+@import "tailwindcss";
 
 pre {
   word-wrap: break-word;
