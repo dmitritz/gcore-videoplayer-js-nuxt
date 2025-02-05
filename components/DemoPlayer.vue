@@ -49,7 +49,7 @@
       @click="showSource = false"
       v-if="showSource"
     >
-      [{{ activeSourceType }}]({{ html5VideoSupport }}) {{ activeSource }}
+      [{{ activeSourceType }}](html5: {{ html5VideoSupport }}) {{ activeSource }}
     </div>
     <div class="my-2" v-if="errors.length">
       <div v-for="error of errors" :key="error" class="text-red-500 p-2">{{ error }}</div>
@@ -101,7 +101,8 @@ const html5VideoSupport = computed(() => {
   if (!activeSourceType.value) {
     return '-'
   }
-  return document.createElement('video').canPlayType(activeSourceType.value)
+  const support = document.createElement('video').canPlayType(activeSourceType.value)
+  return support === '' ? 'no' : support
 })
 
 const errors = ref<string[]>([])
