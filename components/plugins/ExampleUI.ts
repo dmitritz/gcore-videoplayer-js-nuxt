@@ -9,6 +9,7 @@ import type { Ref } from 'vue'
 
 export type ExampleUIOptions = {
   activeSource: Ref<string>
+  activeSourceType: Ref<string>
   bitrate: Ref<number>
   currentTime: Ref<number>
   errors: Ref<string[]>
@@ -140,6 +141,7 @@ export class ExampleUI extends UICorePlugin {
     assert(activePlayback, 'Active playback is not available')
 
     this.pins.activeSource.value = activePlayback.options.src
+    this.pins.activeSourceType.value = activePlayback.options.mimeType
     activePlayback.on(
       CoreEvents.PLAYBACK_LEVELS_AVAILABLE,
       (levels: QualityLevel[]) => {

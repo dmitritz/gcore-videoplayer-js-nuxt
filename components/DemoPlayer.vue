@@ -49,7 +49,7 @@
       @click="showSource = false"
       v-if="showSource"
     >
-      {{ activeSource }}
+      [{{ activeSourceType }}] {{ activeSource }}
     </div>
     <div class="my-2" v-if="errors.length">
       <div v-for="error of errors" :key="error" class="text-red-500 p-2">{{ error }}</div>
@@ -95,6 +95,8 @@ const showSource = ref(false)
 
 const activeSource = ref<string | null>(null)
 
+const activeSourceType = ref<string | null>(null)
+
 const errors = ref<string[]>([])
 
 usePluginsConfig()
@@ -136,6 +138,7 @@ const config = computed(() => ({
   // embed: true, // share plugin
   exampleUI: {
     activeSource,
+    activeSourceType,
     bitrate,
     currentTime,
     errors,
