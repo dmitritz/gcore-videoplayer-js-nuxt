@@ -18,8 +18,8 @@
     <div class="source-settings w-full px-2">
       <div class="controls flex flex-col gap-y-3 mb-4 gap-1">
         <div>
-          <label for="sources" class="font-medium text-black">Sources</label>
-          <span class="text-sm text-slate-600">
+          <label for="sources" class="label">Sources</label>
+          <span class="subscript">
             one per line in the priority order. The first supported one will be
             used
           </span>
@@ -28,14 +28,15 @@
           <textarea
             id="sources"
             v-model="rawSources"
-            class="border p-2 w-full"
+            class="p-2 w-full textfield"
             :class="{ error: !hasValidSources }"
             cols="4"
+            placeholder="https://example.com/stream.mpd"
           ></textarea>
         </div>
         <div class="flex gap-2">
-          <div class="font-medium mr-4 text-black">Prefer</div>
-          <label for="priority_transport_dash" class="font-medium text-slate-600">
+          <div class="label">Prefer</div>
+          <label for="priority_transport_dash" class="sublabel">
             <input
               type="radio"
               id="priority_transport_dash"
@@ -44,7 +45,7 @@
             />
             DASH
           </label>
-          <label for="priority_transport_hls" class="font-medium text-slate-600">
+          <label for="priority_transport_hls" class="sublabel">
             <input
               type="radio"
               id="priority_transport_hls"
@@ -55,14 +56,14 @@
           </label>
         </div>
         <div>
-          <label for="poster" class="font-medium text-black">Poster</label>
+          <label for="poster" class="label">Poster</label>
         </div>
         <div>
           <input
             type="text"
             id="poster"
             v-model="poster"
-            class="w-full"
+            class="w-full textfield"
             placeholder="URL"
           />
         </div>
@@ -70,11 +71,11 @@
           <button @click="load" :disabled="!hasValidSources" v-show="!loaded">
             Load
           </button>
-          <span v-show="loaded" class="text-slate-700">Loaded</span>
-          <button @click="clear" :disabled="!rawSources.length">Clear</button>
+          <span v-show="loaded" class="px-2 py-1 text-slate-900 dark:text-slate-300">Loaded</span>
+          <button @click="clear" :disabled="!rawSources.length" >Clear</button>
         </div>
       </div>
-      <div v-if="error" class="text-red-950">{{ error }}</div>
+      <div v-if="error" class="text-red-950 dark:text-red-400">{{ error }}</div>
     </div>
   </nuxt-layout>
 </template>
@@ -131,14 +132,6 @@ pre {
   word-wrap: break-word;
   overflow-y: auto;
   max-height: var(--content-height);
-}
-
-input[type='text'],
-textarea {
-  @apply px-2 py-1 border border-slate-300;
-}
-.error {
-  @apply border-red-500
 }
 
 @media (min-width: 1024px) {

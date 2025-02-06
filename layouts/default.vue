@@ -107,7 +107,7 @@ function copyVisitorId() {
     <footer
       class="w-full py-2 mx-auto basis-auto md:col-span-2 flex md:items-end justify-end gap-4 px-2 items-center"
     >
-      <div class="text-end text-slate-700 text-sm">
+      <div class="text-end text-slate-700 dark:text-slate-300 text-sm">
         <p>
           {{ pkg.version }}/{{ ver.gplayer }}/<a
             href="https://clappr.github.io/"
@@ -160,7 +160,7 @@ h1 {
 }
 
 nav a.router-link-exact-active {
-  @apply text-slate-600;
+  @apply text-slate-600 dark:text-slate-300;
 }
 
 nav a.router-link-exact-active:hover {
@@ -171,7 +171,7 @@ nav a {
   display: inline-block;
   padding: 0 1rem;
   border-left: 1px solid var(--color-border);
-  @apply text-orange-600;
+  @apply text-orange-600 dark:text-orange-400;
 }
 
 nav a:first-of-type {
@@ -183,7 +183,7 @@ main {
 }
 
 footer a {
-  @apply text-orange-600;
+  @apply text-orange-600 dark:text-orange-400;
 }
 
 footer .version {

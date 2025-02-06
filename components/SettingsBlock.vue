@@ -4,10 +4,10 @@
       <button @click="settings.reset()">Reset</button>
     </div>
     <div class="heading font-semibold mb-2"></div>
-    <div class="heading font-semibold text-black">Basic</div>
+    <div class="label">Basic</div>
     <div class="mb-4">
       <div class="grid grid-cols-2 md:grid-cols-3">
-        <label for="option_autoplay" class="text-bold">
+        <label for="option_autoplay" class="sublabel">
           <input
             type="checkbox"
             id="option_autoplay"
@@ -17,7 +17,7 @@
           />
           Autoplay
         </label>
-        <label for="option_mute">
+        <label for="option_mute" class="sublabel">
           <input
             type="checkbox"
             id="option_mute"
@@ -27,7 +27,7 @@
           />
           Mute
         </label>
-        <label for="option_loop">
+        <label for="option_loop" class="sublabel">
           <input
             type="checkbox"
             id="option_loop"
@@ -39,9 +39,9 @@
         </label>
       </div>
     </div>
-    <div class="font-semibold text-black">UI</div>
+    <div class="label">UI</div>
     <plugin-settings class="block mb-4" />
-    <div class="heading font-semibold text-black">DASH</div>
+    <div class="label">DASH</div>
     <dash-settings class="block mb-4" />
   </div>
 </template>

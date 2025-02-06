@@ -2,10 +2,10 @@
   <div
     class="flex flex-col md:grid gap-2 my-2 md:grid-cols-3 md:content-center md:items-center"
   >
-    <div class="font-medium text-slate-600">Bitrate</div>
+    <div class="label">Bitrate</div>
     <label
       for="dash_bitrate_auto_switch"
-      class="text-slate-600 font-medium text-sm"
+      class="sublabel text-sm"
     >
       <input
         type="checkbox"
@@ -18,27 +18,27 @@
     <div class="row text-xs">
       <button
         @click="setSdBitrate"
-        :class="{ btn: true, active: mbrIsSd && ibrIsSd }"
+        :class="{ radiobtn: true, active: mbrIsSd && ibrIsSd }"
       >
         SD
       </button>
       <button
         @click="setHdBitrate"
-        :class="{ btn: true, active: mbrIsHd && ibrIsHd }"
+        :class="{ radiobtn: true, active: mbrIsHd && ibrIsHd }"
       >
         HD
       </button>
       <button
         @click="setAutoBitrate"
         :class="{
-          btn: true,
+          radiobtn: true,
           active: mbrIsAuto && ibrIsAuto,
         }"
       >
         auto
       </button>
     </div>
-    <label for="dash_initial_bitrate" class="sub-label">initial</label>
+    <label for="dash_initial_bitrate" class="sublabel text-sm">initial</label>
     <div class="row col-span-2">
       <input
         type="number"
@@ -49,13 +49,12 @@
       />
       <span class="field-suffix">Kbps</span>
     </div>
-    <label for="dash_max_bitrate" class="sub-label">max</label>
+    <label for="dash_max_bitrate" class="sublabel text-sm">max</label>
     <div class="row col-span-2">
       <input
         type="number"
         id="dash_max_bitrate"
         :value="maxBitrate"
-        class="textfield"
         @change="e => setMaxBitrate((e.target as HTMLInputElement).value)"
       />
       <span class="field-suffix">Kbps</span>
@@ -68,7 +67,6 @@
         id="dash_target_latency"
         :value="targetLatency"
         step="0.1"
-        class="textfield"
         @change="e => setTargetLatency((e.target as HTMLInputElement).value)"
       />
       <span class="field-suffix">sec</span>
@@ -77,7 +75,7 @@
       <button
         @click="setTargetLatencyAuto"
         :class="{
-          btn: true,
+          radiobtn: true,
           active: targetLatencyAuto,
         }"
         title="From manifest"
@@ -87,7 +85,7 @@
       <button
         @click="setTargetLatencyRecommended"
         :class="{
-          btn: true,
+          radiobtn: true,
           active: targetLatencyDefault,
         }"
         title="Tuned for the Gcore live streaming platform"
@@ -100,32 +98,29 @@
     <div class="row md:col-start-3">
       <button
         @click="disableLiveCatchup"
-        :class="{ btn: true, active: liveCatchupDisabled }"
+        :class="{ radiobtn: true, active: liveCatchupDisabled }"
       >
         disable
       </button>
       <button
         @click="resetLiveCatchup"
-        :class="{ btn: true, active: liveCatchupDefault }"
+        :class="{ radiobtn: true, active: liveCatchupDefault }"
       >
         default
       </button>
     </div>
-    <label for="dash_max_drift" class="sub-label">max drift</label>
+    <label for="dash_max_drift" class="sublabel text-sm">max drift</label>
     <div class="row col-span-2">
       <input
         type="number"
         id="dash_max_drift"
         :value="maxDrift"
         step="0.1"
-        class="textfield"
         @change="e => setMaxDrift((e.target as HTMLInputElement).value)"
       />
       <span class="field-suffix">sec</span>
     </div>
-    <label for="dash_playback_rate_max" class="sub-label"
-      >playback rate max</label
-    >
+    <label for="dash_playback_rate_max" class="sublabel text-sm">playback rate max</label>
     <div class="row col-span-2">
       <input
         type="number"
@@ -134,14 +129,11 @@
         step="0.1"
         min="0"
         max="1"
-        class="textfield"
         @change="e => setPlaybackRateMax((e.target as HTMLInputElement).value)"
       />
       <span class="field-suffix"> 0..1.0, 0.5=50% </span>
     </div>
-    <label for="dash_playback_rate_min" class="sub-label"
-      >playback rate min</label
-    >
+    <label for="dash_playback_rate_min" class="sublabel text-sm">playback rate min</label>
     <div class="row col-span-2">
       <input
         type="number"
@@ -150,14 +142,13 @@
         step="0.1"
         min="-0.5"
         max="0"
-        class="textfield"
         @change="e => setPlaybackRateMin((e.target as HTMLInputElement).value)"
       />
       <span class="field-suffix"> -0.5..0 </span>
     </div>
     <div class="mb-2 col-span-3"></div>
     <div class="label col-span-3">ABR</div>
-    <div class="sub-label col-span-3 md:col-span-1 self-start">strategy</div>
+    <div class="sublabel text-sm col-span-3 md:col-span-1 self-start">strategy</div>
     <div
       class="col-span-3 md:col-span-2 grid grid-cols-2 lg:grid-cols-3 gap-1 text-sm"
     >
@@ -177,7 +168,7 @@
         {{ ABR_STRATEGY_LABELS[strategy] }}
       </label>
     </div>
-    <div class="sub-label col-span-3 md:col-span-1 self-start">
+    <div class="sublabel text-sm col-span-3 md:col-span-1 self-start">
       additional rules
     </div>
     <div class="col-span-3 md:col-span-2 grid grid-cols-2 lg:grid-cols-3 gap-2">
@@ -546,26 +537,19 @@ function setAbrStrategy(strategy: DashAbrStrategy) {
 <style lang="css" scoped>
 @import "tailwindcss";
 
-.label {
-  @apply font-medium text-slate-600;
+.radiobtn {
+  @apply text-xs;
 }
-.btn {
-  @apply border border-slate-300 rounded text-xs text-slate-600;
-}
-.btn.active {
-  @apply border-orange-300 text-orange-300;
+.radiobtn.active {
+  @apply border-orange-300 text-orange-300 dark:border-orange-500 dark:text-orange-500 dark:bg-orange-900;
 }
 .row {
   @apply flex items-center gap-1;
 }
-.textfield {
-  @apply rounded border p-1 w-20 mr-2;
-}
 .field-suffix {
-  @apply text-xs text-slate-600;
+  @apply text-xs text-slate-600 dark:text-slate-300;
 }
-.sub-label {
-  @apply font-medium text-slate-600;
-  @apply text-sm text-left md:text-right;
+input[type="number"] {
+  @apply text-sm rounded border p-1 w-20 mr-2;
 }
 </style>

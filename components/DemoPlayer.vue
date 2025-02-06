@@ -23,7 +23,7 @@
       </button>
     </div>
     <div class="flex gap-2 items-center content-center justify-end flex-wrap">
-      <span class="text-slate-600 text-sm" v-if="noSource">no source</span>
+      <span class="text-slate-600 dark:text-slate-300 text-sm" v-if="noSource">no source</span>
       <span class="text-xs sm:text-sm" v-if="width && height">{{
         formatQuality(width, height)
       }}</span>
@@ -45,14 +45,14 @@
       </button>
     </div>
     <div
-      class="absolute p-4 rounded bg-white opacity-90 right-0 w-full overflow-x-scroll z-10 max-w-96"
+      class="absolute p-4 rounded bg-white dark:bg-slate-900 opacity-90 right-0 w-full overflow-x-scroll z-10 max-w-96"
       @click="showSource = false"
       v-if="showSource"
     >
       [{{ activeSourceType }}](html5: {{ html5VideoSupport }}) {{ activeSource }}
     </div>
     <div class="my-2" v-if="errors.length">
-      <div v-for="error of errors" :key="error" class="text-red-500 p-2">{{ error }}</div>
+      <div v-for="error of errors" :key="error" class="text-red-500 dark:text-red-400 p-2">{{ error }}</div>
     </div>
   </div>
 </template>

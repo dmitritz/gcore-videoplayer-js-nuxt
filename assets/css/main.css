@@ -31,13 +31,14 @@ h1 {
   line-height: 1;
 }
 
-button {
-  @apply py-1 px-2;
-  @apply text-slate-900 border rounded border-slate-500;
-}
 
 button:disabled {
-  @apply bg-slate-300 text-slate-700;
+  @apply bg-slate-300 text-slate-700 dark:bg-slate-700 dark:text-slate-300;
+}
+
+button,
+.button {
+  @apply px-2 py-1 border rounded border-slate-300 dark:border-slate-100 text-slate-900 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 dark:border-slate-700;
 }
 
 button.playback {
@@ -55,17 +56,31 @@ button.playback:disabled {
   opacity: 0.5;
 }
 
-button.secondary {
-  border-radius: 2px;
-  font-size: 1rem;
-}
-
 a:link,
 a:visited,
 a:active,
 a:focus,
 a:hover {
   @apply text-orange-600;
+}
+
+.textfield {
+  @apply px-2 py-1 border border-slate-300 dark:border-slate-100;
+}
+
+.error {
+  @apply border-red-500
+}
+
+.label {
+  @apply font-medium text-black dark:text-white;
+}
+.sublabel {
+  @apply text-slate-600 dark:text-slate-300;
+}
+
+.subscript {
+  @apply text-slate-600 dark:text-slate-300 text-sm;
 }
 
 @media (hover: hover) {

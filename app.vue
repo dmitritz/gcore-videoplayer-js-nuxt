@@ -3,9 +3,9 @@
 </template>
 
 <script lang="ts" setup>
-import { setTracer, version } from '@gcorevideo/player'
+import { setTracer } from '@gcorevideo/player'
 import { setTracer as setTracerPlugins } from '@gcorevideo/player-plugins'
-import { LogTracer, RemoteTracer, SentryTracer } from '@gcorevideo/utils'
+import { Logger, LogTracer, RemoteTracer, SentryTracer } from '@gcorevideo/utils'
 import * as Sentry from '@sentry/nuxt'
 import pkg from './package.json'
 import { Browser } from '@clappr/core'
@@ -60,6 +60,7 @@ function createSentryTracer(setup: (scope: Sentry.Scope) => void) {
 }
 
 function createLogTracer() {
+  Logger.enable('*')
   return new LogTracer(pkg.name)
 }
 </script>
