@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { version } from '@gcorevideo/player'
 import { reportError } from '@gcorevideo/utils'
-import pkg from '../package.json'
+import copy from 'copy-to-clipboard'
 import {
   BugAntIcon,
   CheckIcon,
   ExclamationCircleIcon,
 } from '@heroicons/vue/16/solid'
+import {ClipboardIcon,} from '@heroicons/vue/24/outline'
+
+import pkg from '../package.json'
+
 import useSettingsStore from '~/store/settings'
 
 const ver = version()
@@ -16,13 +20,22 @@ const query = route.query
 const reported = ref(false)
 const settings = useSettingsStore()
 const noSource = computed(() => !settings.sources.length)
+const showVisitorId = ref(false)
 
 function report() {
   reported.value = true
+  if (settings.visitorId) {
+    showVisitorId.value = true
+  }
   reportError(new Error('User error report'))
   setTimeout(() => {
     reported.value = false
   }, 1000)
+}
+
+function copyVisitorId() {
+  copy(settings.visitorId)
+  showVisitorId.value = false
 }
 </script>
 
@@ -45,13 +58,26 @@ function report() {
         <div class="text-lg hidden md:block">Gcore video player</div>
         <player-link />
         <button
-          class="rounded border text-sm inline-flex border-red-300 justify-self-end"
+          class="rounded border text-sm inline-flex border-red-300 justify-self-end relative"
           @click="report"
           :disabled="reported"
           title="Report a bug"
         >
           <bug-ant-icon class="w-4 h-4 text-red-500" v-if="!reported" />
           <check-icon class="w-4 h-4 text-red-500" title="Reported" v-else />
+          <div
+            class="absolute p-2 top-8 left-0 rounded border bg-white text-xs"
+            v-if="showVisitorId"
+            @click.stop="copyVisitorId"
+          >
+            <p>
+              <div class="flex gap-2 items-center">
+                <clipboard-icon class="w-4 h-4 text-slate-600" />
+                <code>{{ settings.visitorId }}</code>
+              </div>
+              tell this ID to the support
+            </p>
+          </div>
         </button>
       </div>
       <nav
@@ -115,7 +141,7 @@ function report() {
 </template>
 
 <style scoped>
-@import "tailwindcss";
+@import 'tailwindcss';
 
 header,
 header .wrapper {

@@ -66,6 +66,7 @@ type State = {
   poster: string
   priorityTransport: TransportPreference
   sources: string[]
+  visitorId: string
 }
 
 type MainSettings = {
@@ -92,6 +93,7 @@ type Actions = {
   setPoster(value: string): void
   setSources(value: string[]): void
   reset(): void
+  setVisitorId(value: string): void
 }
 
 const DEFAULT_MAIN_SETTINGS: MainSettings = {
@@ -227,6 +229,7 @@ const useSettingsStore = () => {
       priorityTransport: transportPreference(priorityTransport, DEFAULT_PRIORITY_TRANSPORT),
       poster,
       sources,
+      visitorId: '',
     }),
     getters: {
       serialized() {
@@ -322,6 +325,9 @@ const useSettingsStore = () => {
       setSources(value: string[]) {
         this.sources = value
         persistedSources.set(value)
+      },
+      setVisitorId(value: string) {
+        this.visitorId = value
       },
       reset() {
         this.autoplay = true
