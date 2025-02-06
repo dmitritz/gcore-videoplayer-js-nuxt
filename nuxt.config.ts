@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     '~/node_modules/@gcorevideo/player-plugins/dist/index.css',
   ],
   devtools: { enabled: true },
-  modules: ['@pinia/nuxt'],
+  modules: ['@pinia/nuxt', '@sentry/nuxt/module'],
   // routeRules: {
   //   '/': {
   //     ssr: false,

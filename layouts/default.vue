@@ -7,7 +7,7 @@ import {
   CheckIcon,
   ExclamationCircleIcon,
 } from '@heroicons/vue/16/solid'
-import {ClipboardIcon,} from '@heroicons/vue/24/outline'
+import { ClipboardIcon } from '@heroicons/vue/24/outline'
 
 import pkg from '../package.json'
 
@@ -70,13 +70,11 @@ function copyVisitorId() {
             v-if="showVisitorId"
             @click.stop="copyVisitorId"
           >
-            <p>
-              <div class="flex gap-2 items-center">
-                <clipboard-icon class="w-4 h-4 text-slate-600" />
-                <code>{{ settings.visitorId }}</code>
-              </div>
-              tell this ID to the support
-            </p>
+            <div class="flex gap-2 items-center">
+              <clipboard-icon class="w-4 h-4 text-slate-600" />
+              <code>{{ settings.visitorId }}</code>
+            </div>
+            tell this ID to the support
           </div>
         </button>
       </div>

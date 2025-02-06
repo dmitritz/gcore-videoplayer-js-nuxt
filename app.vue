@@ -6,7 +6,7 @@
 import { setTracer, version } from '@gcorevideo/player'
 import { setTracer as setTracerPlugins } from '@gcorevideo/player-plugins'
 import { LogTracer, RemoteTracer, SentryTracer } from '@gcorevideo/utils'
-import * as Sentry from '@sentry/vue'
+import * as Sentry from '@sentry/nuxt'
 import pkg from './package.json'
 import { Browser } from '@clappr/core'
 import Fingerprint from '@fingerprintjs/fingerprintjs'
@@ -20,12 +20,13 @@ if (import.meta.client) {
     build_id: import.meta.env.VITE_SENTRY_BUILD_ID,
   }
   const baseTracer = import.meta.env.VITE_SENTRY_DSN
-    ? createSentryTracer(tags, (scope: Sentry.Scope) => {
+    ? createSentryTracer((scope: Sentry.Scope) => {
         Fingerprint.load()
           .then((agent) => agent.get())
           .then((res) => {
             tracer.setTag('visitorId', res.visitorId)
-            scope.setTag('visitorId', res.visitorId)
+            scope.setTags(tags)
+            scope.setTag('visitor_id', res.visitorId)
             settings.setVisitorId(res.visitorId)
           })
       })
@@ -47,22 +48,8 @@ if (import.meta.client) {
   setTracerPlugins(tracer)
 }
 
-function createSentryTracer(
-  tags: Record<string, string>,
-  setup: (scope: Sentry.Scope) => void
-) {
-  const client = Sentry.init({
-    debug: true,
-    dsn: import.meta.env.VITE_SENTRY_DSN,
-    environment: import.meta.env.VITE_SENTRY_ENV,
-    initialScope: (scope) => {
-      scope.setTags(tags)
-      return scope
-    },
-    integrations: [Sentry.browserTracingIntegration()],
-    release: version().gplayer,
-    tracesSampleRate: 1.0,
-  })
+function createSentryTracer(setup: (scope: Sentry.Scope) => void) {
+  const client = Sentry.getClient()
   if (!client) {
     console.error('Sentry client is not initialized')
     return
