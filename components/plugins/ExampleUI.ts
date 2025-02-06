@@ -25,6 +25,9 @@ export type ExampleUIOptions = {
   width: Ref<number>
 }
 
+const CLAPPR_VERSION = '0.11.4'
+const VERSION = '0.1.0'
+
 const T = 'plugins.example_ui'
 
 export class ExampleUI extends UICorePlugin {
@@ -32,6 +35,14 @@ export class ExampleUI extends UICorePlugin {
 
   get name() {
     return 'example_ui'
+  }
+
+  get supportedVersion() {
+    return { min: CLAPPR_VERSION };
+  }
+
+  static get version() {
+    return VERSION;
   }
 
   private get activePlayback(): PlaybackModule | null {
