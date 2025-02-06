@@ -105,11 +105,10 @@ const DEFAULT_MAIN_SETTINGS: MainSettings = {
 const DEFAULT_PLUGINS = [
   'bottom_gear',
   'dvr_controls',
-  'media_control',
-  'level_selector',
-  'error_screen',
   'example_ui',
-  'poster',
+  'level_selector',
+  'media_control',
+  'source_controller',
   'spinner',
 ]
 
