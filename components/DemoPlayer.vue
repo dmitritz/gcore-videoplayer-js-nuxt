@@ -177,7 +177,7 @@ const config = computed(() => ({
   },
   spinner: {
     showOnError: true,
-    showOnStart: true,
+    // showOnStart: true,
   },
   // shareURL: "https://gvideo.co", // share plugin
   subtitles: {

@@ -7,7 +7,7 @@ export default defineEventHandler(async function (event) {
   let baseTime = records[0].time
   for (const { message, detail, time } of records) {
     const d = time - baseTime
-    const t = d ? `+${ms(d)}` : ''
+    const t = d ? `+${ms(d)}` : (process.env.VERCEL ? '' : new Date(time).toLocaleTimeString())
     const tokens = formatTokens({
       ...tags,
       ...detail,
@@ -37,7 +37,7 @@ function formatCompoundToken(key: string, value: unknown): string {
     return `${key}=${value}`
   }
   if (Array.isArray(value)) {
-    return `${key}=${value.join(',')}`
+    return `${key}=${value.map((v, i) => formatCompoundToken(`[${i}]`, v)).join(',')}`
   }
   return Object.entries(value)
     .map(([k, v]) => formatCompoundToken(`${key}.${k}`, v))
