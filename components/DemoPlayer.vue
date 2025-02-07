@@ -171,7 +171,6 @@ const config = computed(() => ({
   },
   multisourcesMode: 'show_all', // multi_camera
   poster: {
-    // showForNoOp: true,
     url: settings.poster,
     showOnError: false,
   },
