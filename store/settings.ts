@@ -194,7 +194,6 @@ const useSettingsStore = () => {
       ),
     })
   }
-  persistedSources.set(url.searchParams.get('sources')?.split(',') ?? [])
   const debug = debugTag(url.searchParams.get('debug') || 'clappr') ?? 'all'
   const {
     autoplay,
@@ -209,7 +208,9 @@ const useSettingsStore = () => {
     (usePersistedPlugins
       ? persistedPlugins.get()
       : url.searchParams.get('plugins')?.split(',')) ?? []
-  const sources = persistedSources.get()
+  const usePersistedSources = !url.searchParams.has('sources')
+  const sources = usePersistedSources ? persistedSources.get() : url.searchParams.get('sources')?.split(',') ?? []
+  persistedSources.set(sources)
 
   if (url.searchParams.has('poster')) {
     persistedPoster.set(url.searchParams.get('poster') ?? '')
