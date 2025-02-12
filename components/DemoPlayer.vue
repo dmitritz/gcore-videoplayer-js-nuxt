@@ -13,12 +13,13 @@
         @click="play"
         v-show="ready && !playing"
         class="playback"
+        id="dashboard_play"
         :disabled="noSource"
       >
         Play
       </button>
-      <button @click="pause" v-show="playing" class="playback">Pause</button>
-      <button @click="stop" v-show="ready && !stopped" class="playback">
+      <button @click="pause" v-show="playing" class="playback" id="dashboard_pause">Pause</button>
+      <button @click="stop" v-show="ready && !stopped" class="playback" id="dashboard_stop">
         Stop
       </button>
     </div>
@@ -40,6 +41,7 @@
         class="font-semibold text-sm sm:text-md uppercase"
         v-if="playback"
         @click="showSource = !showSource"
+        id="dashboard_playback"
       >
         {{ formatPlaybackModule(playback) }}
       </button>
