@@ -32,7 +32,7 @@
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.3",
     "@types/ms": "^2.1.0",
-    "tailwindcss": "^4.0.3"
+    "tailwindcss": "^4.0.6"
   },
   "overrides": {
     "ofetch": "^1.4.0",
