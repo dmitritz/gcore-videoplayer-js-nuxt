@@ -12,8 +12,8 @@
   "dependencies": {
     "@clappr/core": "^0.11.4",
     "@fingerprintjs/fingerprintjs": "^4.5.1",
-    "@gcorevideo/player": "^2.16.17",
-    "@gcorevideo/player-plugins": "^0.10.5",
+    "@gcorevideo/player": "^2.17.0",
+    "@gcorevideo/player-plugins": "^0.11.0",
     "@gcorevideo/utils": "^0.6.0",
     "@heroicons/vue": "^2.2.0",
     "@pinia/nuxt": "^0.9.0",

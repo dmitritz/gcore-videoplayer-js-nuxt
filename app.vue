@@ -5,7 +5,12 @@
 <script lang="ts" setup>
 import { setTracer } from '@gcorevideo/player'
 import { setTracer as setTracerPlugins } from '@gcorevideo/player-plugins'
-import { Logger, LogTracer, RemoteTracer, SentryTracer } from '@gcorevideo/utils'
+import {
+  Logger,
+  LogTracer,
+  RemoteTracer,
+  SentryTracer,
+} from '@gcorevideo/utils'
 import * as Sentry from '@sentry/nuxt'
 import pkg from './package.json'
 import { Browser } from '@clappr/core'

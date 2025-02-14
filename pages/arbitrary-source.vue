@@ -10,7 +10,7 @@
         <a
           href="https://gcore.com/docs/streaming-platform/live-streaming/webrtc-to-hls-transcoding#webrtc-ingest-and-transcoding-to-hlsdash"
           target="_blank"
-          title="GCore Streaming API WebRTC to HLS"
+          title="Gcore Streaming API WebRTC to HLS"
           >WebRTC to HLS</a
         >
       </reference-links>

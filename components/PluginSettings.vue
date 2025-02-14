@@ -5,10 +5,48 @@
       <star-icon class="w-3 h-3" v-if="PLUGIN_OPTIONS[plugin]?.starred" />
     </plugin-item>
   </div>
+  <div class="my-2 grid grid-cols-2 md:grid-cols-3 gap-2">
+    <div class="label">Quality level</div>
+    <div class="flex gap-2 md:col-span-2">
+      <label for="option_restrict_quality_level">
+        <input
+          type="checkbox"
+          id="option_restrict_quality_level"
+          v-model="applyRestrictQualityLevel"
+          :disabled="levelSelectorPluginDisabled"
+        />
+        Restrict
+      </label>
+      <label for="option_restrict_quality_level_360">
+        <input
+          type="radio"
+          id="option_restrict_quality_level_360"
+          value="360"
+          :checked="restrictResolution === 360"
+          @change="e => restrictResolution = parseInt((e.target as HTMLInputElement).value, 10)"
+          :disabled="levelSelectorPluginDisabled || !applyRestrictQualityLevel"
+        />
+        360
+      </label>
+      <label for="option_restrict_quality_level_720">
+        <input
+          type="radio"
+          id="option_restrict_quality_level_720"
+          value="720"
+          :checked="restrictResolution === 720"
+          @change="e => restrictResolution = parseInt((e.target as HTMLInputElement).value, 10)"
+          :disabled="levelSelectorPluginDisabled || !applyRestrictQualityLevel"
+        />
+        720
+      </label>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { StarIcon } from '@heroicons/vue/24/outline'
+
+import useSettingsStore from '../store/settings'
 
 const PLUGIN_LABELS: Record<string, string> = {
   big_mute_button: 'Big mute button',
@@ -46,4 +84,25 @@ const PLUGIN_OPTIONS: Partial<
     starred: true,
   },
 }
+
+const settings = useSettingsStore()
+
+const levelSelectorPluginDisabled = computed(() => {
+  return !settings.plugins.includes('level_selector')
+})
+
+const applyRestrictQualityLevel = ref(settings.restrictResolution !== 0)
+const restrictResolution = ref(settings.restrictResolution)
+
+watch(applyRestrictQualityLevel, () => {
+  if (!applyRestrictQualityLevel.value) {
+    settings.setRestrictResolution(0)
+  }
+})
+
+watch(restrictResolution, () => {
+  if (applyRestrictQualityLevel.value) {
+    settings.setRestrictResolution(restrictResolution.value)
+  }
+})
 </script>

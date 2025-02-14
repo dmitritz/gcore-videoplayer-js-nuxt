@@ -16,7 +16,12 @@ export type AdditionalAbrRulesSettings = {
   abandonRequestsRule?: boolean
 }
 
-export type DashAbrStrategy = 'abrDynamic' | 'abrBola' | 'abrL2A' | 'abrLoLP' | 'abrThroughput'
+export type DashAbrStrategy =
+  | 'abrDynamic'
+  | 'abrBola'
+  | 'abrL2A'
+  | 'abrLoLP'
+  | 'abrThroughput'
 
 export const DASH_DEFAULT_LIVE_DELAY = 2.2
 export const DASH_DEFAULT_MAX_DRIFT = 1
@@ -67,6 +72,7 @@ type State = {
   priorityTransport: TransportPreference
   sources: string[]
   visitorId: string
+  restrictResolution: number
 }
 
 type MainSettings = {
@@ -94,6 +100,7 @@ type Actions = {
   setSources(value: string[]): void
   reset(): void
   setVisitorId(value: string): void
+  setRestrictResolution(value: number): void
 }
 
 const DEFAULT_MAIN_SETTINGS: MainSettings = {
@@ -190,7 +197,7 @@ const useSettingsStore = () => {
         pm.playbackType ??
         DEFAULT_MAIN_SETTINGS.playbackType, // TODO sanitize
       priorityTransport: transportPreference(
-        url.searchParams.get('priority_transport') || pm.priorityTransport,
+        url.searchParams.get('priority_transport') || pm.priorityTransport
       ),
     })
   }
@@ -209,7 +216,9 @@ const useSettingsStore = () => {
       ? persistedPlugins.get()
       : url.searchParams.get('plugins')?.split(',')) ?? []
   const usePersistedSources = !url.searchParams.has('sources')
-  const sources = usePersistedSources ? persistedSources.get() : url.searchParams.get('sources')?.split(',') ?? []
+  const sources = usePersistedSources
+    ? persistedSources.get()
+    : url.searchParams.get('sources')?.split(',') ?? []
   persistedSources.set(sources)
 
   if (url.searchParams.has('poster')) {
@@ -227,10 +236,21 @@ const useSettingsStore = () => {
       mute,
       playbackType,
       plugins,
-      priorityTransport: transportPreference(priorityTransport, DEFAULT_PRIORITY_TRANSPORT),
+      priorityTransport: transportPreference(
+        priorityTransport,
+        DEFAULT_PRIORITY_TRANSPORT
+      ),
       poster,
       sources,
       visitorId: '',
+      restrictResolution: parseInt(
+        parseSelectOption(
+          ['360', '720', '0'],
+          url.searchParams.get('restrict_resolution') ?? '0',
+          '0'
+        ),
+        10
+      ),
     }),
     getters: {
       serialized() {
@@ -338,6 +358,10 @@ const useSettingsStore = () => {
         this.priorityTransport = DEFAULT_PRIORITY_TRANSPORT
         this.playbackType = 'vod'
         this.dash = structuredClone(DEFAULT_DASH_SETTINGS)
+        this.restrictResolution = 0
+      },
+      setRestrictResolution(value: number) {
+        this.restrictResolution = value
       },
     },
   })()
@@ -363,11 +387,7 @@ function transportPreference(
   input: string | null,
   def: TransportPreference = 'dash'
 ): TransportPreference {
-  return parseSelectOption<TransportPreference>(
-    ['dash', 'hls'],
-    input,
-    def
-  )
+  return parseSelectOption<TransportPreference>(['dash', 'hls'], input, def)
 }
 
 function parseSelectOption<T extends string>(
