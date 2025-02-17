@@ -66,6 +66,11 @@ export class ExampleUI extends UICorePlugin {
 
   override bindEvents() {
     this.listenTo(this.core, CoreEvents.CORE_READY, this.onReady)
+    this.listenTo(
+      this.core,
+      CoreEvents.CORE_ACTIVE_CONTAINER_CHANGED,
+      this.bindActiveContainerListeners
+    )
   }
 
   private get pins(): ExampleUIOptions {
@@ -75,21 +80,6 @@ export class ExampleUI extends UICorePlugin {
   private onReady() {
     // TODO
     this.pins.ready.value = true
-    this.addContainerEventListeners()
-  }
-
-  private addContainerEventListeners() {
-    const container = this.core.activeContainer
-    this.listenTo(container, CoreEvents.CONTAINER_ENDED, this.onEnded)
-    this.listenTo(container, CoreEvents.CONTAINER_PLAY, this.onPlay)
-    this.listenTo(container, CoreEvents.CONTAINER_PAUSE, this.onPause)
-    this.listenTo(container, CoreEvents.CONTAINER_STOP, this.onStop)
-    this.listenTo(
-      this.core,
-      CoreEvents.CORE_ACTIVE_CONTAINER_CHANGED,
-      this.bindActiveContainerListeners
-    )
-    // this.bindActiveContainerListeners()
   }
 
   private onEnded() {
@@ -147,10 +137,16 @@ export class ExampleUI extends UICorePlugin {
 
   private bindActiveContainerListeners() {
     const activePlayback = this.core.activePlayback
+    const container = this.core.activeContainer
 
     trace(`${T}.bindActiveContainerListeners`, {
       activePlayback: activePlayback?.name,
     })
+
+    this.listenTo(container, CoreEvents.CONTAINER_ENDED, this.onEnded)
+    this.listenTo(container, CoreEvents.CONTAINER_PLAY, this.onPlay)
+    this.listenTo(container, CoreEvents.CONTAINER_PAUSE, this.onPause)
+    this.listenTo(container, CoreEvents.CONTAINER_STOP, this.onStop)
 
     this.pins.activeSource.value = activePlayback.options.src
     this.pins.activeSourceType.value = activePlayback.options.mimeType
