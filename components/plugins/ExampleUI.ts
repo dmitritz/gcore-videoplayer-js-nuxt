@@ -3,6 +3,7 @@ import {
   type PlaybackModule,
   type PlaybackType,
   type QualityLevel,
+  trace,
 } from '@gcorevideo/player'
 import assert from 'assert'
 import type { Ref } from 'vue'
@@ -38,11 +39,11 @@ export class ExampleUI extends UICorePlugin {
   }
 
   get supportedVersion() {
-    return { min: CLAPPR_VERSION };
+    return { min: CLAPPR_VERSION }
   }
 
   static get version() {
-    return VERSION;
+    return VERSION
   }
 
   private get activePlayback(): PlaybackModule | null {
@@ -79,7 +80,6 @@ export class ExampleUI extends UICorePlugin {
 
   private addContainerEventListeners() {
     const container = this.core.activeContainer
-    assert(container, 'Container is not available')
     this.listenTo(container, CoreEvents.CONTAINER_ENDED, this.onEnded)
     this.listenTo(container, CoreEvents.CONTAINER_PLAY, this.onPlay)
     this.listenTo(container, CoreEvents.CONTAINER_PAUSE, this.onPause)
@@ -146,22 +146,28 @@ export class ExampleUI extends UICorePlugin {
   }
 
   private bindActiveContainerListeners() {
-    const activeContainer = this.core.activeContainer
     const activePlayback = this.core.activePlayback
-    assert(activeContainer, 'Active container is not available')
-    assert(activePlayback, 'Active playback is not available')
+
+    trace(`${T}.bindActiveContainerListeners`, {
+      activePlayback: activePlayback?.name,
+    })
 
     this.pins.activeSource.value = activePlayback.options.src
     this.pins.activeSourceType.value = activePlayback.options.mimeType
     activePlayback.on(
       CoreEvents.PLAYBACK_LEVELS_AVAILABLE,
       (levels: QualityLevel[]) => {
-        assert(levels.length > 0, 'No quality levels available')
-        const qLevel = levels[0]
-        this.setQualityLevel(qLevel)
+        trace(`${T}.on PLAYBACK_LEVELS_AVAILABLE`, {
+          levels,
+          currentLevel: activePlayback.currentLevel,
+        })
+        if (activePlayback.currentLevel !== -1) {
+          this.setQualityLevel(levels[activePlayback.currentLevel])
+        }
       }
     )
-    activeContainer.on(CoreEvents.CONTAINER_BITRATE, (level: QualityLevel) => {
+    activePlayback.on(CoreEvents.PLAYBACK_BITRATE, (level: QualityLevel) => {
+      trace(`${T}.on PLAYBACK_BITRATE`, { level })
       this.setQualityLevel(level)
     })
     activePlayback.on(CoreEvents.PLAYBACK_ERROR, (error: Error) => {
