@@ -1,6 +1,6 @@
 import { onBeforeMount, onMounted, watch } from 'vue';
-import { Player, type PlayerPlugin } from '@gcorevideo/player';
 import {
+  Player, type PlayerPlugin,
   // AudioSelector,
   BigMuteButton,
   BottomGear,
@@ -21,7 +21,7 @@ import {
   SpinnerThreeBounce,
   Thumbnails,
   VolumeFade,
-} from '@gcorevideo/player-plugins';
+} from '@gcorevideo/player';
 
 import useSettingsStore from '../store/settings';
 import { ExampleUI } from '../components/plugins/ExampleUI';

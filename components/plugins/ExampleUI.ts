@@ -89,7 +89,7 @@ export class ExampleUI extends UICorePlugin {
       CoreEvents.CORE_ACTIVE_CONTAINER_CHANGED,
       this.bindActiveContainerListeners
     )
-    this.bindActiveContainerListeners()
+    // this.bindActiveContainerListeners()
   }
 
   private onEnded() {

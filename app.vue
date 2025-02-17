@@ -4,7 +4,6 @@
 
 <script lang="ts" setup>
 import { setTracer } from '@gcorevideo/player'
-import { setTracer as setTracerPlugins } from '@gcorevideo/player-plugins'
 import {
   Logger,
   LogTracer,
@@ -50,7 +49,6 @@ if (import.meta.client) {
     height: Browser.viewport.height,
   })
   setTracer(tracer)
-  setTracerPlugins(tracer)
 }
 
 function createSentryTracer(setup: (scope: Sentry.Scope) => void) {
