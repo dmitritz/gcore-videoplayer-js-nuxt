@@ -6,16 +6,18 @@
     </plugin-item>
   </div>
   <div class="my-2 grid grid-cols-2 md:grid-cols-3 gap-2">
-    <div class="label">Quality level</div>
+    <div class="label">Quality level restriction</div>
     <div class="flex gap-2 md:col-span-2">
       <label for="option_restrict_quality_level">
         <input
-          type="checkbox"
-          id="option_restrict_quality_level"
-          v-model="applyRestrictQualityLevel"
+          type="radio"
+          id="option_restrict_quality_level_0"
+          value="0"
+          :checked="restrictResolution === 0"
+          @change="e => restrictResolution = parseInt((e.target as HTMLInputElement).value, 10)"
           :disabled="levelSelectorPluginDisabled"
         />
-        Restrict
+        Off
       </label>
       <label for="option_restrict_quality_level_360">
         <input
@@ -24,7 +26,7 @@
           value="360"
           :checked="restrictResolution === 360"
           @change="e => restrictResolution = parseInt((e.target as HTMLInputElement).value, 10)"
-          :disabled="levelSelectorPluginDisabled || !applyRestrictQualityLevel"
+          :disabled="levelSelectorPluginDisabled"
         />
         360
       </label>
@@ -35,7 +37,7 @@
           value="720"
           :checked="restrictResolution === 720"
           @change="e => restrictResolution = parseInt((e.target as HTMLInputElement).value, 10)"
-          :disabled="levelSelectorPluginDisabled || !applyRestrictQualityLevel"
+          :disabled="levelSelectorPluginDisabled"
         />
         720
       </label>
@@ -91,18 +93,5 @@ const levelSelectorPluginDisabled = computed(() => {
   return !settings.plugins.includes('level_selector')
 })
 
-const applyRestrictQualityLevel = ref(settings.restrictResolution !== 0)
 const restrictResolution = ref(settings.restrictResolution)
-
-watch(applyRestrictQualityLevel, () => {
-  if (!applyRestrictQualityLevel.value) {
-    settings.setRestrictResolution(0)
-  }
-})
-
-watch(restrictResolution, () => {
-  if (applyRestrictQualityLevel.value) {
-    settings.setRestrictResolution(restrictResolution.value)
-  }
-})
 </script>
