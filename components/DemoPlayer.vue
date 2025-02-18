@@ -120,6 +120,13 @@ const config = computed(() => ({
   height: '100%',
   // language: "en", // strings plugin
   loop: settings.loop,
+  playback: {
+    hlsjsConfig: {
+      lowLatencyMode: true,
+      liveSyncDurationCount: 0,
+      liveMaxLatencyDurationCount: 1,
+    },
+  },
   playbackType: settings.playbackType,
   priorityTransport: settings.priorityTransport,
   sources: settings.sources,
