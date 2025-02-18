@@ -8,7 +8,7 @@
   <div class="my-2 grid grid-cols-2 md:grid-cols-3 gap-2">
     <div class="label">Quality level restriction</div>
     <div class="flex gap-2 md:col-span-2">
-      <label for="option_restrict_quality_level">
+      <label for="option_restrict_quality_level_0">
         <input
           type="radio"
           id="option_restrict_quality_level_0"
