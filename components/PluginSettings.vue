@@ -94,4 +94,7 @@ const levelSelectorPluginDisabled = computed(() => {
 })
 
 const restrictResolution = ref(settings.restrictResolution)
+watch(restrictResolution, () => {
+  settings.setRestrictResolution(restrictResolution.value)
+})
 </script>
