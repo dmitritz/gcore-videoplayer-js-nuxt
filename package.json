@@ -16,7 +16,7 @@
     "@gcorevideo/utils": "^0.6.0",
     "@heroicons/vue": "^2.2.0",
     "@pinia/nuxt": "^0.10.1",
-    "@sentry/nuxt": "^9.0.1",
+    "@sentry/nuxt": "^9.1.0",
     "assert": "^2.1.0",
     "consola": "^3.4.0",
     "copy-to-clipboard": "^3.3.3",
