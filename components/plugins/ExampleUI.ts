@@ -5,7 +5,6 @@ import {
   type QualityLevel,
   trace,
 } from '@gcorevideo/player'
-import assert from 'assert'
 import type { Ref } from 'vue'
 
 export type ExampleUIOptions = {

@@ -219,10 +219,8 @@ onMounted(() => {
       return
     }
     player.attachTo(container.value)
-  }, 0)
-  if (container.value) {
     rob.start(container.value)
-  }
+  }, 0)
 })
 
 onBeforeMount(() => {
