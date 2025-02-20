@@ -1,6 +1,7 @@
-import { onBeforeMount, onMounted, watch } from 'vue';
+import { onBeforeMount, onMounted, watch } from 'vue'
 import {
-  Player, type PlayerPlugin,
+  Player,
+  type PlayerPlugin,
   // AudioSelector,
   BigMuteButton,
   BottomGear,
@@ -21,53 +22,48 @@ import {
   SpinnerThreeBounce,
   Thumbnails,
   VolumeFade,
-} from '@gcorevideo/player';
+} from '@gcorevideo/player'
 
-import useSettingsStore from '../store/settings';
-import { ExampleUI } from '../components/plugins/ExampleUI';
+import useSettingsStore from '../store/settings'
+import { ExampleUI } from '../components/plugins/ExampleUI'
+import type { PluginName } from '../types'
 
-const PLUGINS: Record<string, PlayerPlugin> = {
+const PLUGINS: Partial<Record<PluginName, PlayerPlugin>> = {
   big_mute_button: BigMuteButton,
-  bottom_gear: BottomGear,
+  media_control_gear: BottomGear,
   click_to_pause: ClickToPause,
-  clappr_nerd_stats: ClapprNerdStats,
+  media_control_nerd_stats: ClapprNerdStats,
   clappr_stats: ClapprStats,
   disable_controls: DisableControls,
-  dvr_controls: DvrControls,
+  media_control_dvr: DvrControls,
   error_screen: ErrorScreen,
   example_ui: ExampleUI,
-  level_selector: LevelSelector,
+  media_control_level_selector: LevelSelector,
   media_control: MediaControl,
-  multi_camera: MultiCamera,
-  picture_in_picture: PictureInPicture,
-  playback_rate: PlaybackRate,
+  media_control_multicamera: MultiCamera,
+  media_control_pip: PictureInPicture,
+  media_control_playback_rate: PlaybackRate,
+  // media_control_seek_time: SeekTime,
+  // media_control_share: Share,
+  media_control_subtitles: Subtitles,
+  media_control_thumbnails: Thumbnails,
   poster: Poster,
   spinner: SpinnerThreeBounce,
   source_controller: SourceController,
-  subtitles: Subtitles,
-  thumbnails: Thumbnails,
   volume_fade: VolumeFade,
 }
 
 const usePluginsConfig = () => {
-  const settings = useSettingsStore();
+  const settings = useSettingsStore()
+  const { disabledPlugins } = usePluginsDeps()
 
-  onBeforeMount(configurePlugins);
-  watch(() => settings.plugins, (plugins, oldPlugins) => {
-    const deactivated = oldPlugins.filter(p => !plugins.includes(p));
-    const activatged = plugins.filter(p => !oldPlugins.includes(p));
-    deactivated.forEach(p => {
-      Player.unregisterPlugin(PLUGINS[p]);
-    });
-    activatged.forEach(p => {
-      Player.registerPlugin(PLUGINS[p]);
-    });
-  });
+  onBeforeMount(configurePlugins)
 
   function configurePlugins() {
-    Object.entries(PLUGINS).forEach(([name, plugin]) => {
-      if (settings.plugins.includes(name)) {
-        Player.registerPlugin(plugin)
+    getRegistrationOrder(settings.plugins).forEach((name) => {
+      const plugin = PLUGINS[name as PluginName]
+      if (!disabledPlugins.value.includes(name as PluginName)) {
+        Player.registerPlugin(plugin as PlayerPlugin)
       }
     })
   }

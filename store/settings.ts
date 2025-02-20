@@ -8,6 +8,7 @@ import { defineStore } from 'pinia'
 import { z } from 'zod'
 
 import usePersistence from '@/composables/use-persistence'
+import { PLUGIN_NAMES, type PluginName } from '~/types'
 
 export type AdditionalAbrRulesSettings = {
   insufficientBufferRule?: boolean
@@ -67,7 +68,7 @@ type State = {
   loop: boolean
   mute: boolean
   playbackType: PlaybackType
-  plugins: string[]
+  plugins: PluginName[]
   poster: string
   priorityTransport: TransportPreference
   sources: string[]
@@ -111,12 +112,11 @@ const DEFAULT_MAIN_SETTINGS: MainSettings = {
   priorityTransport: DEFAULT_PRIORITY_TRANSPORT,
 }
 
-const DEFAULT_PLUGINS = [
-  'bottom_gear',
-  'dvr_controls',
-  'example_ui',
-  'level_selector',
+const DEFAULT_PLUGINS: PluginName[] = [
   'media_control',
+  'media_control_gear',
+  'media_control_dvr',
+  'media_control_level_selector',
   'source_controller',
   'spinner',
 ]
@@ -149,10 +149,10 @@ const useSettingsStore = () => {
     (s) => s.split(',').filter(Boolean),
     []
   )
-  const persistedPlugins = usePersistence<string[]>(
+  const persistedPlugins = usePersistence<PluginName[]>(
     'settings.plugins',
-    (a: string[]) => a.join(),
-    (v: string) => v.split(','),
+    (a: PluginName[]) => a.join(','),
+    (v: string) => sanitizePlugins(v.split(',')),
     DEFAULT_PLUGINS
   )
 
@@ -214,7 +214,7 @@ const useSettingsStore = () => {
   const plugins =
     (usePersistedPlugins
       ? persistedPlugins.get()
-      : url.searchParams.get('plugins')?.split(',')) ?? []
+      : sanitizePlugins(url.searchParams.get('plugins')?.split(',') ?? DEFAULT_PLUGINS)) ?? []
   const usePersistedSources = !url.searchParams.has('sources')
   const sources = usePersistedSources
     ? persistedSources.get()
@@ -288,31 +288,19 @@ const useSettingsStore = () => {
       },
     },
     actions: {
-      addPlugin(name: string) {
+      addPlugin(name: PluginName) {
         if (this.plugins.includes(name)) {
           return
         }
         this.plugins.push(name)
-        if (
-          name === 'clappr_nerd_stats' &&
-          !this.plugins.includes('clappr_stats')
-        ) {
-          this.plugins.push('clappr_stats')
-        }
         persistedPlugins.set(this.plugins)
       },
-      removePlugin(name: string) {
+      removePlugin(name: PluginName) {
         const index = this.plugins.indexOf(name)
         if (index === -1) {
           return
         }
         this.plugins.splice(index, 1)
-        if (
-          name === 'clappr_stats' &&
-          this.plugins.includes('clappr_nerd_stats')
-        ) {
-          this.plugins.splice(this.plugins.indexOf('clappr_nerd_stats'), 1)
-        }
         persistedPlugins.set(this.plugins)
       },
       setAutoplay(value: boolean) {
@@ -492,4 +480,8 @@ export default useSettingsStore
 
 function id<T = string>(a: string) {
   return a as T
+}
+
+function sanitizePlugins(plugins: string[]): PluginName[] {
+  return plugins.filter(p => PLUGIN_NAMES.includes(p as PluginName)) as PluginName[]
 }
