@@ -10,16 +10,16 @@ export type PluginName =
   | 'example_ui'
   | 'media_control'
   | 'media_control_audio_selector'
-  | 'media_control_nerd_stats'
+  | 'nerd_stats'
   | 'media_control_dvr'
-  | 'media_control_gear'
-  | 'media_control_level_selector'
+  | 'bottom_gear'
+  | 'level_selector'
   | 'media_control_multicamera'
-  | 'media_control_pip'
-  | 'media_control_playback_rate'
+  | 'pip'
+  | 'playback_rate'
   | 'media_control_seek_time'
   | 'media_control_share'
-  | 'media_control_subtitles'
+  | 'subtitles'
   | 'media_control_thumbnails'
   | 'poster'
   | 'spinner'
@@ -35,16 +35,16 @@ export const PLUGIN_NAMES: PluginName[] = [
   'example_ui',
   'media_control',
   'media_control_audio_selector',
-  'media_control_nerd_stats',
+  'nerd_stats',
   'media_control_dvr',
-  'media_control_gear',
-  'media_control_level_selector',
+  'bottom_gear',
+  'level_selector',
   'media_control_multicamera',
-  'media_control_pip',
-  'media_control_playback_rate',
+  'pip',
+  'playback_rate',
   'media_control_seek_time',
   'media_control_share',
-  'media_control_subtitles',
+  'subtitles',
   'media_control_thumbnails',
   'poster',
   'spinner',

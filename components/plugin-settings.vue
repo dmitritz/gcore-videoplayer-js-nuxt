@@ -10,15 +10,15 @@
       <star-icon class="w-3 h-3" v-if="PLUGIN_OPTIONS[plugin]?.starred" />
     </plugin-item>
   </div>
-  <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2 mb-4">
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-2 my-2">
     <div class="text-sm col-span-2 md:col-span-3">Some plugins depend on others, for instance:<br/>
       <b>Bottom gear</b> and <b>Picture in picture</b> both depend on <b>Media control</b>,<br/>
       <b>Nerd stats</b> depends on <b>Media control</b>, <b>Stats</b>, and <b>Bottom gear</b>,<br/>
       etc.<br/>
-      See the <a href="https://github.com/G-Core/gcore-videoplayer-js/blob/main/packages/player/docs/api/index.md" target="_blank">documentation</a> for more details.
+      See the <a href="https://github.com/G-Core/gcore-videoplayer-js/blob/main/packages/player/docs/api/player.md" target="_blank">documentation</a> for more details.
     </div>
   </div>
-  <div class="my-2 grid grid-cols-2 md:grid-cols-3 gap-2">
+  <div class="mt-2 mb-4 grid grid-cols-2 md:grid-cols-3 gap-2">
     <div class="label">Quality level restriction</div>
     <div class="flex gap-2 md:col-span-2">
       <label for="option_restrict_quality_level_0">
@@ -75,14 +75,14 @@ const PLUGIN_LABELS: Partial<Record<PluginName, string>> = {
   example_ui: 'Example UI',
   media_control: 'Media control',
   media_control_audio_selector: 'Audio selector',
-  media_control_nerd_stats: 'Stats for nerds',
+  nerd_stats: 'Stats for nerds',
   media_control_dvr: 'DVR controls',
-  media_control_gear: 'Bottom gear',
-  media_control_level_selector: 'Level selector',
+  bottom_gear: 'Bottom gear',
+  level_selector: 'Level selector',
   media_control_multicamera: 'Multi camera',
-  media_control_pip: 'Picture in picture',
-  media_control_playback_rate: 'Playback rate',
-  media_control_subtitles: 'Subtitles',
+  pip: 'Picture in picture',
+  playback_rate: 'Playback rate',
+  subtitles: 'Subtitles',
   media_control_thumbnails: 'Thumbnails',
   // media_control_seek_time: 'Seek time',
   // media_control_share: 'Share',
@@ -108,8 +108,8 @@ const settings = useSettingsStore()
 
 const levelSelectorPluginDisabled = computed(() => {
   return (
-    !settings.plugins.includes('media_control_level_selector') ||
-    disabledPlugins.value.includes('media_control_level_selector')
+    !settings.plugins.includes('level_selector') ||
+    disabledPlugins.value.includes('level_selector')
   )
 })
 

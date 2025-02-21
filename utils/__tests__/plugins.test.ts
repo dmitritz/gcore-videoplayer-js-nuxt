@@ -5,49 +5,32 @@ import type { PluginName } from '../../types'
 describe('plugins', () => {
   describe('getDisabledPlugins', () => {
     it.each([
-      ['media_control_gear', ['media_control_gear'], true],
-      ['media_control_gear', ['media_control', 'media_control_gear'], false],
-      ['media_control_gear', [], true],
+      ['bottom_gear', ['bottom_gear'], true],
+      ['bottom_gear', ['media_control'], false],
+      ['bottom_gear', [], true],
+      ['level_selector', ['level_selector', 'bottom_gear'], true],
+      ['level_selector', ['level_selector', 'media_control'], true],
       [
-        'media_control_level_selector',
-        ['media_control_level_selector', 'media_control_gear'],
-        true,
-      ],
-      [
-        'media_control_level_selector',
-        ['media_control_level_selector', 'media_control'],
-        true,
-      ],
-      [
-        'media_control_level_selector',
-        ['media_control_level_selector', 'media_control', 'media_control_gear'],
+        'level_selector',
+        ['level_selector', 'media_control', 'bottom_gear'],
         false,
       ],
       [
-        'media_control_nerd_stats',
-        [
-          'media_control_nerd_stats',
-          'media_control',
-          'media_control_gear',
-          'clappr_stats',
-        ],
+        'nerd_stats',
+        ['nerd_stats', 'media_control', 'bottom_gear', 'clappr_stats'],
         false,
       ],
-      [
-        'media_control_nerd_stats',
-        ['media_control_nerd_stats', 'media_control_gear', 'media_control'],
-        true,
-      ],
-      [
-        'media_control_nerd_stats',
-        ['media_control_nerd_stats', 'clappr_stats', 'media_control'],
-        true,
-      ],
-      [
-        'media_control_nerd_stats',
-        ['media_control_nerd_stats', 'clappr_stats', 'media_control_gear'],
-        true,
-      ],
+      ['nerd_stats', ['bottom_gear', 'media_control'], true],
+      ['nerd_stats', ['clappr_stats', 'media_control'], true],
+      ['nerd_stats', ['clappr_stats', 'bottom_gear'], true],
+      ['subtitles', ['media_control'], false],
+      ['subtitles', [], true],
+      ['playback_rate', ['media_control', 'bottom_gear'], false],
+      ['playback_rate', ['media_control'], true],
+      ['playback_rate', ['bottom_gear'], true],
+      ['playback_rate', [], true],
+      ['pip', ['media_control'], false],
+      ['pip', [], true],
       // TODO
     ])(
       '%s | %s : %s',
@@ -65,20 +48,20 @@ describe('plugins', () => {
     it.each([
       [
         [
-          'media_control_level_selector',
-          'media_control_nerd_stats',
+          'level_selector',
+          'nerd_stats',
           'clappr_stats',
-          'media_control_gear',
+          'bottom_gear',
           'media_control',
         ],
         [
           'clappr_stats',
           'media_control',
-          'media_control_gear',
-          'media_control_level_selector',
-          'media_control_nerd_stats',
-        ]
-      ]
+          'bottom_gear',
+          'level_selector',
+          'nerd_stats',
+        ],
+      ],
     ])('%s -> %s', (srcPlugins, expectOrder) => {
       const order = getRegistrationOrder(srcPlugins as PluginName[])
       expect(order).toEqual(expectOrder)

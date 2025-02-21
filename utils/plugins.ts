@@ -3,9 +3,6 @@ import { PLUGIN_NAMES, type PluginName } from '../types'
 export function getDisabledPlugins(plugins: PluginName[]): PluginName[] {
   const disabled: PluginName[] = []
   PLUGIN_DEPS_CHECK_CHAIN.forEach(([plugin, deps]) => {
-    // if (!plugins.includes(plugin)) {
-    //   return
-    // }
     for (const dep of deps) {
       if (!plugins.includes(dep) || disabled.includes(dep)) {
         disabled.push(plugin)
@@ -34,8 +31,12 @@ export function getRegistrationOrder(plugins: PluginName[]): PluginName[] {
 
 const PLUGIN_DEPS_CHECK_CHAIN = buildPluginDepsCheckChain(
   addMediaControlDeps({
-    media_control_level_selector: ['media_control_gear'],
-    media_control_nerd_stats: ['media_control_gear', 'clappr_stats'],
+    bottom_gear: ['media_control'],
+    level_selector: ['media_control','bottom_gear'],
+    nerd_stats: ['media_control','bottom_gear', 'clappr_stats'],
+    playback_rate: ['media_control','bottom_gear'],
+    subtitles: ['media_control'],
+    pip: ['media_control'],
   })
 )
 

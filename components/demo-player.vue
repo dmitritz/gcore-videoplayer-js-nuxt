@@ -25,16 +25,16 @@
     </div>
     <div class="flex gap-2 items-center content-center justify-end flex-wrap">
       <span class="text-slate-600 dark:text-slate-300 text-sm" v-if="noSource">no source</span>
-      <span class="text-xs sm:text-sm" v-if="width && height">{{
+      <span class="text-xs sm:text-sm" v-if="width && height" id="dashboard_quality">{{
         formatQuality(width, height)
       }}</span>
-      <span class="text-xs sm:text-sm" v-if="bitrate">{{
+      <span class="text-xs sm:text-sm" v-if="bitrate" id="dashboard_bitrate">{{
         formatBitrate(bitrate)
       }}</span>
       <span class="local-time text-xs sm:text-sm text-left" v-if="showTime">{{
         formatTime(currentTime)
       }}</span>
-      <span class="font-semibold text-sm uppercase" v-if="playbackType">{{
+      <span class="font-semibold text-sm uppercase" v-if="playbackType" id="dashboard_playback_type">{{
         playbackType
       }}</span>
       <button
