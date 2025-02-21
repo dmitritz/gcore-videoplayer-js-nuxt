@@ -135,11 +135,11 @@ const config = computed(() => ({
   clapprNerdStats: {
     speedTestServers: SPEEDTEST_SERVERS,
   },
-  // contextMenu: {
-  //   label: '',
-  //   preventShowContextMenu: true,
-  //   url: '',
-  // },
+  contextMenu: {
+    label: 'Benjamin Franklin',
+    preventShowContextMenu: true,
+    url: 'https://gcore.com/',
+  },
   design: {
     // media_control
     background_color: 'rgba(0,0,0,1.0)',

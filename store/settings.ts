@@ -115,7 +115,7 @@ const DEFAULT_MAIN_SETTINGS: MainSettings = {
 const DEFAULT_PLUGINS: PluginName[] = [
   'media_control',
   'bottom_gear',
-  'media_control_dvr',
+  'dvr_controls',
   'level_selector',
   'source_controller',
   'spinner',

@@ -5,9 +5,15 @@ import type { PluginName } from '../../types'
 describe('plugins', () => {
   describe('getDisabledPlugins', () => {
     it.each([
+      ['audio_selector', [], true],
+      ['audio_selector', ['media_control'], false],
       ['bottom_gear', ['bottom_gear'], true],
       ['bottom_gear', ['media_control'], false],
       ['bottom_gear', [], true],
+      ['clips', [], true],
+      ['clips', ['media_control'], false],
+      ['dvr_controls', [], true],
+      ['dvr_controls', ['media_control'], false],
       ['level_selector', ['level_selector', 'bottom_gear'], true],
       ['level_selector', ['level_selector', 'media_control'], true],
       [
@@ -31,6 +37,8 @@ describe('plugins', () => {
       ['playback_rate', [], true],
       ['pip', ['media_control'], false],
       ['pip', [], true],
+      ['thumbnails', ['media_control'], false],
+      ['thumbnails', [], true],
       // TODO
     ])(
       '%s | %s : %s',

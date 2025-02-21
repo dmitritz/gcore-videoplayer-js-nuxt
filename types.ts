@@ -4,14 +4,15 @@ export type StreamDto = Record<string, unknown>;
 export type PluginName =
   | 'big_mute_button'
   | 'click_to_pause'
+  | 'clips'
   | 'clappr_stats'
-  | 'disable_controls'
+  | 'context_menu'
   | 'error_screen'
   | 'example_ui'
   | 'media_control'
-  | 'media_control_audio_selector'
+  | 'audio_selector'
   | 'nerd_stats'
-  | 'media_control_dvr'
+  | 'dvr_controls'
   | 'bottom_gear'
   | 'level_selector'
   | 'media_control_multicamera'
@@ -20,7 +21,7 @@ export type PluginName =
   | 'media_control_seek_time'
   | 'media_control_share'
   | 'subtitles'
-  | 'media_control_thumbnails'
+  | 'thumbnails'
   | 'poster'
   | 'spinner'
   | 'source_controller'
@@ -34,9 +35,9 @@ export const PLUGIN_NAMES: PluginName[] = [
   'error_screen',
   'example_ui',
   'media_control',
-  'media_control_audio_selector',
+  'audio_selector',
   'nerd_stats',
-  'media_control_dvr',
+  'dvr_controls',
   'bottom_gear',
   'level_selector',
   'media_control_multicamera',
@@ -45,7 +46,7 @@ export const PLUGIN_NAMES: PluginName[] = [
   'media_control_seek_time',
   'media_control_share',
   'subtitles',
-  'media_control_thumbnails',
+  'thumbnails',
   'poster',
   'spinner',
   'source_controller',

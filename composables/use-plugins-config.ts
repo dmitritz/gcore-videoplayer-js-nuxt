@@ -8,7 +8,6 @@ import {
   ClapprNerdStats,
   ClapprStats,
   ClickToPause,
-  DisableControls,
   DvrControls,
   ErrorScreen,
   LevelSelector,
@@ -22,6 +21,7 @@ import {
   SpinnerThreeBounce,
   Thumbnails,
   VolumeFade,
+  ContextMenu,
 } from '@gcorevideo/player'
 
 import useSettingsStore from '../store/settings'
@@ -32,10 +32,10 @@ const PLUGINS: Partial<Record<PluginName, PlayerPlugin>> = {
   big_mute_button: BigMuteButton,
   bottom_gear: BottomGear,
   click_to_pause: ClickToPause,
-  nerd_stats: ClapprNerdStats,
+  context_menu: ContextMenu,
+  dvr_controls: DvrControls,
   clappr_stats: ClapprStats,
-  disable_controls: DisableControls,
-  media_control_dvr: DvrControls,
+  nerd_stats: ClapprNerdStats,
   error_screen: ErrorScreen,
   example_ui: ExampleUI,
   level_selector: LevelSelector,
@@ -46,7 +46,7 @@ const PLUGINS: Partial<Record<PluginName, PlayerPlugin>> = {
   // media_control_seek_time: SeekTime,
   // media_control_share: Share,
   subtitles: Subtitles,
-  media_control_thumbnails: Thumbnails,
+  thumbnails: Thumbnails,
   poster: Poster,
   spinner: SpinnerThreeBounce,
   source_controller: SourceController,

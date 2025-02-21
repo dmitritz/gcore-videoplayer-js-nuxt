@@ -31,12 +31,16 @@ export function getRegistrationOrder(plugins: PluginName[]): PluginName[] {
 
 const PLUGIN_DEPS_CHECK_CHAIN = buildPluginDepsCheckChain(
   addMediaControlDeps({
+    audio_selector: ['media_control'],
     bottom_gear: ['media_control'],
+    clips: ['media_control'],
+    dvr_controls: ['media_control'],
     level_selector: ['media_control','bottom_gear'],
     nerd_stats: ['media_control','bottom_gear', 'clappr_stats'],
     playback_rate: ['media_control','bottom_gear'],
     subtitles: ['media_control'],
     pip: ['media_control'],
+    thumbnails: ['media_control'],
   })
 )
 
