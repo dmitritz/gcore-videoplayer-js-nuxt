@@ -1,4 +1,4 @@
-import { PLUGIN_NAMES, type PluginName } from '../types'
+import { type PluginName } from '../types'
 
 export function getDisabledPlugins(plugins: PluginName[]): PluginName[] {
   const disabled: PluginName[] = []
@@ -30,35 +30,22 @@ export function getRegistrationOrder(plugins: PluginName[]): PluginName[] {
 }
 
 const PLUGIN_DEPS_CHECK_CHAIN = buildPluginDepsCheckChain(
-  addMediaControlDeps({
+  {
     audio_selector: ['media_control'],
     bottom_gear: ['media_control'],
     clips: ['media_control'],
     dvr_controls: ['media_control'],
     level_selector: ['media_control','bottom_gear'],
+    multicamera: ['media_control'],
     nerd_stats: ['media_control','bottom_gear', 'clappr_stats'],
     playback_rate: ['media_control','bottom_gear'],
-    subtitles: ['media_control'],
     pip: ['media_control'],
+    subtitles: ['media_control'],
+    seek_time: ['media_control'],
+    share: ['media_control'],
     thumbnails: ['media_control'],
-  })
+  }
 )
-
-function addMediaControlDeps(
-  origRules: Partial<Record<PluginName, PluginName[]>>
-): Partial<Record<PluginName, PluginName[]>> {
-  const rules = { ...origRules }
-  PLUGIN_NAMES.forEach((plugin) => {
-    if (plugin.startsWith('media_control_')) {
-      if (rules[plugin]) {
-        rules[plugin].push('media_control')
-      } else {
-        rules[plugin] = ['media_control']
-      }
-    }
-  })
-  return rules
-}
 
 function buildPluginDepsCheckChain(
   rules: Partial<Record<PluginName, PluginName[]>>

@@ -185,7 +185,8 @@ const config = computed(() => ({
     showOnError: false,
   },
   spinner: {
-    showOnError: true,
+    // showOnError: true,
+    showOnError: false,
     // showOnStart: true,
   },
   // shareURL: "https://gvideo.co", // share plugin

@@ -21,6 +21,8 @@ describe('plugins', () => {
         ['level_selector', 'media_control', 'bottom_gear'],
         false,
       ],
+      ['multicamera', [], true],
+      ['multicamera', ['media_control'], false],
       [
         'nerd_stats',
         ['nerd_stats', 'media_control', 'bottom_gear', 'clappr_stats'],
@@ -37,6 +39,10 @@ describe('plugins', () => {
       ['playback_rate', [], true],
       ['pip', ['media_control'], false],
       ['pip', [], true],
+      ['seek_time', ['media_control'], false],
+      ['seek_time', [], true],
+      ['share', ['media_control'], false],
+      ['share', [], true],
       ['thumbnails', ['media_control'], false],
       ['thumbnails', [], true],
       // TODO
