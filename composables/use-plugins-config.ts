@@ -62,6 +62,12 @@ const usePluginsConfig = () => {
   const { disabledPlugins } = usePluginsDeps()
 
   onBeforeMount(configurePlugins)
+  onBeforeUnmount(() => {
+    settings.plugins.forEach((name) => {
+      const plugin = PLUGINS[name as PluginName]
+      Player.unregisterPlugin(plugin as unknown as PlayerPluginConstructor)
+    })
+  })
 
   function configurePlugins() {
     getRegistrationOrder(settings.plugins).forEach((name) => {
