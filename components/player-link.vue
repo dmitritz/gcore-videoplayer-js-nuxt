@@ -30,7 +30,13 @@ const copied = ref(false)
 
 const playerLink = computed(() => {
   const url = new URL(window.location.href)
-  url.search = `?${settings.serialized}`
+  Object.entries(settings.structured).forEach(([key, value]) => {
+    if (value === null) {
+      url.searchParams.delete(key)
+    } else {
+      url.searchParams.set(key, String(value))
+    }
+  })
   return url.href
 })
 
