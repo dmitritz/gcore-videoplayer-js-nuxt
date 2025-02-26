@@ -265,7 +265,11 @@ const useSettingsStore = () => {
         }).filter(Boolean).join('&')
       },
       structured() {
+<<<<<<< HEAD
         const retval: StructuredSettings = {};
+=======
+        const retval: StructuredSetttings = {};
+>>>>>>> 2f12c4c (Retain extra URL query params when building share link)
         if (this.autoplay) {
           retval.autoplay = true
         }
