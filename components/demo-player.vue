@@ -66,12 +66,15 @@ import {
   Player,
   type PlaybackModule,
   type PlaybackType,
+  trace,
 } from '@gcorevideo/player'
 
 import usePluginsConfig from '~/composables/use-plugins-config'
 import useSettingsStore from '../store/settings'
 import { SPEEDTEST_SERVERS } from '../constants'
 import type { ExampleUIOptions } from './plugins/ExampleUI'
+
+const T = 'app.demo-player'
 
 const container = ref<HTMLDivElement>()
 const playing = ref(false)
@@ -219,12 +222,14 @@ onMounted(() => {
     if (!container.value) {
       return
     }
+    trace(`${T} onMounted attachTo`)
     player.attachTo(container.value)
     rob.start(container.value)
   }, 0)
 })
 
-onBeforeMount(() => {
+onBeforeUnmount(() => {
+  trace(`${T} onBeforeUnmount`)
   rob.stop()
   player.destroy()
 })
