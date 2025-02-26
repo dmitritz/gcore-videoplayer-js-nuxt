@@ -74,6 +74,7 @@ const PLUGIN_LABELS: Partial<Record<PluginName, string>> = {
   context_menu: 'Context menu',
   error_screen: 'Error screen',
   example_ui: 'Example UI',
+  favicon: 'Favicon',
   media_control: 'Media control',
   audio_selector: 'Audio selector',
   nerd_stats: 'Stats for nerds',

@@ -12,6 +12,7 @@ export type PluginName =
   | 'dvr_controls'
   | 'error_screen'
   | 'example_ui'
+  | 'favicon'
   | 'media_control'
   | 'nerd_stats'
   | 'level_selector'
@@ -36,6 +37,7 @@ export const PLUGIN_NAMES: PluginName[] = [
   'context_menu',
   'error_screen',
   'example_ui',
+  'favicon',
   'media_control',
   'nerd_stats',
   'dvr_controls',

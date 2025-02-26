@@ -173,6 +173,7 @@ const config = computed(() => ({
     stopped,
     width,
   } as ExampleUIOptions,
+  faviconColor: '#000',
   // fullscreenDisable: true, // media_control
   levelSelector: {
     labels: {
