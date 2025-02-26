@@ -68,6 +68,8 @@ const PLUGINS: Plugins = _P.reduce((ps: Plugins, p: PlayerPluginConstructor) => 
   return ps
 }, {}) as Plugins
 
+PLUGINS.click_to_pause = PLUGINS.click_to_pause_custom
+
 const T = 'app.use-plugins-config'
 
 const usePluginsConfig = () => {
