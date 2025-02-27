@@ -12,13 +12,8 @@
   },
   "dependencies": {
     "@clappr/core": "^0.11.4",
-<<<<<<< HEAD
     "@gcorevideo/player": "^2.22.0",
     "@fingerprintjs/fingerprintjs": "^4.6.1",
-=======
-    "@fingerprintjs/fingerprintjs": "^4.6.0",
-    "@gcorevideo/player": "^2.20.17",
->>>>>>> 5e8c428 (Update player)
     "@gcorevideo/utils": "^0.6.0",
     "@heroicons/vue": "^2.2.0",
     "@pinia/nuxt": "^0.10.1",
@@ -33,11 +28,7 @@
     "vue-router": "latest",
     "zod": "^3.24.2"
   },
-<<<<<<< HEAD
   "version": "0.14.27",
-=======
-  "version": "0.14.15",
->>>>>>> 9f25bc2 (0.14.15)
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.12",
     "@types/ms": "^2.1.0",
