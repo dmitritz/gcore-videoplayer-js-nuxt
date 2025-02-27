@@ -47,6 +47,8 @@ if (import.meta.client) {
     os_name: Browser.os.name?.replace(/ /g, '_'),
     width: Browser.viewport.width,
     height: Browser.viewport.height,
+  }, {
+    delay: 2000,
   })
   setTracer(tracer)
 }
