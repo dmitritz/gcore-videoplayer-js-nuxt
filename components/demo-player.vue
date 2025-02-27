@@ -73,6 +73,7 @@ import usePluginsConfig from '~/composables/use-plugins-config'
 import useSettingsStore from '../store/settings'
 import { SPEEDTEST_SERVERS } from '../constants'
 import type { ExampleUIOptions } from './plugins/ExampleUI'
+import strings from '~/assets/strings.json'
 
 const T = 'app.demo-player'
 
@@ -206,7 +207,7 @@ const config = computed(() => ({
     sprite:
       'https://static.gvideo.co/videoplatform/sprites/2675/2452164_3dk4NsRt6vWsffEr.mp4_sprite.jpg',
   },
-  // strings: JSON.parse(document.head.querySelector("[name=translations]").content),
+  strings,
 }))
 
 const player = new Player(config.value)

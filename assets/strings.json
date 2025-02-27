@@ -1,0 +1,22 @@
+{
+    "en": {
+        "no_broadcast": "Broadcast is not on air",
+        "error_code": "Error code"
+    },
+    "pt": {
+        "no_broadcast": "Não há transmissão no ar",
+        "error_code": "Código de erro"
+    },
+    "pt-BR": {
+        "no_broadcast": "Transmissão não está no ar",
+        "error_code": "Código de erro"
+    },
+    "es": {
+        "no_broadcast": "La transmisión no está en vivo",
+        "error_code": "Código de error"
+    },
+    "el": {
+        "no_broadcast": "Η ροή δεν είναι ενεργοποιημένη",
+        "error_code": "Κωδικός σφάλματος"
+    }
+} 
