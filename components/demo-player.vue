@@ -134,7 +134,6 @@ const config = computed(() => ({
   playbackType: settings.playbackType,
   priorityTransport: settings.priorityTransport,
   sources: settings.sources,
-  strings: { en: {} },
   // Below go the plugin settings
   clapprNerdStats: {
     speedTestServers: SPEEDTEST_SERVERS,
