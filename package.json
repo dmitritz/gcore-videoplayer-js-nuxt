@@ -33,7 +33,7 @@
     "@tailwindcss/vite": "^4.0.6",
     "@types/ms": "^2.1.0",
     "tailwindcss": "^4.0.6",
-    "vitest": "^3.0.6"
+    "vitest": "^3.0.8"
   },
   "overrides": {
     "ofetch": "^1.4.0",
