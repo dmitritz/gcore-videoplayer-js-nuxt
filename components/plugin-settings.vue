@@ -70,6 +70,7 @@ const PLUGIN_LABELS: Partial<Record<PluginName, string>> = {
   audio_selector: 'Audio track selector',
   big_mute_button: 'Big mute button',
   bottom_gear: 'Bottom gear',
+  cc: 'Subtitles',
   click_to_pause: 'Click to pause',
   context_menu: 'Context menu',
   dvr_controls: 'DVR controls',
@@ -88,7 +89,6 @@ const PLUGIN_LABELS: Partial<Record<PluginName, string>> = {
   source_controller: 'Source controller',
   clappr_stats: 'Stats',
   nerd_stats: 'Stats for nerds',
-  subtitles: 'Subtitles',
   thumbnails: 'Thumbnails',
   volume_fade: 'Volume fade',
 }
