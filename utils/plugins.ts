@@ -33,6 +33,7 @@ const PLUGIN_DEPS_CHECK_CHAIN = buildPluginDepsCheckChain(
   {
     audio_selector: ['media_control'],
     bottom_gear: ['media_control'],
+    cc: ['media_control'],
     clips: ['media_control'],
     dvr_controls: ['media_control'],
     level_selector: ['media_control','bottom_gear'],
@@ -40,7 +41,6 @@ const PLUGIN_DEPS_CHECK_CHAIN = buildPluginDepsCheckChain(
     nerd_stats: ['media_control','bottom_gear', 'clappr_stats'],
     playback_rate: ['media_control','bottom_gear'],
     pip: ['media_control'],
-    subtitles: ['media_control'],
     seek_time: ['media_control'],
     share: ['media_control'],
     thumbnails: ['media_control'],

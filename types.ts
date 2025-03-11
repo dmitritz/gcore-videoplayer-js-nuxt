@@ -5,6 +5,7 @@ export type PluginName =
   | 'audio_selector'
   | 'big_mute_button'
   | 'bottom_gear'
+  | 'cc'
   | 'click_to_pause'
   | 'clips'
   | 'clappr_stats'
@@ -12,6 +13,7 @@ export type PluginName =
   | 'dvr_controls'
   | 'error_screen'
   | 'example_ui'
+  | 'favicon'
   | 'media_control'
   | 'nerd_stats'
   | 'level_selector'
@@ -23,19 +25,20 @@ export type PluginName =
   | 'share'
   | 'spinner'
   | 'source_controller'
-  | 'subtitles'
   | 'thumbnails'
   | 'volume_fade'
 
 export const PLUGIN_NAMES: PluginName[] = [
   'audio_selector',
   'big_mute_button',
+  'cc',
   'click_to_pause',
   'clips',
   'clappr_stats',
   'context_menu',
   'error_screen',
   'example_ui',
+  'favicon',
   'media_control',
   'nerd_stats',
   'dvr_controls',
@@ -49,7 +52,6 @@ export const PLUGIN_NAMES: PluginName[] = [
   'share',
   'spinner',
   'source_controller',
-  'subtitles',
   'thumbnails',
   'volume_fade',
 ]

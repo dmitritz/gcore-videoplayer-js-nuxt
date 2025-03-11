@@ -84,8 +84,11 @@ type MainSettings = {
   priorityTransport: TransportPreference
 }
 
+type StructuredSettings = Record<string, string | boolean | number |null>;
+
 type Getters = {
   serialized: () => string
+  structured: () => StructuredSettings
 }
 
 type Actions = {
@@ -254,38 +257,44 @@ const useSettingsStore = () => {
     }),
     getters: {
       serialized() {
-        const items: string[] = []
+        return Object.entries(this.structured).map(([key, value]) => {
+          if (value === null) {
+            return null;
+          }
+          return `${key}=${value}`
+        }).filter(Boolean).join('&')
+      },
+      structured() {
+        const retval: StructuredSettings = {};
         if (this.autoplay) {
-          items.push('autoplay=true')
+          retval.autoplay = true
         }
         if (this.mute) {
-          items.push('mute=true')
+          retval.mute = true
         }
         if (this.loop) {
-          items.push('loop=true')
+          retval.loop = true
         }
         if (this.playbackType !== 'vod') {
-          items.push(`playback_type=${this.playbackType}`)
+          retval.playback_type = this.playbackType
         }
         if (this.priorityTransport !== DEFAULT_PRIORITY_TRANSPORT) {
-          items.push(`priority_transport=${this.priorityTransport}`)
+          retval.priority_transport = this.priorityTransport
         }
         if (this.plugins.length > 0) {
-          items.push(`plugins=${this.plugins.join(',')}`)
+          retval.plugins = this.plugins.join(',')
         }
         if (this.sources.length > 0) {
-          items.push(`sources=${encodeURIComponent(this.sources.join(','))}`)
+          retval.sources = this.sources.join(',')
         }
         if (this.debug !== 'all') {
-          items.push(`debug=${this.debug}`)
+          retval.debug = this.debug
         }
         if (isCustomDashSettings(this.dash)) {
-          items.push(
-            `dash=${encodeURIComponent(serializeDashSettings(this.dash))}`
-          )
+          retval.dash = serializeDashSettings(this.dash)
         }
-        return items.join('&')
-      },
+        return retval;
+      }
     },
     actions: {
       addPlugin(name: PluginName) {
