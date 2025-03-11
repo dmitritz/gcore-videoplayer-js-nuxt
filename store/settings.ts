@@ -84,11 +84,11 @@ type MainSettings = {
   priorityTransport: TransportPreference
 }
 
-type StructuredSetttings = Record<string, string | boolean | number |null>;
+type StructuredSettings = Record<string, string | boolean | number |null>;
 
 type Getters = {
   serialized: () => string
-  structured: () => StructuredSetttings
+  structured: () => StructuredSettings
 }
 
 type Actions = {
@@ -265,7 +265,7 @@ const useSettingsStore = () => {
         }).filter(Boolean).join('&')
       },
       structured() {
-        const retval: StructuredSetttings = {};
+        const retval: StructuredSettings = {};
         if (this.autoplay) {
           retval.autoplay = true
         }
