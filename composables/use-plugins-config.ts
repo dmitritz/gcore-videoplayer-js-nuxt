@@ -1,8 +1,7 @@
 import { onBeforeMount } from 'vue'
 import {
   Player,
-  type PlayerPlugin,
-  AudioSelector,
+  AudioTracks,
   BigMuteButton,
   BottomGear,
   ClapprNerdStats,
@@ -37,7 +36,7 @@ import assert from 'assert'
 
 type Plugins = Partial<Record<PluginName, PlayerPluginConstructor>>
 const _P: PlayerPluginConstructor[] = [
-  AudioSelector,
+  AudioTracks,
   BigMuteButton,
   BottomGear,
   ClapprStats,
