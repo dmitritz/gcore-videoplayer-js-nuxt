@@ -28,7 +28,7 @@
     "vue-router": "latest",
     "zod": "^3.24.2"
   },
-  "version": "0.14.29",
+  "version": "0.14.30",
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.12",
     "@types/ms": "^2.1.0",
