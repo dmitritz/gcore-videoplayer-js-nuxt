@@ -83,7 +83,8 @@ const usePluginsConfig = () => {
         name
       })
       const plugin = PLUGINS[name as PluginName]
-      Player.unregisterPlugin(plugin?.prototype.name) // TODO or just name
+      assert(plugin, `Plugin ${name} not found`)
+      Player.unregisterPlugin(plugin.prototype.name) // TODO or just name
     })
   })
 

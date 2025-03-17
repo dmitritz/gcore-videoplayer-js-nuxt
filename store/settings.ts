@@ -67,7 +67,7 @@ type State = {
   experimental: Record<string, unknown>
   loop: boolean
   mute: boolean
-  playbackType: PlaybackType
+  playbackType?: PlaybackType
   plugins: PluginName[]
   poster: string
   priorityTransport: TransportPreference
@@ -80,7 +80,7 @@ type MainSettings = {
   autoplay: boolean
   loop: boolean
   mute: boolean
-  playbackType: PlaybackType
+  playbackType?: PlaybackType
   priorityTransport: TransportPreference
 }
 
@@ -111,7 +111,7 @@ const DEFAULT_MAIN_SETTINGS: MainSettings = {
   autoplay: false,
   loop: false,
   mute: true,
-  playbackType: 'vod',
+  // playbackType: 'vod',
   priorityTransport: DEFAULT_PRIORITY_TRANSPORT,
 }
 
@@ -275,7 +275,7 @@ const useSettingsStore = () => {
         if (this.loop) {
           retval.loop = true
         }
-        if (this.playbackType !== 'vod') {
+        if (this.playbackType === 'live') {
           retval.playback_type = this.playbackType
         }
         if (this.priorityTransport !== DEFAULT_PRIORITY_TRANSPORT) {
