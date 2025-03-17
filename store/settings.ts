@@ -195,7 +195,6 @@ const useSettingsStore = () => {
         parseSelectOption<PlaybackType>(
           ['vod', 'live'],
           url.searchParams.get('playback_type'),
-          'vod'
         ) ??
         pm.playbackType ??
         DEFAULT_MAIN_SETTINGS.playbackType, // TODO sanitize
@@ -209,7 +208,7 @@ const useSettingsStore = () => {
     autoplay,
     mute,
     loop,
-    playbackType = 'vod',
+    playbackType,
     priorityTransport,
   } = persistedBasic.get()
 
@@ -249,9 +248,8 @@ const useSettingsStore = () => {
       restrictResolution: parseInt(
         parseSelectOption(
           ['360', '720', '0'],
-          url.searchParams.get('restrict_resolution') ?? '0',
-          '0'
-        ),
+          url.searchParams.get('restrict_resolution'),
+        ) ?? '0',
         10
       ),
     }),
@@ -353,7 +351,7 @@ const useSettingsStore = () => {
         this.loop = false
         this.plugins = DEFAULT_PLUGINS.slice()
         this.priorityTransport = DEFAULT_PRIORITY_TRANSPORT
-        this.playbackType = 'vod'
+        this.playbackType = undefined
         this.dash = structuredClone(DEFAULT_DASH_SETTINGS)
         this.restrictResolution = 0
       },
@@ -384,18 +382,19 @@ function transportPreference(
   input: string | null,
   def: TransportPreference = 'dash'
 ): TransportPreference {
-  return parseSelectOption<TransportPreference>(['dash', 'hls'], input, def)
+  return parseSelectOption<TransportPreference>(['dash', 'hls'], input) ?? def
 }
 
 function parseSelectOption<T extends string>(
-  options: string[],
+  options: string[], // T[]
   input: string | null,
-  def: T
-): T {
+): T | undefined {
   if (input === null) {
-    return def
+    return;
   }
-  return options.includes(input) ? (input as T) : def
+  if (options.includes(input)) {
+    return input as T
+  }
 }
 
 function parseBoolean(val: string | null, defaultValue = false): boolean {

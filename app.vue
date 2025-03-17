@@ -28,7 +28,7 @@ if (import.meta.client) {
         Fingerprint.load()
           .then((agent) => agent.get())
           .then((res) => {
-            tracer.setTag('visitorId', res.visitorId)
+            tracer.setTag('visitor_id', res.visitorId)
             scope.setTags(tags)
             scope.setTag('visitor_id', res.visitorId)
             settings.setVisitorId(res.visitorId)
