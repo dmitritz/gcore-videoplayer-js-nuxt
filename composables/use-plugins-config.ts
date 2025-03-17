@@ -1,8 +1,7 @@
 import { onBeforeMount } from 'vue'
 import {
   Player,
-  type PlayerPlugin,
-  AudioSelector,
+  AudioTracks,
   BigMuteButton,
   BottomGear,
   ClapprNerdStats,
@@ -37,7 +36,7 @@ import assert from 'assert'
 
 type Plugins = Partial<Record<PluginName, PlayerPluginConstructor>>
 const _P: PlayerPluginConstructor[] = [
-  AudioSelector,
+  AudioTracks,
   BigMuteButton,
   BottomGear,
   ClapprStats,
@@ -67,6 +66,8 @@ const PLUGINS: Plugins = _P.reduce((ps: Plugins, p: PlayerPluginConstructor) => 
   ps[p.prototype.name as PluginName] = p
   return ps
 }, {}) as Plugins
+
+PLUGINS.click_to_pause = PLUGINS.click_to_pause_custom
 
 const T = 'app.use-plugins-config'
 

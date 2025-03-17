@@ -4,34 +4,49 @@
         "error_code": "Error code",
         "playback_rate": "Playback speed",
         "live": "Live",
-        "back_to_live": "Back to live"
+        "back_to_live": "Back to live",
+        "quality": "Quality",
+        "auto": "Auto",
+        "statistics": "Statistics"
     },
     "pt": {
         "no_broadcast": "Não há transmissão no ar",
         "error_code": "Código de erro",
         "playback_rate": "Velocidade de reprodução",
         "live": "En vivo",
-        "back_to_live": "Voltar para o vivo"
+        "back_to_live": "Voltar para o vivo",
+        "quality": "Qualidade",
+        "auto": "Auto",
+        "statistics": "Estatísticas"
     },
     "pt-BR": {
         "no_broadcast": "Transmissão não está no ar",
         "error_code": "Código de erro",
         "playback_rate": "Velocidade de reprodução",
         "live": "En vivo",
-        "back_to_live": "Voltar para o vivo"
+        "back_to_live": "Voltar para o vivo",
+        "quality": "Qualidade",
+        "auto": "Auto",
+        "statistics": "Estatísticas"
     },
     "es": {
         "no_broadcast": "La transmisión no está en vivo",
         "error_code": "Código de error",
         "playback_rate": "Velocidad de reproducción",
         "live": "En vivo",
-        "back_to_live": "Volver al vivo"
+        "back_to_live": "Volver al vivo",
+        "quality": "Calidad",
+        "auto": "Auto",
+        "statistics": "Estadísticas"
     },
     "el": {
         "no_broadcast": "Η ροή δεν είναι ενεργοποιημένη",
         "error_code": "Κωδικός σφάλματος",
         "playback_rate": "Ταχύτητα αναπαραγωγής",
         "live": "Ενεργοποιημένη",
-        "back_to_live": "Επιστροφή στην ενεργοποιημένη ροή"
+        "back_to_live": "Επιστροφή στην ενεργοποιημένη ροή",
+        "quality": "Ποιότητα",
+        "auto": "Auto",
+        "statistics": "Στατιστικά"
     }
 } 

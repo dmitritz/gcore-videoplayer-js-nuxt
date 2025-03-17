@@ -12,8 +12,8 @@
   </div>
   <div class="grid grid-cols-2 md:grid-cols-3 gap-2 my-2">
     <div class="text-sm col-span-2 md:col-span-3">Some plugins depend on others, for instance:<br/>
-      <b>Bottom gear</b> and <b>Picture in picture</b> both depend on <b>Media control</b>,<br/>
-      <b>Nerd stats</b> depends on <b>Media control</b>, <b>Stats</b>, and <b>Bottom gear</b>,<br/>
+      <b>Gear button</b> and <b>Picture in picture</b> both depend on <b>Media control</b>,<br/>
+      <b>Nerd stats</b> depends on <b>Media control</b>, <b>Stats</b>, and <b>Gear button</b>,<br/>
       etc.<br/>
       See the <a href="https://github.com/G-Core/gcore-videoplayer-js/blob/main/packages/player/docs/api/player.md" target="_blank">documentation</a> for more details.
     </div>
@@ -67,18 +67,18 @@ import type { PluginName } from '../types'
 const { disabledPlugins } = usePluginsDeps()
 
 const PLUGIN_LABELS: Partial<Record<PluginName, string>> = {
-  audio_selector: 'Audio track selector',
+  audio_selector: 'Audio tracks',
   big_mute_button: 'Big mute button',
-  bottom_gear: 'Bottom gear',
   click_to_pause: 'Click to pause',
   context_menu: 'Context menu',
   dvr_controls: 'DVR controls',
   error_screen: 'Error screen',
   example_ui: 'Example UI',
   favicon: 'Favicon',
-  level_selector: 'Level selector',
-  media_control: 'Media control',
+  bottom_gear: 'Gear button',
+  media_control: 'Media controls',
   multicamera: 'Multi camera',
+  level_selector: 'Quality levels',
   pip: 'Picture in picture',
   playback_rate: 'Playback rate',
   poster: 'Poster',
