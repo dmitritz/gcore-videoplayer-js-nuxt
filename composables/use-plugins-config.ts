@@ -11,12 +11,12 @@ import {
   DvrControls,
   ErrorScreen,
   Favicon,
-  LevelSelector,
   MediaControl,
   MultiCamera,
   PictureInPicture,
   PlaybackRate,
   Poster,
+  QualityLevels,
   SeekTime,
   Share,
   SourceController,
@@ -26,7 +26,7 @@ import {
   ContextMenu,
   type PlayerPluginConstructor,
   trace,
-  Logo,
+  // Logo,
 } from '@gcorevideo/player'
 
 import useSettingsStore from '../store/settings'
@@ -48,13 +48,13 @@ const _P: PlayerPluginConstructor[] = [
   ErrorScreen,
   ExampleUI,
   Favicon,
-  LevelSelector,
   // Logo,
   MediaControl,
   MultiCamera,
   PictureInPicture,
   PlaybackRate,
   Poster,
+  QualityLevels,
   SeekTime,
   Share,
   SourceController,
@@ -83,7 +83,8 @@ const usePluginsConfig = () => {
         name
       })
       const plugin = PLUGINS[name as PluginName]
-      Player.unregisterPlugin(plugin?.prototype.name) // TODO or just name
+      assert(plugin, `Plugin ${name} not found`)
+      Player.unregisterPlugin(plugin.prototype.name) // TODO or just name
     })
   })
 
