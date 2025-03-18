@@ -17,7 +17,7 @@ export default defineNuxtConfig({
   vite: {
     assetsInclude: ['**/*.svg'],
     build: {
-      assetsInlineLimit: 1,
+      assetsInlineLimit: 0,
     },
     plugins: [tailwindcss()],
   },
