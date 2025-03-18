@@ -70,6 +70,7 @@ const PLUGIN_LABELS: Partial<Record<PluginName, string>> = {
   audio_selector: 'Audio tracks',
   big_mute_button: 'Big mute button',
   click_to_pause: 'Click to pause',
+  clips: 'Clips',
   context_menu: 'Context menu',
   dvr_controls: 'DVR controls',
   error_screen: 'Error screen',
