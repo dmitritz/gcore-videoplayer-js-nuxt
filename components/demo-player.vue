@@ -56,17 +56,20 @@
     <div class="my-2" v-if="errors.length">
       <div v-for="error of errors" :key="error" class="text-red-500 dark:text-red-400 p-2">{{ error }}</div>
     </div>
+    <div class="my-2 col-span-2" v-if="settings.cmcd.enabled">
+      <b>CMCD</b> <span class="text-xs">sid=<code>{{ cmcdSid }}</code></span>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
-
+import { v4 as uuid } from 'uuid'
+import { $ } from '@clappr/core'
 import {
   Player,
   type PlaybackModule,
   type PlaybackType,
-  trace,
 } from '@gcorevideo/player'
 
 import usePluginsConfig from '~/composables/use-plugins-config'
@@ -74,8 +77,9 @@ import useSettingsStore from '../store/settings'
 import { SPEEDTEST_SERVERS } from '../constants'
 import type { ExampleUIOptions } from './plugins/ExampleUI'
 import strings from '~/assets/strings.json'
+import gcoreSvg from '~/assets/img/gcore_orange_001.svg'
 
-const T = 'app.demo-player'
+// const T = 'app.demo-player'
 
 const container = ref<HTMLDivElement>()
 const playing = ref(false)
@@ -113,11 +117,23 @@ const html5VideoSupport = computed(() => {
 
 const errors = ref<string[]>([])
 
+const cmcdSid = ref('')
+
 usePluginsConfig()
+
+const CMCD_KEYS = ['br', 'd', 'ot', 'tb', 'bl', 'dl', 'mtp', 'nor', 'nrr', 'su', 'bs', 'rtp', 'cid', 'pr', 'sf', 'sid', 'st', 'v']
 
 const config = computed(() => ({
   autoPlay: settings.autoplay,
-  dash: settings.dash,
+  dash: $.extend(true, {}, settings.dash, {
+    streaming: {
+      cmcd: {
+        enabled: settings.cmcd.enabled,
+        enabledKeys: CMCD_KEYS,
+        sid: cmcdSid.value,
+      },
+    },
+  }),
   debug: settings.debug,
   mute: settings.mute,
   width: '100%',
@@ -126,6 +142,10 @@ const config = computed(() => ({
   loop: settings.loop,
   playback: {
     hlsjsConfig: {
+      cmcd: settings.cmcd ? {
+        sessionId: cmcdSid.value,
+        includeKeys: CMCD_KEYS,
+      } : undefined,
       lowLatencyMode: true,
       liveSyncDurationCount: 0,
       liveMaxLatencyDurationCount: 1,
@@ -139,9 +159,17 @@ const config = computed(() => ({
     speedTestServers: SPEEDTEST_SERVERS,
   },
   contextMenu: {
-    label: 'Benjamin Franklin',
-    preventShowContextMenu: true,
-    url: 'https://gcore.com/',
+    options: [
+      {
+        // label: 'Join us',
+        labelKey: 'joinus',
+        icon: `<img src="${gcoreSvg}" />`,
+        name: 'joinus',
+        handler() {
+          window.open('https://gcore.com/', '_blank')
+        },
+      }
+    ]
   },
   design: {
     // media_control
@@ -196,6 +224,7 @@ const config = computed(() => ({
   // shareURL: "https://gvideo.co", // share plugin
   subtitles: {
     language: 'en',
+    // language: 'zh',
   },
   thumbnails: {
     backdropHeight: 200,
@@ -215,6 +244,14 @@ const rob = useResizeObserver(({ width, height }) => {
   player.resize({ width, height })
 })
 
+watch(() => settings.cmcd.enabled, (newEnabled) => {
+  if (newEnabled && !cmcdSid.value) {
+    cmcdSid.value = uuid()
+  }
+}, {
+  immediate: true,
+})
+
 onMounted(() => {
   if (!settings.sources.length) {
     return
@@ -223,14 +260,13 @@ onMounted(() => {
     if (!container.value) {
       return
     }
-    trace(`${T} onMounted attachTo`)
+    player.destroy()
     player.attachTo(container.value)
     rob.start(container.value)
   }, 0)
 })
 
 onBeforeUnmount(() => {
-  trace(`${T} onBeforeUnmount`)
   rob.stop()
   player.destroy()
 })

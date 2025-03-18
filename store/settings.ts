@@ -29,6 +29,7 @@ export const DASH_DEFAULT_MAX_DRIFT = 1
 export const DASH_DEFAULT_LC_PLAYBACK_RATE_MAX = 0.1
 export const DASH_DEFAULT_LC_PLAYBACK_RATE_MIN = -0.1
 export const DEFAULT_PRIORITY_TRANSPORT: TransportPreference = 'dash'
+type CMCDKey = 'br' | 'd' | 'ot' | 'tb' | 'bl' | 'dl' | 'mtp' | 'nor' | 'nrr' | 'su' | 'bs' | 'rtp' | 'cid' | 'pr' | 'sf' | 'sid' | 'st' | 'v'
 export type DashSettings = {
   streaming: {
     abr?: {
@@ -47,6 +48,11 @@ export type DashSettings = {
         video?: number
       }
     }
+    cmcd?: {
+      enabled: boolean
+      enabledKeys?: CMCDKey[]
+      // TODO ...
+    },
     delay?: {
       liveDelay: number
     }
@@ -62,6 +68,7 @@ export type DashSettings = {
 
 type State = {
   autoplay: boolean
+  cmcd: CmcdSettings
   dash: DashSettings
   debug: PlayerDebugTag
   experimental: Record<string, unknown>
@@ -84,6 +91,10 @@ type MainSettings = {
   priorityTransport: TransportPreference
 }
 
+type CmcdSettings = {
+  enabled: boolean
+}
+
 type StructuredSettings = Record<string, string | boolean | number |null>;
 
 type Getters = {
@@ -95,8 +106,9 @@ type Actions = {
   addPlugin(name: string): void
   removePlugin(name: string): void
   setAutoplay(value: boolean): void
-  setLoop(value: boolean): void
+  setCmcdEnabled(value: boolean): void
   setDashSettings(value: Partial<DashSettings>): void
+  setLoop(value: boolean): void
   setMute(value: boolean): void
   setPlaybackType(value: PlaybackType): void
   setPriorityTransport(value: TransportPreference): void
@@ -227,10 +239,13 @@ const useSettingsStore = () => {
     persistedPoster.set(url.searchParams.get('poster') ?? '')
   }
   const poster = persistedPoster.get()
+  const persistedCmcd = usePersistence<CmcdSettings>('settings.cmcd', JSON.stringify, JSON.parse, { enabled: false })
+  const cmcd = persistedCmcd.get()
 
   return defineStore<'settings', State, Getters, Actions>('settings', {
     state: () => ({
       autoplay,
+      cmcd,
       dash: deserializeDashSettings(url.searchParams.get('dash') ?? '{}'),
       debug,
       experimental: {},
@@ -313,6 +328,10 @@ const useSettingsStore = () => {
       setAutoplay(value: boolean) {
         this.autoplay = value
         persistBasicSettings(this)
+      },
+      setCmcdEnabled(value: boolean) {
+        this.cmcd.enabled = value
+        persistedCmcd.set(this.cmcd)
       },
       setDashSettings(value: Partial<DashSettings>) {
         this.dash = $.extend(true, {}, this.dash, value)
