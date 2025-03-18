@@ -56,7 +56,7 @@
     <div class="my-2" v-if="errors.length">
       <div v-for="error of errors" :key="error" class="text-red-500 dark:text-red-400 p-2">{{ error }}</div>
     </div>
-    <div class="my-2 col-span-2" v-if="settings.cmcd">
+    <div class="my-2 col-span-2" v-if="settings.cmcd.enabled">
       <b>CMCD</b> <span class="text-xs">sid=<code>{{ cmcdSid }}</code></span>
     </div>
   </div>
@@ -77,6 +77,7 @@ import useSettingsStore from '../store/settings'
 import { SPEEDTEST_SERVERS } from '../constants'
 import type { ExampleUIOptions } from './plugins/ExampleUI'
 import strings from '~/assets/strings.json'
+import gcoreSvg from '~/assets/img/gcore_orange_001.svg'
 
 // const T = 'app.demo-player'
 
@@ -158,9 +159,17 @@ const config = computed(() => ({
     speedTestServers: SPEEDTEST_SERVERS,
   },
   contextMenu: {
-    label: 'Benjamin Franklin',
-    preventShowContextMenu: true,
-    url: 'https://gcore.com/',
+    options: [
+      {
+        // label: 'Join us',
+        labelKey: 'joinus',
+        icon: `<img src="${gcoreSvg}" />`,
+        name: 'joinus',
+        handler() {
+          window.open('https://gcore.com/', '_blank')
+        },
+      }
+    ]
   },
   design: {
     // media_control
@@ -215,6 +224,7 @@ const config = computed(() => ({
   // shareURL: "https://gvideo.co", // share plugin
   subtitles: {
     language: 'en',
+    // language: 'zh',
   },
   thumbnails: {
     backdropHeight: 200,
@@ -234,7 +244,7 @@ const rob = useResizeObserver(({ width, height }) => {
   player.resize({ width, height })
 })
 
-watch(() => settings.cmcd, (newEnabled) => {
+watch(() => settings.cmcd.enabled, (newEnabled) => {
   if (newEnabled && !cmcdSid.value) {
     cmcdSid.value = uuid()
   }

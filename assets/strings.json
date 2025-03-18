@@ -7,7 +7,8 @@
         "back_to_live": "Back to live",
         "quality": "Quality",
         "auto": "Auto",
-        "statistics": "Statistics"
+        "statistics": "Statistics",
+        "joinus": "Join us"
     },
     "pt": {
         "no_broadcast": "Não há transmissão no ar",
@@ -17,7 +18,8 @@
         "back_to_live": "Voltar para o vivo",
         "quality": "Qualidade",
         "auto": "Auto",
-        "statistics": "Estatísticas"
+        "statistics": "Estatísticas",
+        "joinus": "Unirse a nosotros"
     },
     "pt-BR": {
         "no_broadcast": "Transmissão não está no ar",
@@ -27,7 +29,8 @@
         "back_to_live": "Voltar para o vivo",
         "quality": "Qualidade",
         "auto": "Auto",
-        "statistics": "Estatísticas"
+        "statistics": "Estatísticas",
+        "joinus": "Unirse a nosotros"
     },
     "es": {
         "no_broadcast": "La transmisión no está en vivo",
@@ -37,7 +40,8 @@
         "back_to_live": "Volver al vivo",
         "quality": "Calidad",
         "auto": "Auto",
-        "statistics": "Estadísticas"
+        "statistics": "Estadísticas",
+        "joinus": "Unirse a nosotros"
     },
     "el": {
         "no_broadcast": "Η ροή δεν είναι ενεργοποιημένη",
@@ -47,6 +51,10 @@
         "back_to_live": "Επιστροφή στην ενεργοποιημένη ροή",
         "quality": "Ποιότητα",
         "auto": "Auto",
-        "statistics": "Στατιστικά"
+        "statistics": "Στατιστικά",
+        "joinus": "Ελάτε μαζί μας"
+    },
+    "zh": {
+        "joinus": "加入我们"
     }
 } 

@@ -44,9 +44,9 @@
     <div class="label">DASH</div>
     <dash-settings class="block mb-4" />
     <div class="mb-4 grid grid-cols-3">
-      <div class="label">
-        CMCD
-        <div class="text-xs">
+      <div>
+        <div class="label">CMCD</div>
+        <div class="text-xs text-slate-600">
           read more
           <a href="https://dashif.org/dash.js/pages/usage/cmcd.html#common-media-client-data" target="_blank">DASH.js</a>
           <a href="https://github.com/video-dev/hls.js/blob/master/docs/API.md#cmcd" target="_blank">HLS.js</a>
