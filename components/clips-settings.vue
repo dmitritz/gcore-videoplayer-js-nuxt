@@ -1,13 +1,23 @@
 <template>
   <div class="mb-4 grid grid-cols-3">
-    <label for="clips_text" class="label">Clips</label>
+    <div>
+      <label for="clips_text" class="label">Clips</label>
+      <div class="text-sm text-slate-500">
+        Example:<br/>
+        <pre>
+00 Introduction
+01:30 Our sponsors
+31:30 Questions
+01:00:30 Conclusion
+        </pre>
+      </div>
+    </div>
     <div class="row col-span-2 flex flex-col gap-2 items-start">
       <textarea
         id="clips_text"
         v-model="clipsText"
         class="w-full rounded border border-slate-300 p-2"
         rows="10"
-        placeholder="[[00:]00:]00 text, one per line"
       />
       <div class="flex flex-row gap-2">
         <span v-show="loaded" class="text-sm text-slate-500">Loaded</span>
