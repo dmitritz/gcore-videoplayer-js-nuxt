@@ -4,15 +4,16 @@ import {
   AudioTracks,
   BigMuteButton,
   BottomGear,
-  ClapprNerdStats,
   ClapprStats,
   ClickToPause,
+  Clips,
   ClosedCaptions,
   DvrControls,
   ErrorScreen,
   Favicon,
   MediaControl,
   MultiCamera,
+  NerdStats,
   PictureInPicture,
   PlaybackRate,
   Poster,
@@ -40,8 +41,9 @@ const _P: PlayerPluginConstructor[] = [
   BigMuteButton,
   BottomGear,
   ClapprStats,
-  ClapprNerdStats,
+  NerdStats,
   ClickToPause,
+  Clips,
   ClosedCaptions,
   ContextMenu,
   DvrControls,
@@ -66,8 +68,6 @@ const PLUGINS: Plugins = _P.reduce((ps: Plugins, p: PlayerPluginConstructor) => 
   ps[p.prototype.name as PluginName] = p
   return ps
 }, {}) as Plugins
-
-PLUGINS.click_to_pause = PLUGINS.click_to_pause_custom
 
 const T = 'app.use-plugins-config'
 

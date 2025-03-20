@@ -81,6 +81,7 @@ type State = {
   sources: string[]
   visitorId: string
   restrictResolution: number
+  clips: string
 }
 
 type MainSettings = {
@@ -117,6 +118,7 @@ type Actions = {
   reset(): void
   setVisitorId(value: string): void
   setRestrictResolution(value: number): void
+  setClipsText(value: string): void
 }
 
 const DEFAULT_MAIN_SETTINGS: MainSettings = {
@@ -267,6 +269,7 @@ const useSettingsStore = () => {
         ) ?? '0',
         10
       ),
+      clips: '',
     }),
     getters: {
       serialized() {
@@ -328,6 +331,9 @@ const useSettingsStore = () => {
       setAutoplay(value: boolean) {
         this.autoplay = value
         persistBasicSettings(this)
+      },
+      setClipsText(value: string) {
+        this.clips = value
       },
       setCmcdEnabled(value: boolean) {
         this.cmcd.enabled = value

@@ -158,6 +158,9 @@ const config = computed(() => ({
   clapprNerdStats: {
     speedTestServers: SPEEDTEST_SERVERS,
   },
+  clips: {
+    text: settings.clips,
+  },
   contextMenu: {
     options: [
       {

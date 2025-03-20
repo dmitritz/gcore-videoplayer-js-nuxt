@@ -59,6 +59,7 @@
         </label>
       </div>
     </div>
+    <clips-settings v-if="settings.plugins.includes('clips')" />
   </div>
 </template>
 
