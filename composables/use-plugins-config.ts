@@ -23,10 +23,10 @@ import {
   SourceController,
   SpinnerThreeBounce,
   Thumbnails,
-  VolumeFade,
   ContextMenu,
   type PlayerPluginConstructor,
   trace,
+  VolumeFade,
   // Logo,
 } from '@gcorevideo/player'
 
