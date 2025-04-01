@@ -118,7 +118,7 @@ const html5VideoSupport = computed(() => {
 const errors = ref<string[]>([])
 
 const cmcdSid = ref('')
-
+// const cmcdCid = ref('')
 usePluginsConfig()
 
 const CMCD_KEYS = ['br', 'd', 'ot', 'tb', 'bl', 'dl', 'mtp', 'nor', 'nrr', 'su', 'bs', 'rtp', 'cid', 'pr', 'sf', 'sid', 'st', 'v']
@@ -131,6 +131,7 @@ const config = computed(() => ({
         enabled: settings.cmcd.enabled,
         enabledKeys: CMCD_KEYS,
         sid: cmcdSid.value,
+        // cid: cmcdCid.value,
       },
     },
   }),
@@ -145,6 +146,7 @@ const config = computed(() => ({
       cmcd: settings.cmcd ? {
         sessionId: cmcdSid.value,
         includeKeys: CMCD_KEYS,
+        // contentId: cmcdCid.value, // TODO
       } : undefined,
       lowLatencyMode: true,
       liveSyncDurationCount: 0,
