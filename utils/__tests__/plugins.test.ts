@@ -5,8 +5,8 @@ import type { PluginName } from '../../types'
 describe('plugins', () => {
   describe('getDisabledPlugins', () => {
     it.each([
-      ['audio_selector', [], true],
-      ['audio_selector', ['media_control'], false],
+      ['audio_tracks', [], true],
+      ['audio_tracks', ['media_control'], false],
       ['bottom_gear', ['bottom_gear'], true],
       ['bottom_gear', ['media_control'], false],
       ['bottom_gear', [], true],

@@ -31,7 +31,7 @@ export function getRegistrationOrder(plugins: PluginName[]): PluginName[] {
 
 const PLUGIN_DEPS_CHECK_CHAIN = buildPluginDepsCheckChain(
   {
-    audio_selector: ['media_control'],
+    audio_tracks: ['media_control'],
     bottom_gear: ['media_control'],
     cc: ['media_control'],
     clips: ['media_control'],
