@@ -67,7 +67,7 @@ import type { PluginName } from '../types'
 const { disabledPlugins } = usePluginsDeps()
 
 const PLUGIN_LABELS: Partial<Record<PluginName, string>> = {
-  audio_selector: 'Audio tracks',
+  audio_tracks: 'Audio tracks',
   big_mute_button: 'Big mute button',
   click_to_pause: 'Click to pause',
   clips: 'Clips',

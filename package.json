@@ -13,7 +13,7 @@
   "dependencies": {
     "@clappr/core": "^0.11.4",
     "@fingerprintjs/fingerprintjs": "^4.6.1",
-    "@gcorevideo/player": "^2.22.23",
+    "@gcorevideo/player": "^2.22.25",
     "@gcorevideo/utils": "^0.6.0",
     "@heroicons/vue": "^2.2.0",
     "@pinia/nuxt": "^0.10.1",
@@ -30,7 +30,7 @@
     "vue-router": "latest",
     "zod": "^3.24.2"
   },
-  "version": "0.14.39",
+  "version": "0.14.41",
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.14",
     "@types/ms": "^2.1.0",

@@ -48,7 +48,8 @@
         "stats.buffering_percentage": "% buffering",
         "mbps": "Mbps",
         "ms": "ms",
-        "stats.calculating": "Calculating... Please wait"
+        "stats.calculating": "Calculating... Please wait",
+        "off": "Off"
     },
     "pt": {
         "no_broadcast": "Não há transmissão no ar",
@@ -95,7 +96,8 @@
         "stats.buffering_percentage": "% buffer",
         "mbps": "Mbps",
         "ms": "ms",
-        "stats.calculating": "Calculando... Por favor, aguarde"
+        "stats.calculating": "Calculando... Por favor, aguarde",
+        "off": "Off"
     },
     "pt-BR": {
         "no_broadcast": "Transmissão não está no ar",
@@ -137,7 +139,8 @@
         "stats.buffering_percentage": "% buffer",
         "mbps": "Mbps",
         "ms": "ms",
-        "stats.calculating": "Calculando... Por favor, aguarde"
+        "stats.calculating": "Calculando... Por favor, aguarde",
+        "off": "Off"
     },
     "es": {
         "no_broadcast": "La transmisión no está en vivo",
@@ -179,7 +182,8 @@
         "stats.buffering_percentage": "% buffer",
         "mbps": "Mbps",
         "ms": "ms",
-        "stats.calculating": "Calculando... Por favor, aguarde"
+        "stats.calculating": "Calculando... Por favor, aguarde",
+        "off": "Off"
     },
     "el": {
         "no_broadcast": "Η ροή δεν είναι ενεργοποιημένη",
@@ -221,7 +225,8 @@
         "stats.buffering_percentage": "% buffering",
         "mbps": "Mbps",
         "ms": "ms",
-        "stats.calculating": "Υπολογίζοντας... Παρακαλούμε περιμένετε"
+        "stats.calculating": "Υπολογίζοντας... Παρακαλούμε περιμένετε",
+        "off": "Off"
     },
     "zh": {
         "joinus": "加入我们",
@@ -256,6 +261,7 @@
         "stats.buffering_percentage": "% 缓冲",
         "mbps": "兆比特每秒",
         "ms": "毫秒",
-        "stats.calculating": "计算中... 请稍候"
+        "stats.calculating": "计算中... 请稍候",
+        "off": "已禁用"
     }
 } 
