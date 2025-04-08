@@ -84,8 +84,8 @@ const PLUGIN_LABELS: Partial<Record<PluginName, string>> = {
   playback_rate: 'Playback rate',
   poster: 'Poster',
   // TODO
-  // skip_time: 'Skip time',
-  // seek_time: 'Seek time',
+  skip_time: 'Skip time',
+  seek_time: 'Seek time',
   // share: 'Share',
   source_controller: 'Source controller',
   spinner: 'Spinner',

@@ -27,6 +27,7 @@ import {
   type PlayerPluginConstructor,
   trace,
   VolumeFade,
+  // SkipTime,
   // Logo,
 } from '@gcorevideo/player'
 
@@ -59,6 +60,7 @@ const _P: PlayerPluginConstructor[] = [
   QualityLevels,
   SeekTime,
   Share,
+  // SkipTime,
   SourceController,
   SpinnerThreeBounce,
   Thumbnails,
