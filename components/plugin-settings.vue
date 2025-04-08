@@ -8,6 +8,7 @@
     >
       {{ PLUGIN_LABELS[plugin] }}
       <star-icon class="w-3 h-3" v-if="PLUGIN_OPTIONS[plugin]?.starred" />
+      <device-phone-mobile-icon v-if="plugin === 'skip_time'" class="w-3 h-3" title="Mobile devices only" />
     </plugin-item>
   </div>
   <div class="grid grid-cols-2 md:grid-cols-3 gap-2 my-2">
@@ -59,7 +60,7 @@
 </template>
 
 <script lang="ts" setup>
-import { StarIcon } from '@heroicons/vue/24/outline'
+import { DevicePhoneMobileIcon, StarIcon } from '@heroicons/vue/24/outline'
 
 import useSettingsStore from '../store/settings'
 import type { PluginName } from '../types'
