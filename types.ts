@@ -22,6 +22,7 @@ export type PluginName =
   | 'playback_rate'
   | 'poster'
   | 'seek_time'
+  | 'skip_time'
   | 'share'
   | 'spinner'
   | 'source_controller'

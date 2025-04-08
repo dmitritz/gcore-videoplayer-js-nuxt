@@ -243,11 +243,9 @@ const config = computed(() => ({
   strings,
 }))
 
-const player = new Player(config.value)
+let player: Player | undefined
 
-const rob = useResizeObserver(({ width, height }) => {
-  player.resize({ width, height })
-})
+let rob: ReturnType<typeof useResizeObserver> | undefined
 
 watch(() => settings.cmcd.enabled, (newEnabled) => {
   if (newEnabled && !cmcdSid.value) {
@@ -261,29 +259,34 @@ onMounted(() => {
   if (!settings.sources.length) {
     return
   }
+  player = new Player(config.value)
+
+  rob = useResizeObserver(({ width, height }) => {
+    player?.resize({ width, height })
+  })
   setTimeout(() => {
     if (!container.value) {
       return
     }
-    player.destroy()
-    player.attachTo(container.value)
-    rob.start(container.value)
+    player?.destroy()
+    player?.attachTo(container.value)
+    rob?.start(container.value)
   }, 0)
 })
 
 onBeforeUnmount(() => {
-  rob.stop()
-  player.destroy()
+  rob?.stop()
+  player?.destroy()
 })
 
 watch(config, (newConfig) => {
   if (!newConfig.sources.length) {
     return
   }
-  player.configure(newConfig)
+  player?.configure(newConfig)
   if (container.value) {
-    player.destroy()
-    player.attachTo(container.value)
+    player?.destroy()
+    player?.attachTo(container.value)
   }
 })
 
