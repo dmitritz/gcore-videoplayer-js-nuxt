@@ -28,7 +28,7 @@ import {
   trace,
   VolumeFade,
   SkipTime,
-  // Logo,
+  Logo,
 } from '@gcorevideo/player'
 
 import useSettingsStore from '../store/settings'
