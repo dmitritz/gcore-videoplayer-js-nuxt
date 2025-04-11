@@ -29,7 +29,25 @@ export const DASH_DEFAULT_MAX_DRIFT = 1
 export const DASH_DEFAULT_LC_PLAYBACK_RATE_MAX = 0.1
 export const DASH_DEFAULT_LC_PLAYBACK_RATE_MIN = -0.1
 export const DEFAULT_PRIORITY_TRANSPORT: TransportPreference = 'dash'
-type CMCDKey = 'br' | 'd' | 'ot' | 'tb' | 'bl' | 'dl' | 'mtp' | 'nor' | 'nrr' | 'su' | 'bs' | 'rtp' | 'cid' | 'pr' | 'sf' | 'sid' | 'st' | 'v'
+type CMCDKey =
+  | 'br'
+  | 'd'
+  | 'ot'
+  | 'tb'
+  | 'bl'
+  | 'dl'
+  | 'mtp'
+  | 'nor'
+  | 'nrr'
+  | 'su'
+  | 'bs'
+  | 'rtp'
+  | 'cid'
+  | 'pr'
+  | 'sf'
+  | 'sid'
+  | 'st'
+  | 'v'
 export type DashSettings = {
   streaming: {
     abr?: {
@@ -52,7 +70,7 @@ export type DashSettings = {
       enabled: boolean
       enabledKeys?: CMCDKey[]
       // TODO ...
-    },
+    }
     delay?: {
       liveDelay: number
     }
@@ -82,6 +100,14 @@ type State = {
   visitorId: string
   restrictResolution: number
   clips: string
+  thumbnails: {
+    sprite: string
+    vtt: string
+    backdropHeight: number
+    // backdropMinOpacity: number
+    // backdropMaxOpacity: number
+    spotlightHeight: number
+  }
 }
 
 type MainSettings = {
@@ -96,7 +122,7 @@ type CmcdSettings = {
   enabled: boolean
 }
 
-type StructuredSettings = Record<string, string | boolean | number |null>;
+type StructuredSettings = Record<string, string | boolean | number | null>
 
 type Getters = {
   serialized: () => string
@@ -119,6 +145,11 @@ type Actions = {
   setVisitorId(value: string): void
   setRestrictResolution(value: number): void
   setClipsText(value: string): void
+  setThumbnailsURL(value: string): void
+  setThumbnailsVTT(value: string): void
+  setThumbnailsOptions(
+    options: Partial<{ backdropHeight: number; spotlightHeight: number }>
+  ): void
 }
 
 const DEFAULT_MAIN_SETTINGS: MainSettings = {
@@ -181,7 +212,13 @@ const useSettingsStore = () => {
   )
 
   const persistedPoster = usePersistence('settings.poster', id, id, '')
-
+  const persistedThumbnails = usePersistence(
+    'settings.thumbnails',
+    JSON.stringify,
+    JSON.parse,
+    { sprite: '', vtt: '', backdropHeight: 0, spotlightHeight: 0 }
+  )
+  const persistedClips = usePersistence('settings.clips', id, id, '')
   const url = useRequestURL()
   if (
     url.searchParams.has('autoplay') ||
@@ -208,7 +245,7 @@ const useSettingsStore = () => {
       playbackType:
         parseSelectOption<PlaybackType>(
           ['vod', 'live'],
-          url.searchParams.get('playback_type'),
+          url.searchParams.get('playback_type')
         ) ??
         pm.playbackType ??
         DEFAULT_MAIN_SETTINGS.playbackType, // TODO sanitize
@@ -218,19 +255,16 @@ const useSettingsStore = () => {
     })
   }
   const debug = debugTag(url.searchParams.get('debug') || 'clappr') ?? 'all'
-  const {
-    autoplay,
-    mute,
-    loop,
-    playbackType,
-    priorityTransport,
-  } = persistedBasic.get()
+  const { autoplay, mute, loop, playbackType, priorityTransport } =
+    persistedBasic.get()
 
   const usePersistedPlugins = !url.searchParams.has('plugins')
   const plugins =
     (usePersistedPlugins
       ? persistedPlugins.get()
-      : sanitizePlugins(url.searchParams.get('plugins')?.split(',') ?? DEFAULT_PLUGINS)) ?? []
+      : sanitizePlugins(
+          url.searchParams.get('plugins')?.split(',') ?? DEFAULT_PLUGINS
+        )) ?? []
   const usePersistedSources = !url.searchParams.has('sources')
   const sources = usePersistedSources
     ? persistedSources.get()
@@ -241,8 +275,14 @@ const useSettingsStore = () => {
     persistedPoster.set(url.searchParams.get('poster') ?? '')
   }
   const poster = persistedPoster.get()
-  const persistedCmcd = usePersistence<CmcdSettings>('settings.cmcd', JSON.stringify, JSON.parse, { enabled: false })
+  const persistedCmcd = usePersistence<CmcdSettings>(
+    'settings.cmcd',
+    JSON.stringify,
+    JSON.parse,
+    { enabled: false }
+  )
   const cmcd = persistedCmcd.get()
+  const thumbnails = persistedThumbnails.get()
 
   return defineStore<'settings', State, Getters, Actions>('settings', {
     state: () => ({
@@ -265,23 +305,27 @@ const useSettingsStore = () => {
       restrictResolution: parseInt(
         parseSelectOption(
           ['360', '720', '0'],
-          url.searchParams.get('restrict_resolution'),
+          url.searchParams.get('restrict_resolution')
         ) ?? '0',
         10
       ),
-      clips: '',
+      clips: persistedClips.get(),
+      thumbnails,
     }),
     getters: {
       serialized() {
-        return Object.entries(this.structured).map(([key, value]) => {
-          if (value === null) {
-            return null;
-          }
-          return `${key}=${value}`
-        }).filter(Boolean).join('&')
+        return Object.entries(this.structured)
+          .map(([key, value]) => {
+            if (value === null) {
+              return null
+            }
+            return `${key}=${value}`
+          })
+          .filter(Boolean)
+          .join('&')
       },
       structured() {
-        const retval: StructuredSettings = {};
+        const retval: StructuredSettings = {}
         if (this.autoplay) {
           retval.autoplay = true
         }
@@ -309,8 +353,8 @@ const useSettingsStore = () => {
         if (isCustomDashSettings(this.dash)) {
           retval.dash = serializeDashSettings(this.dash)
         }
-        return retval;
-      }
+        return retval
+      },
     },
     actions: {
       addPlugin(name: PluginName) {
@@ -334,6 +378,7 @@ const useSettingsStore = () => {
       },
       setClipsText(value: string) {
         this.clips = value
+        persistedClips.set(value)
       },
       setCmcdEnabled(value: boolean) {
         this.cmcd.enabled = value
@@ -366,6 +411,20 @@ const useSettingsStore = () => {
       setSources(value: string[]) {
         this.sources = value
         persistedSources.set(value)
+      },
+      setThumbnailsURL(value: string) {
+        this.thumbnails.sprite = value
+        persistedThumbnails.set(this.thumbnails)
+      },
+      setThumbnailsVTT(value: string) {
+        this.thumbnails.vtt = value
+        persistedThumbnails.set(this.thumbnails)
+      },
+      setThumbnailsOptions(
+        options: Partial<{ backdropHeight: number; spotlightHeight: number }>
+      ) {
+        this.thumbnails = $.extend(true, {}, this.thumbnails, options)
+        persistedThumbnails.set(this.thumbnails)
       },
       setVisitorId(value: string) {
         this.visitorId = value
@@ -412,10 +471,10 @@ function transportPreference(
 
 function parseSelectOption<T extends string>(
   options: string[], // T[]
-  input: string | null,
+  input: string | null
 ): T | undefined {
   if (input === null) {
-    return;
+    return
   }
   if (options.includes(input)) {
     return input as T
@@ -516,5 +575,7 @@ function id<T = string>(a: string) {
 }
 
 function sanitizePlugins(plugins: string[]): PluginName[] {
-  return plugins.filter(p => PLUGIN_NAMES.includes(p as PluginName)) as PluginName[]
+  return plugins.filter((p) =>
+    PLUGIN_NAMES.includes(p as PluginName)
+  ) as PluginName[]
 }
