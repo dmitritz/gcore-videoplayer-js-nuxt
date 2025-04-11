@@ -9,6 +9,9 @@
       {{ PLUGIN_LABELS[plugin] }}
       <star-icon class="w-3 h-3" v-if="PLUGIN_OPTIONS[plugin]?.starred" />
       <device-phone-mobile-icon v-if="plugin === 'skip_time'" class="w-3 h-3" title="Mobile devices only" />
+      <router-link to="/source" v-if="plugin === 'thumbnails'" class="inline-block" title="Configure thumbnails">
+        <adjustments-horizontal-icon class="w-3 h-3" />
+      </router-link>
     </plugin-item>
   </div>
   <div class="grid grid-cols-2 md:grid-cols-3 gap-2 my-2">
@@ -60,7 +63,7 @@
 </template>
 
 <script lang="ts" setup>
-import { DevicePhoneMobileIcon, StarIcon } from '@heroicons/vue/24/outline'
+import { AdjustmentsHorizontalIcon, DevicePhoneMobileIcon, StarIcon } from '@heroicons/vue/24/outline'
 
 import useSettingsStore from '../store/settings'
 import type { PluginName } from '../types'
@@ -79,12 +82,11 @@ const PLUGIN_LABELS: Partial<Record<PluginName, string>> = {
   favicon: 'Favicon',
   bottom_gear: 'Gear button',
   media_control: 'Media controls',
-  multicamera: 'Multi camera',
+  // multicamera: 'Multi camera',
   level_selector: 'Quality levels',
   pip: 'Picture in picture',
   playback_rate: 'Playback rate',
   poster: 'Poster',
-  // TODO
   skip_time: 'Skip time',
   seek_time: 'Seek time',
   // share: 'Share',

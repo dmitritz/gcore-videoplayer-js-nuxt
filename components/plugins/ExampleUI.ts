@@ -77,7 +77,6 @@ export class ExampleUI extends UICorePlugin {
   }
 
   private onReady() {
-    // TODO
     this.pins.ready.value = true
   }
 

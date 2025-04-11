@@ -4,7 +4,7 @@
       <label for="clips_text" class="label">Clips</label>
       <div class="text-sm text-slate-500">
         Example:<br/>
-        <pre>
+        <pre class="overflow-auto">
 00 Introduction
 01:30 Our sponsors
 31:30 Questions
@@ -20,14 +20,21 @@
         rows="10"
       />
       <div class="flex flex-row gap-2">
-        <span v-show="loaded" class="text-sm text-slate-500">Loaded</span>
+        <span v-show="loaded" class="px-2 py-2 text-sm text-slate-500">Loaded</span>
         <button
           @click="saveClipsText"
-          class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:bg-slate-300"
+          class="rounded bg-blue-500 text-white hover:bg-blue-600 disabled:bg-slate-300"
           :disabled="!changed || empty"
           v-show="!loaded"
         >
           Load
+        </button>
+        <button
+          @click="clear"
+          class="rounded text-white disabled:bg-slate-300"
+          :disabled="empty && !loaded"
+        >
+          Clear
         </button>
       </div>
     </div>
@@ -48,6 +55,12 @@ const empty = computed(() => clipsText.value.trim() === '')
 const loaded = computed(() => !empty.value && !changed.value)
 
 const saveClipsText = () => {
+  // TODO persist
   settingsStore.setClipsText(clipsText.value)
+}
+
+function clear() {
+  clipsText.value = ''
+  settingsStore.setClipsText('')
 }
 </script>

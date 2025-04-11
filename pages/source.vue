@@ -68,14 +68,26 @@
           />
         </div>
         <div class="flex gap-2 items-center mt-2 mb-4">
-          <button @click="load" :disabled="!hasValidSources" v-show="!loaded" id="sources_load">
+          <button
+            @click="load"
+            :disabled="!hasValidSources"
+            v-show="!loaded"
+            id="sources_load"
+          >
             Load
           </button>
-          <span v-show="loaded" class="px-2 py-1 text-slate-900 dark:text-slate-300" id="sources_loaded">Loaded</span>
-          <button @click="clear" :disabled="!rawSources.length" id="sources_clear">Clear</button>
+          <span v-show="loaded" class="loaded" id="sources_loaded">Loaded</span>
+          <button
+            @click="clear"
+            :disabled="!rawSources.length"
+            id="sources_clear"
+          >
+            Clear
+          </button>
         </div>
       </div>
       <div v-if="error" class="text-red-950 dark:text-red-400">{{ error }}</div>
+      <thumbnails-block />
     </div>
   </nuxt-layout>
 </template>
@@ -126,7 +138,7 @@ function sameItems(a: string[], b: string[]) {
 </script>
 
 <style lang="css" scoped>
-@import "tailwindcss";
+@import 'tailwindcss';
 
 pre {
   word-wrap: break-word;
