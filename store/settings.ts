@@ -423,7 +423,7 @@ const useSettingsStore = () => {
       setThumbnailsOptions(
         options: Partial<{ backdropHeight: number; spotlightHeight: number }>
       ) {
-        this.thumbnails = $.extend(true, {}, this.thumbnails, options)
+        this.thumbnails = {...this.thumbnails, ...options}
         persistedThumbnails.set(this.thumbnails)
       },
       setVisitorId(value: string) {
