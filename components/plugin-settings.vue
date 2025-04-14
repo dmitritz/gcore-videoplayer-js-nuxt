@@ -8,19 +8,41 @@
     >
       {{ PLUGIN_LABELS[plugin] }}
       <star-icon class="w-3 h-3" v-if="PLUGIN_OPTIONS[plugin]?.starred" />
-      <device-phone-mobile-icon v-if="plugin === 'skip_time'" class="w-3 h-3" title="Mobile devices only" />
-      <router-link to="/source" v-if="plugin === 'thumbnails'" class="inline-block" title="Configure thumbnails">
+      <device-phone-mobile-icon
+        v-if="plugin === 'skip_time'"
+        class="w-3 h-3"
+        title="Mobile devices only"
+      />
+      <router-link
+        to="/source"
+        v-if="plugin === 'thumbnails'"
+        class="inline-block"
+        title="Configure thumbnails"
+      >
         <adjustments-horizontal-icon class="w-3 h-3" />
       </router-link>
-      <play-pause-icon v-if="plugin === 'media_control'" class="w-3 h-3" title="Media control UI" />
+      <play-pause-icon
+        v-if="plugin === 'media_control'"
+        class="w-3 h-3"
+        title="Media control UI"
+      />
     </plugin-item>
   </div>
   <div class="grid grid-cols-2 md:grid-cols-3 gap-2 my-2">
-    <div class="text-sm col-span-2 md:col-span-3">Some plugins depend on others, for instance:<br/>
-      <b>Gear button</b> and <b>Picture in picture</b> both depend on <b>Media control</b>,<br/>
-      <b>Nerd stats</b> depends on <b>Media control</b>, <b>Stats</b>, and <b>Gear button</b>,<br/>
-      etc.<br/>
-      See the <a href="https://github.com/G-Core/gcore-videoplayer-js/blob/main/packages/player/docs/api/player.md" target="_blank">documentation</a> for more details.
+    <div class="text-sm col-span-2 md:col-span-3">
+      Some plugins depend on others, for instance:<br />
+      <b>Gear button</b> and <b>Picture in picture</b> both depend on
+      <b>Media control</b>,<br />
+      <b>Nerd stats</b> depends on <b>Media control</b>, <b>Stats</b>, and
+      <b>Gear button</b>,<br />
+      etc.<br />
+      See the
+      <a
+        href="https://github.com/G-Core/gcore-videoplayer-js/blob/main/packages/player/docs/api/player.md"
+        target="_blank"
+        >documentation</a
+      >
+      for more details.
     </div>
   </div>
   <div class="mt-2 mb-4 grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -64,7 +86,12 @@
 </template>
 
 <script lang="ts" setup>
-import { AdjustmentsHorizontalIcon, DevicePhoneMobileIcon, StarIcon, PlayPauseIcon } from '@heroicons/vue/24/outline'
+import {
+  AdjustmentsHorizontalIcon,
+  DevicePhoneMobileIcon,
+  PlayPauseIcon,
+  StarIcon,
+} from '@heroicons/vue/24/outline'
 
 import useSettingsStore from '../store/settings'
 import type { PluginName } from '../types'
