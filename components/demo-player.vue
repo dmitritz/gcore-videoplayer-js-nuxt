@@ -18,25 +18,45 @@
       >
         Play
       </button>
-      <button @click="pause" v-show="playing" class="playback" id="dashboard_pause">Pause</button>
-      <button @click="stop" v-show="ready && !stopped" class="playback" id="dashboard_stop">
+      <button
+        @click="pause"
+        v-show="playing"
+        class="playback"
+        id="dashboard_pause"
+      >
+        Pause
+      </button>
+      <button
+        @click="stop"
+        v-show="ready && !stopped"
+        class="playback"
+        id="dashboard_stop"
+      >
         Stop
       </button>
     </div>
     <div class="flex gap-2 items-center content-center justify-end flex-wrap">
-      <span class="text-slate-600 dark:text-slate-300 text-sm" v-if="noSource">no source</span>
-      <span class="text-xs sm:text-sm" v-if="width && height" id="dashboard_quality">{{
-        formatQuality(width, height)
-      }}</span>
+      <span class="text-slate-600 dark:text-slate-300 text-sm" v-if="noSource"
+        >no source</span
+      >
+      <span
+        class="text-xs sm:text-sm"
+        v-if="width && height"
+        id="dashboard_quality"
+        >{{ formatQuality(width, height) }}</span
+      >
       <span class="text-xs sm:text-sm" v-if="bitrate" id="dashboard_bitrate">{{
         formatBitrate(bitrate)
       }}</span>
       <span class="local-time text-xs sm:text-sm text-left" v-if="showTime">{{
         formatTime(currentTime)
       }}</span>
-      <span class="font-semibold text-sm uppercase" v-if="playbackType" id="dashboard_playback_type">{{
-        playbackType
-      }}</span>
+      <span
+        class="font-semibold text-sm uppercase"
+        v-if="playbackType"
+        id="dashboard_playback_type"
+        >{{ playbackType }}</span
+      >
       <button
         class="font-semibold text-sm sm:text-md uppercase"
         v-if="playback"
@@ -51,13 +71,23 @@
       @click="showSource = false"
       v-if="showSource"
     >
-      [{{ activeSourceType }}](html5: {{ html5VideoSupport }}) {{ activeSource }}
+      [{{ activeSourceType }}](html5: {{ html5VideoSupport }})
+      {{ activeSource }}
     </div>
     <div class="my-2" v-if="errors.length">
-      <div v-for="error of errors" :key="error" class="text-red-500 dark:text-red-400 p-2">{{ error }}</div>
+      <div
+        v-for="error of errors"
+        :key="error"
+        class="text-red-500 dark:text-red-400 p-2"
+      >
+        {{ error }}
+      </div>
     </div>
     <div class="my-2 col-span-2" v-if="settings.cmcd.enabled">
-      <b>CMCD</b> <span class="text-xs">sid=<code>{{ cmcdSid }}</code></span>
+      <b>CMCD</b>
+      <span class="text-xs"
+        >sid=<code>{{ cmcdSid }}</code></span
+      >
     </div>
   </div>
 </template>
@@ -111,7 +141,9 @@ const html5VideoSupport = computed(() => {
   if (!activeSourceType.value) {
     return '-'
   }
-  const support = document.createElement('video').canPlayType(activeSourceType.value)
+  const support = document
+    .createElement('video')
+    .canPlayType(activeSourceType.value)
   return support === '' ? 'no' : support
 })
 
@@ -121,7 +153,26 @@ const cmcdSid = ref('')
 // const cmcdCid = ref('')
 usePluginsConfig()
 
-const CMCD_KEYS = ['br', 'd', 'ot', 'tb', 'bl', 'dl', 'mtp', 'nor', 'nrr', 'su', 'bs', 'rtp', 'cid', 'pr', 'sf', 'sid', 'st', 'v']
+const CMCD_KEYS = [
+  'br',
+  'd',
+  'ot',
+  'tb',
+  'bl',
+  'dl',
+  'mtp',
+  'nor',
+  'nrr',
+  'su',
+  'bs',
+  'rtp',
+  'cid',
+  'pr',
+  'sf',
+  'sid',
+  'st',
+  'v',
+]
 
 const config = computed(() => ({
   autoPlay: settings.autoplay,
@@ -143,11 +194,13 @@ const config = computed(() => ({
   loop: settings.loop,
   playback: {
     hlsjsConfig: {
-      cmcd: settings.cmcd ? {
-        sessionId: cmcdSid.value,
-        includeKeys: CMCD_KEYS,
-        // contentId: cmcdCid.value, // TODO
-      } : undefined,
+      cmcd: settings.cmcd
+        ? {
+            sessionId: cmcdSid.value,
+            includeKeys: CMCD_KEYS,
+            // contentId: cmcdCid.value, // TODO
+          }
+        : undefined,
       lowLatencyMode: true,
       liveSyncDurationCount: 0,
       liveMaxLatencyDurationCount: 1,
@@ -173,8 +226,8 @@ const config = computed(() => ({
         handler() {
           window.open('https://gcore.com/', '_blank')
         },
-      }
-    ]
+      },
+    ],
   },
   design: {
     // media_control
@@ -246,13 +299,17 @@ let player: Player | undefined
 
 let rob: ReturnType<typeof useResizeObserver> | undefined
 
-watch(() => settings.cmcd.enabled, (newEnabled) => {
-  if (newEnabled && !cmcdSid.value) {
-    cmcdSid.value = uuid()
+watch(
+  () => settings.cmcd.enabled,
+  (newEnabled) => {
+    if (newEnabled && !cmcdSid.value) {
+      cmcdSid.value = uuid()
+    }
+  },
+  {
+    immediate: true,
   }
-}, {
-  immediate: true,
-})
+)
 
 onMounted(() => {
   if (!settings.sources.length) {
@@ -341,7 +398,7 @@ function formatPlaybackModule(module: PlaybackModule): string {
 </script>
 
 <style lang="css" scoped>
-@import "tailwindcss";
+@import 'tailwindcss';
 
 .video-container {
   width: 100%;

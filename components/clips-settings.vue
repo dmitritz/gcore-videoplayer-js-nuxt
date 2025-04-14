@@ -3,7 +3,7 @@
     <div>
       <label for="clips_text" class="label">Clips</label>
       <div class="text-sm text-slate-500">
-        Example:<br/>
+        Example:<br />
         <pre class="overflow-auto">
 00 Introduction
 01:30 Our sponsors
@@ -20,7 +20,9 @@
         rows="10"
       />
       <div class="flex flex-row gap-2">
-        <span v-show="loaded" class="px-2 py-2 text-sm text-slate-500">Loaded</span>
+        <span v-show="loaded" class="px-2 py-2 text-sm text-slate-500"
+          >Loaded</span
+        >
         <button
           @click="saveClipsText"
           class="rounded bg-blue-500 text-white hover:bg-blue-600 disabled:bg-slate-300"
