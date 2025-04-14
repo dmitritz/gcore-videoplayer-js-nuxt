@@ -12,6 +12,7 @@
       <router-link to="/source" v-if="plugin === 'thumbnails'" class="inline-block" title="Configure thumbnails">
         <adjustments-horizontal-icon class="w-3 h-3" />
       </router-link>
+      <play-pause-icon v-if="plugin === 'media_control'" class="w-3 h-3" title="Media control UI" />
     </plugin-item>
   </div>
   <div class="grid grid-cols-2 md:grid-cols-3 gap-2 my-2">
@@ -63,7 +64,7 @@
 </template>
 
 <script lang="ts" setup>
-import { AdjustmentsHorizontalIcon, DevicePhoneMobileIcon, StarIcon } from '@heroicons/vue/24/outline'
+import { AdjustmentsHorizontalIcon, DevicePhoneMobileIcon, StarIcon, PlayPauseIcon } from '@heroicons/vue/24/outline'
 
 import useSettingsStore from '../store/settings'
 import type { PluginName } from '../types'
