@@ -43,35 +43,6 @@
     <plugin-settings class="block mb-4" />
     <div class="label">DASH</div>
     <dash-settings class="block mb-4" />
-    <div class="mb-4 grid grid-cols-3">
-      <div>
-        <div class="label">CMCD</div>
-        <div class="text-xs text-slate-600">
-          read more
-          <a
-            href="https://dashif.org/dash.js/pages/usage/cmcd.html#common-media-client-data"
-            target="_blank"
-            >DASH.js</a
-          >
-          <a
-            href="https://github.com/video-dev/hls.js/blob/master/docs/API.md#cmcd"
-            target="_blank"
-            >HLS.js</a
-          >
-        </div>
-      </div>
-      <div class="row col-span-2">
-        <label for="dash_cmcd_enable">
-          <input
-            type="checkbox"
-            id="dash_cmcd_enable"
-            :checked="settings.cmcd.enabled"
-            @change="toggleCmcd"
-          />
-          Enable
-        </label>
-      </div>
-    </div>
     <clips-settings v-if="settings.plugins.includes('clips')" />
   </div>
 </template>

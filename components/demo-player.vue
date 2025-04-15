@@ -83,18 +83,22 @@
         {{ error }}
       </div>
     </div>
-    <div class="my-2 col-span-2" v-if="settings.cmcd.enabled">
-      <b>CMCD</b>
+    <div class="my-2 col-span-2 flex gap-2 items-center" v-if="cmcdEnabled">
+      <a href="https://cdn.cta.tech/cta/media/media/resources/standards/pdfs/cta-5004-final.pdf"
+        target="_blank"
+      >
+        CMCD
+      </a>
       <span class="text-xs"
         >sid=<code>{{ cmcdSid }}</code></span
       >
+      <span class="text-xs">cid=<code>{{ cmcdCid }}</code></span>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import { v4 as uuid } from 'uuid'
 import { $ } from '@clappr/core'
 import {
   Player,
@@ -125,6 +129,8 @@ const height = ref(0)
 const playbackType = ref<PlaybackType | null>(null)
 const showTime = computed(() => playing.value)
 
+const cmcdEnabled = computed(() => settings.plugins.includes('cmcd'))
+
 const currentTime = ref<number>(0)
 
 const settings = useSettingsStore()
@@ -150,42 +156,13 @@ const html5VideoSupport = computed(() => {
 const errors = ref<string[]>([])
 
 const cmcdSid = ref('')
-// const cmcdCid = ref('')
-usePluginsConfig()
+const cmcdCid = ref('') // TODO get from the plugin
 
-const CMCD_KEYS = [
-  'br',
-  'd',
-  'ot',
-  'tb',
-  'bl',
-  'dl',
-  'mtp',
-  'nor',
-  'nrr',
-  'su',
-  'bs',
-  'rtp',
-  'cid',
-  'pr',
-  'sf',
-  'sid',
-  'st',
-  'v',
-]
+usePluginsConfig()
 
 const config = computed(() => ({
   autoPlay: settings.autoplay,
-  dash: $.extend(true, {}, settings.dash, {
-    streaming: {
-      cmcd: {
-        enabled: settings.cmcd.enabled,
-        enabledKeys: CMCD_KEYS,
-        sid: cmcdSid.value,
-        // cid: cmcdCid.value,
-      },
-    },
-  }),
+  dash: $.extend(true, {}, settings.dash),
   debug: settings.debug,
   mute: settings.mute,
   width: '100%',
@@ -194,13 +171,6 @@ const config = computed(() => ({
   loop: settings.loop,
   playback: {
     hlsjsConfig: {
-      cmcd: settings.cmcd
-        ? {
-            sessionId: cmcdSid.value,
-            includeKeys: CMCD_KEYS,
-            // contentId: cmcdCid.value, // TODO
-          }
-        : undefined,
       lowLatencyMode: true,
       liveSyncDurationCount: 0,
       liveMaxLatencyDurationCount: 1,
@@ -258,6 +228,8 @@ const config = computed(() => ({
     starting,
     stopped,
     width,
+    cmcdSid,
+    cmcdCid,
   } as ExampleUIOptions,
   faviconColor: '#000',
   // fullscreenDisable: true, // media_control
@@ -298,18 +270,6 @@ const config = computed(() => ({
 let player: Player | undefined
 
 let rob: ReturnType<typeof useResizeObserver> | undefined
-
-watch(
-  () => settings.cmcd.enabled,
-  (newEnabled) => {
-    if (newEnabled && !cmcdSid.value) {
-      cmcdSid.value = uuid()
-    }
-  },
-  {
-    immediate: true,
-  }
-)
 
 onMounted(() => {
   if (!settings.sources.length) {
