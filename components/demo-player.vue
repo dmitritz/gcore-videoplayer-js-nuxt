@@ -84,7 +84,8 @@
       </div>
     </div>
     <div class="my-2 col-span-2 flex gap-2 items-center" v-if="cmcdEnabled">
-      <a href="https://cdn.cta.tech/cta/media/media/resources/standards/pdfs/cta-5004-final.pdf"
+      <a
+        href="https://cdn.cta.tech/cta/media/media/resources/standards/pdfs/cta-5004-final.pdf"
         target="_blank"
       >
         CMCD
@@ -92,7 +93,9 @@
       <span class="text-xs"
         >sid=<code>{{ cmcdSid }}</code></span
       >
-      <span class="text-xs">cid=<code>{{ cmcdCid }}</code></span>
+      <span class="text-xs"
+        >cid=<code>{{ cmcdCid }}</code></span
+      >
     </div>
   </div>
 </template>

@@ -21,12 +21,13 @@
       >
         <adjustments-horizontal-icon class="w-3 h-3" />
       </router-link>
-      <a href="https://cdn.cta.tech/cta/media/media/resources/standards/pdfs/cta-5004-final.pdf"
+      <a
+        href="https://cdn.cta.tech/cta/media/media/resources/standards/pdfs/cta-5004-final.pdf"
         target="_blank"
         v-if="plugin === 'cmcd'"
         class="inline-flex text-xs items-center gap-1"
       >
-        <question-mark-circle-icon class="w-3 h-3" />Learn more
+        <question-mark-circle-icon class="w-3 h-3" />learn more
       </a>
       <play-pause-icon
         v-if="plugin === 'media_control'"
