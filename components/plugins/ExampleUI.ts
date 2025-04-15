@@ -172,13 +172,10 @@ export class ExampleUI extends UICorePlugin {
       // this.pins.errors.value.push(error.message || error.description)
     })
     const cmcd = this.core.getPlugin('cmcd') as CmcdConfig | undefined
-    console.log('cmcd', cmcd)
     if (cmcd) {
-      cmcd.getIds().then(({ sid, cid }) => {
-        console.log('cmcd IDs', { sid, cid })
-        this.pins.cmcdSid.value = sid
-        this.pins.cmcdCid.value = cid
-      })
+      const { sid, cid } = cmcd.exportIds()
+      this.pins.cmcdSid.value = sid
+      this.pins.cmcdCid.value = cid
     }
   }
 
