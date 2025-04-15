@@ -21,6 +21,13 @@
       >
         <adjustments-horizontal-icon class="w-3 h-3" />
       </router-link>
+      <a href="https://cdn.cta.tech/cta/media/media/resources/standards/pdfs/cta-5004-final.pdf"
+        target="_blank"
+        v-if="plugin === 'cmcd'"
+        class="inline-flex text-xs items-center gap-1"
+      >
+        <question-mark-circle-icon class="w-3 h-3" />Learn more
+      </a>
       <play-pause-icon
         v-if="plugin === 'media_control'"
         class="w-3 h-3"
@@ -90,6 +97,7 @@ import {
   AdjustmentsHorizontalIcon,
   DevicePhoneMobileIcon,
   PlayPauseIcon,
+  QuestionMarkCircleIcon,
   StarIcon,
 } from '@heroicons/vue/24/outline'
 
@@ -103,6 +111,7 @@ const PLUGIN_LABELS: Partial<Record<PluginName, string>> = {
   big_mute_button: 'Big mute button',
   click_to_pause: 'Click to pause',
   clips: 'Clips',
+  cmcd: 'CMCD',
   context_menu: 'Context menu',
   dvr_controls: 'DVR controls',
   error_screen: 'Error screen',

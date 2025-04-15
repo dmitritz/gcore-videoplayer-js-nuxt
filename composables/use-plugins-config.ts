@@ -29,6 +29,7 @@ import {
   VolumeFade,
   SkipTime,
   Logo,
+  CmcdConfig,
 } from '@gcorevideo/player'
 
 import useSettingsStore from '../store/settings'
@@ -42,6 +43,7 @@ const _P: PlayerPluginConstructor[] = [
   BigMuteButton,
   BottomGear,
   ClapprStats,
+  CmcdConfig,
   NerdStats,
   ClickToPause,
   Clips,

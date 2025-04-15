@@ -9,6 +9,7 @@ export type PluginName =
   | 'click_to_pause'
   | 'clips'
   | 'clappr_stats'
+  | 'cmcd'
   | 'context_menu'
   | 'dvr_controls'
   | 'error_screen'

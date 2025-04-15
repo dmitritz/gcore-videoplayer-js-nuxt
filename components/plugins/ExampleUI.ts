@@ -1,5 +1,6 @@
 import { Events as CoreEvents, UICorePlugin, UIObject } from '@clappr/core'
 import {
+  CmcdConfig,
   type PlaybackModule,
   type PlaybackType,
   type QualityLevel,
@@ -23,6 +24,8 @@ export type ExampleUIOptions = {
   starting: Ref<boolean>
   stopped: Ref<boolean>
   width: Ref<number>
+  cmcdSid: Ref<string>
+  cmcdCid: Ref<string>
 }
 
 const CLAPPR_VERSION = '0.11.4'
@@ -168,6 +171,15 @@ export class ExampleUI extends UICorePlugin {
       console.log('playback error', error)
       // this.pins.errors.value.push(error.message || error.description)
     })
+    const cmcd = this.core.getPlugin('cmcd') as CmcdConfig | undefined
+    console.log('cmcd', cmcd)
+    if (cmcd) {
+      cmcd.getIds().then(({ sid, cid }) => {
+        console.log('cmcd IDs', { sid, cid })
+        this.pins.cmcdSid.value = sid
+        this.pins.cmcdCid.value = cid
+      })
+    }
   }
 
   private setQualityLevel(level: QualityLevel) {
