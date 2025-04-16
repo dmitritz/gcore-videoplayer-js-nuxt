@@ -83,7 +83,7 @@
         {{ error }}
       </div>
     </div>
-    <div class="my-2 col-span-2 flex gap-2 items-center" v-if="cmcdEnabled">
+    <div class="my-2 col-span-2 flex flex-col gap-2 items-start" v-if="cmcdEnabled">
       <a
         href="https://cdn.cta.tech/cta/media/media/resources/standards/pdfs/cta-5004-final.pdf"
         target="_blank"

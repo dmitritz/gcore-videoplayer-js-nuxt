@@ -39,7 +39,7 @@
   <div class="grid grid-cols-2 md:grid-cols-3 gap-2 my-2">
     <div class="text-sm col-span-2 md:col-span-3">
       Some plugins depend on others, for instance:<br />
-      <b>Gear button</b> and <b>Picture in picture</b> both depend on
+      <b>Gear button</b> and <b>Picture-in-picture</b> both depend on
       <b>Media control</b>,<br />
       <b>Nerd stats</b> depends on <b>Media control</b>, <b>Stats</b>, and
       <b>Gear button</b>,<br />
