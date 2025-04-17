@@ -27,7 +27,7 @@
         v-if="plugin === 'cmcd'"
         class="inline-flex text-xs items-center gap-1"
       >
-        <question-mark-circle-icon class="w-3 h-3" />learn more
+        <question-mark-circle-icon class="w-3 h-3" />more
       </a>
       <play-pause-icon
         v-if="plugin === 'media_control'"
