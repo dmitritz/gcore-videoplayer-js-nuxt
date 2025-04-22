@@ -175,8 +175,6 @@ const config = computed(() => ({
   playback: {
     hlsjsConfig: {
       lowLatencyMode: true,
-      liveSyncDurationCount: 0,
-      liveMaxLatencyDurationCount: 1,
     },
   },
   playbackType: settings.playbackType,
