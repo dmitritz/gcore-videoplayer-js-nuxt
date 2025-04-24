@@ -7,7 +7,7 @@
       >Source not configured</span
     >
   </div>
-  <div class="settings grid grid-cols-2 my-1 mb-2 px-2 items-baseline">
+  <div class="settings grid grid-cols-2 my-1 mb-2 px-2 items-baseline" v-if="exampleUi">
     <div class="buttons font-semibold flex flex-col gap-1 sm:flex-row">
       <button
         @click="play"
@@ -104,6 +104,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { $ } from '@clappr/core'
 import {
+  MediaControl,
   Player,
   type PlaybackModule,
   type PlaybackType,
@@ -131,6 +132,8 @@ const width = ref(0)
 const height = ref(0)
 const playbackType = ref<PlaybackType | null>(null)
 const showTime = computed(() => playing.value)
+
+const exampleUi = computed(() => settings.plugins.includes('example_ui'))
 
 const cmcdEnabled = computed(() => settings.plugins.includes('cmcd'))
 
@@ -162,6 +165,11 @@ const cmcdSid = ref('')
 const cmcdCid = ref('') // TODO get from the plugin
 
 usePluginsConfig()
+
+const mediaControlSettings = MediaControl.extendSettings({
+  left: ['dvr', 'clips'],
+  right: ['*']
+})
 
 const config = computed(() => ({
   autoPlay: settings.autoplay,
@@ -213,6 +221,8 @@ const config = computed(() => ({
   // disableClickOnPause: true, // vast_ads
   // disableMediaControl: true, // disable_controls, ...
   // embed: true, // share plugin
+  mediaControl: mediaControlSettings,
+  // hideMediaControlDelay: 3600000,
   exampleUI: {
     activeSource,
     activeSourceType,

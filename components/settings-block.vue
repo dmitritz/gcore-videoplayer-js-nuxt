@@ -51,8 +51,4 @@
 import useSettingsStore from '../store/settings'
 
 const settings = useSettingsStore()
-
-function toggleCmcd() {
-  settings.setCmcdEnabled(!settings.cmcd.enabled)
-}
 </script>
