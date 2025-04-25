@@ -26,6 +26,7 @@ export type ExampleUIOptions = {
   width: Ref<number>
   cmcdSid: Ref<string>
   cmcdCid: Ref<string>
+  viewport: Ref<{ width: number, height: number }>
 }
 
 const CLAPPR_VERSION = '0.11.4'
@@ -73,6 +74,7 @@ export class ExampleUI extends UICorePlugin {
       CoreEvents.CORE_ACTIVE_CONTAINER_CHANGED,
       this.bindActiveContainerListeners
     )
+    this.listenTo(this.core, CoreEvents.CORE_RESIZE, this.onResize)
   }
 
   private get pins(): ExampleUIOptions {
@@ -81,6 +83,7 @@ export class ExampleUI extends UICorePlugin {
 
   private onReady() {
     this.pins.ready.value = true
+    this.setSize()
   }
 
   private onEnded() {
@@ -184,5 +187,23 @@ export class ExampleUI extends UICorePlugin {
     this.pins.width.value = level.width
     this.pins.height.value = level.height
     this.pins.hd.value = level.height >= 720
+  }
+
+  override onResize() {
+    this.setSize()
+    return super.onResize()
+  }
+
+  private setSize() {
+    const width = this.core.$el.width()
+    const height = this.core.$el.height()
+    trace(`${T} setSize`, {
+      width,
+      height,
+    })
+    this.pins.viewport.value = {
+      width,
+      height,
+    }
   }
 }

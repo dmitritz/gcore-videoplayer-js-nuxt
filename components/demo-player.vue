@@ -97,6 +97,10 @@
         >cid=<code>{{ cmcdCid }}</code></span
       >
     </div>
+    <div class="my-2 col-span-2 flex gap-2 justify-end items-center">
+      <span class="font-semibold">Viewport</span>
+      <span class="text-xs">{{ viewport.width }}&times;{{ viewport.height }}</span>
+    </div>
   </div>
 </template>
 
@@ -163,6 +167,8 @@ const errors = ref<string[]>([])
 
 const cmcdSid = ref('')
 const cmcdCid = ref('') // TODO get from the plugin
+
+const viewport = ref<{ width: number, height: number }>({ width: 0, height: 0 })
 
 usePluginsConfig()
 
@@ -241,6 +247,7 @@ const config = computed(() => ({
     width,
     cmcdSid,
     cmcdCid,
+    viewport,
   } as ExampleUIOptions,
   faviconColor: '#000',
   // fullscreenDisable: true, // media_control
