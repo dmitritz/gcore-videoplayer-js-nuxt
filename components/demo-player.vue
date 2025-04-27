@@ -112,6 +112,7 @@ import {
   Player,
   type PlaybackModule,
   type PlaybackType,
+  // trace,
 } from '@gcorevideo/player'
 
 import usePluginsConfig from '~/composables/use-plugins-config'
@@ -190,6 +191,7 @@ const config = computed(() => ({
     hlsjsConfig: {
       lowLatencyMode: true,
     },
+    recycleVideo: !!settings.recycleVideo,
   },
   playbackType: settings.playbackType,
   priorityTransport: settings.priorityTransport,
