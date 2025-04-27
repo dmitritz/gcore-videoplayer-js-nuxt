@@ -83,6 +83,7 @@ type State = {
     // backdropMaxOpacity: number
     spotlightHeight: number
   }
+  recycleVideo: boolean
 }
 
 type MainSettings = {
@@ -91,10 +92,7 @@ type MainSettings = {
   mute: boolean
   playbackType?: PlaybackType
   priorityTransport: TransportPreference
-}
-
-type CmcdSettings = {
-  enabled: boolean
+  recycleVideo: boolean
 }
 
 type StructuredSettings = Record<string, string | boolean | number | null>
@@ -124,6 +122,7 @@ type Actions = {
   setThumbnailsOptions(
     options: Partial<{ backdropHeight: number; spotlightHeight: number }>
   ): void
+  setRecycleVideo(value: boolean): void
 }
 
 const DEFAULT_MAIN_SETTINGS: MainSettings = {
@@ -132,6 +131,7 @@ const DEFAULT_MAIN_SETTINGS: MainSettings = {
   mute: true,
   // playbackType: 'vod',
   priorityTransport: DEFAULT_PRIORITY_TRANSPORT,
+  recycleVideo: true,
 }
 
 const DEFAULT_PLUGINS: PluginName[] = [
@@ -226,6 +226,10 @@ const useSettingsStore = () => {
       priorityTransport: transportPreference(
         url.searchParams.get('priority_transport') || pm.priorityTransport
       ),
+      recycleVideo: parseBoolean(
+        url.searchParams.get('recycle_video'),
+        pm.recycleVideo ?? DEFAULT_MAIN_SETTINGS.recycleVideo
+      ),
     })
   }
   const debug = debugTag(url.searchParams.get('debug') || 'clappr') ?? 'all'
@@ -277,6 +281,7 @@ const useSettingsStore = () => {
       ),
       clips: persistedClips.get(),
       thumbnails,
+      recycleVideo: persistedBasic.get().recycleVideo,
     }),
     getters: {
       serialized() {
@@ -398,11 +403,16 @@ const useSettingsStore = () => {
         this.plugins = DEFAULT_PLUGINS.slice()
         this.priorityTransport = DEFAULT_PRIORITY_TRANSPORT
         this.playbackType = undefined
+        this.recycleVideo = DEFAULT_MAIN_SETTINGS.recycleVideo
         this.dash = structuredClone(DEFAULT_DASH_SETTINGS)
         this.restrictResolution = 0
       },
       setRestrictResolution(value: number) {
         this.restrictResolution = value
+      },
+      setRecycleVideo(value: boolean) {
+        this.recycleVideo = value
+        persistBasicSettings(this)
       },
     },
   })()
@@ -414,6 +424,7 @@ const useSettingsStore = () => {
       mute: state.mute,
       playbackType: state.playbackType,
       priorityTransport: state.priorityTransport,
+      recycleVideo: state.recycleVideo,
     })
   }
 }
