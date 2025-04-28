@@ -7,6 +7,7 @@ export type PluginName =
   | 'bottom_gear'
   | 'cc'
   | 'click_to_pause'
+  | 'click_to_pause_custom'
   | 'clips'
   | 'clappr_stats'
   | 'cmcd'
