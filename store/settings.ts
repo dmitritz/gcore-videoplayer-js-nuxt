@@ -4,69 +4,29 @@ import type {
   PlayerDebugTag,
   TransportPreference,
 } from '@gcorevideo/player'
+// import { trace } from '@gcorevideo/player'
 import { defineStore } from 'pinia'
-import { z } from 'zod'
 
 import usePersistence from '@/composables/use-persistence'
 import { PLUGIN_NAMES, type PluginName } from '~/types'
-
-export type AdditionalAbrRulesSettings = {
-  insufficientBufferRule?: boolean
-  droppedFramesRule?: boolean
-  switchHistoryRule?: boolean
-  abandonRequestsRule?: boolean
-}
-
-export type DashAbrStrategy =
-  | 'abrDynamic'
-  | 'abrBola'
-  | 'abrL2A'
-  | 'abrLoLP'
-  | 'abrThroughput'
+export type { DashSettings, PersistentSettings } from './marshal'
+import { parseDashSettings, parseSettings, type DashSettings, type PersistentSettings } from './marshal'
 
 export const DASH_DEFAULT_LIVE_DELAY = 2.2
 export const DASH_DEFAULT_MAX_DRIFT = 1
 export const DASH_DEFAULT_LC_PLAYBACK_RATE_MAX = 0.1
 export const DASH_DEFAULT_LC_PLAYBACK_RATE_MIN = -0.1
 export const DEFAULT_PRIORITY_TRANSPORT: TransportPreference = 'dash'
-export type DashSettings = {
-  streaming: {
-    abr?: {
-      ABRStrategy?: DashAbrStrategy
-      additionalAbrRules?: AdditionalAbrRulesSettings
-      autoSwitchBitrate?: {
-        audio?: boolean
-        video?: boolean
-      }
-      initialBitrate?: {
-        audio?: number
-        video?: number
-      }
-      maxBitrate?: {
-        audio?: number
-        video?: number
-      }
-    }
-    delay?: {
-      liveDelay: number
-    }
-    liveCatchup?: {
-      maxDrift?: number
-      playbackRate?: {
-        max?: number
-        min?: number
-      }
-    }
-  }
-}
 
 type State = {
   autoplay: boolean
   dash: DashSettings
   debug: PlayerDebugTag
   experimental: Record<string, unknown>
+  godMode: boolean
   loop: boolean
   mute: boolean
+  persistKey: string
   playbackType?: PlaybackType
   plugins: PluginName[]
   poster: string
@@ -78,10 +38,10 @@ type State = {
   thumbnails: {
     sprite: string
     vtt: string
-    backdropHeight: number
+    // backdropHeight: number
     // backdropMinOpacity: number
     // backdropMaxOpacity: number
-    spotlightHeight: number
+    // spotlightHeight: number
   }
   recycleVideo: boolean
 }
@@ -123,6 +83,10 @@ type Actions = {
     options: Partial<{ backdropHeight: number; spotlightHeight: number }>
   ): void
   setRecycleVideo(value: boolean): void
+  setGodMode(): void
+
+  load(): void
+  persist(): Promise<string>
 }
 
 const DEFAULT_MAIN_SETTINGS: MainSettings = {
@@ -164,36 +128,44 @@ const DEFAULT_DASH_SETTINGS: DashSettings = {
   },
 }
 
+// const T = 'store.settings'
+
 const useSettingsStore = () => {
-  const persistedSources = usePersistence<string[]>(
+  const url = useRequestURL()
+  const localPersistKey = usePersistence('settings.persistKey', id, id, '')
+  if (url.searchParams.has('k')) {
+    localPersistKey.set(url.searchParams.get('k') ?? '')
+  }
+  const persistKey = localPersistKey.get()
+
+  const localSources = usePersistence<string[]>(
     'settings.sources',
     String,
     (s) => s.split(',').filter(Boolean),
     []
   )
-  const persistedPlugins = usePersistence<PluginName[]>(
+  const localPlugins = usePersistence<PluginName[]>(
     'settings.plugins',
     (a: PluginName[]) => a.join(','),
     (v: string) => sanitizePlugins(v.split(',')),
     DEFAULT_PLUGINS
   )
 
-  const persistedBasic = usePersistence<MainSettings>(
+  const localBasic = usePersistence<MainSettings>(
     'settings.basic',
     JSON.stringify,
     JSON.parse,
     DEFAULT_MAIN_SETTINGS
   )
 
-  const persistedPoster = usePersistence('settings.poster', id, id, '')
-  const persistedThumbnails = usePersistence(
+  const localPoster = usePersistence('settings.poster', id, id, '')
+  const localThumbnails = usePersistence(
     'settings.thumbnails',
     JSON.stringify,
     JSON.parse,
     { sprite: '', vtt: '', backdropHeight: 0, spotlightHeight: 0 }
   )
-  const persistedClips = usePersistence('settings.clips', id, id, '')
-  const url = useRequestURL()
+  const localClips = usePersistence('settings.clips', id, id, '')
   if (
     url.searchParams.has('autoplay') ||
     url.searchParams.has('loop') ||
@@ -201,9 +173,9 @@ const useSettingsStore = () => {
     url.searchParams.has('playback_type') ||
     url.searchParams.has('priority_transport')
   ) {
-    const pm = persistedBasic.get()
-    persistedBasic.set({
-      ...persistedBasic.get(),
+    const pm = localBasic.get()
+    localBasic.set({
+      ...localBasic.get(),
       autoplay: parseBoolean(
         url.searchParams.get('autoplay'),
         pm.autoplay ?? DEFAULT_MAIN_SETTINGS.autoplay
@@ -234,26 +206,26 @@ const useSettingsStore = () => {
   }
   const debug = debugTag(url.searchParams.get('debug') || 'clappr') ?? 'all'
   const { autoplay, mute, loop, playbackType, priorityTransport } =
-    persistedBasic.get()
+    localBasic.get()
 
   const usePersistedPlugins = !url.searchParams.has('plugins')
   const plugins =
     (usePersistedPlugins
-      ? persistedPlugins.get()
+      ? localPlugins.get()
       : sanitizePlugins(
           url.searchParams.get('plugins')?.split(',') ?? DEFAULT_PLUGINS
         )) ?? []
   const usePersistedSources = !url.searchParams.has('sources')
   const sources = usePersistedSources
-    ? persistedSources.get()
+    ? localSources.get()
     : url.searchParams.get('sources')?.split(',') ?? []
-  persistedSources.set(sources)
+  localSources.set(sources)
 
   if (url.searchParams.has('poster')) {
-    persistedPoster.set(url.searchParams.get('poster') ?? '')
+    localPoster.set(url.searchParams.get('poster') ?? '')
   }
-  const poster = persistedPoster.get()
-  const thumbnails = persistedThumbnails.get()
+  const poster = localPoster.get()
+  const thumbnails = localThumbnails.get()
 
   return defineStore<'settings', State, Getters, Actions>('settings', {
     state: () => ({
@@ -261,8 +233,10 @@ const useSettingsStore = () => {
       dash: deserializeDashSettings(url.searchParams.get('dash') ?? '{}'),
       debug,
       experimental: {},
+      godMode: false,
       loop,
       mute,
+      persistKey: persistKey ?? '',
       playbackType,
       plugins,
       priorityTransport: transportPreference(
@@ -279,9 +253,9 @@ const useSettingsStore = () => {
         ) ?? '0',
         10
       ),
-      clips: persistedClips.get(),
+      clips: localClips.get(),
       thumbnails,
-      recycleVideo: persistedBasic.get().recycleVideo,
+      recycleVideo: localBasic.get().recycleVideo,
     }),
     getters: {
       serialized() {
@@ -333,7 +307,7 @@ const useSettingsStore = () => {
           return
         }
         this.plugins.push(name)
-        persistedPlugins.set(this.plugins)
+        localPlugins.set(this.plugins)
       },
       removePlugin(name: PluginName) {
         const index = this.plugins.indexOf(name)
@@ -341,7 +315,7 @@ const useSettingsStore = () => {
           return
         }
         this.plugins.splice(index, 1)
-        persistedPlugins.set(this.plugins)
+        localPlugins.set(this.plugins)
       },
       setAutoplay(value: boolean) {
         this.autoplay = value
@@ -349,7 +323,7 @@ const useSettingsStore = () => {
       },
       setClipsText(value: string) {
         this.clips = value
-        persistedClips.set(value)
+        localClips.set(value)
       },
       setDashSettings(value: Partial<DashSettings>) {
         this.dash = $.extend(true, {}, this.dash, value)
@@ -369,7 +343,7 @@ const useSettingsStore = () => {
       },
       setPoster(value: string) {
         this.poster = value
-        persistedPoster.set(value)
+        localPoster.set(value)
       },
       setPriorityTransport(value: TransportPreference) {
         this.priorityTransport = value
@@ -377,21 +351,21 @@ const useSettingsStore = () => {
       },
       setSources(value: string[]) {
         this.sources = value
-        persistedSources.set(value)
+        localSources.set(value)
       },
       setThumbnailsURL(value: string) {
         this.thumbnails.sprite = value
-        persistedThumbnails.set(this.thumbnails)
+        localThumbnails.set(this.thumbnails)
       },
       setThumbnailsVTT(value: string) {
         this.thumbnails.vtt = value
-        persistedThumbnails.set(this.thumbnails)
+        localThumbnails.set(this.thumbnails)
       },
       setThumbnailsOptions(
         options: Partial<{ backdropHeight: number; spotlightHeight: number }>
       ) {
         this.thumbnails = {...this.thumbnails, ...options}
-        persistedThumbnails.set(this.thumbnails)
+        localThumbnails.set(this.thumbnails)
       },
       setVisitorId(value: string) {
         this.visitorId = value
@@ -414,11 +388,95 @@ const useSettingsStore = () => {
         this.recycleVideo = value
         persistBasicSettings(this)
       },
+      setGodMode() {
+        this.godMode = true
+      },
+      async load() {
+        if (!this.persistKey) {
+          return
+        }
+        const res = await $fetch(`/api/settings/${this.persistKey}`)
+        if (res.result) {
+          const settings = parseSettings(res.result)
+          if (typeof settings.autoplay !== 'undefined') {
+            this.setAutoplay(settings.autoplay)
+          }
+          if (typeof settings.loop !== 'undefined') {
+            this.setLoop(settings.loop)
+          }
+          if (typeof settings.mute !== 'undefined') {
+            this.setMute(settings.mute)
+          }
+          if (typeof settings.playbackType !== 'undefined') {
+            this.setPlaybackType(settings.playbackType)
+          }
+          if (typeof settings.poster !== 'undefined') {
+            this.setPoster(settings.poster)
+          }
+          if (typeof settings.priorityTransport !== 'undefined') {
+            this.setPriorityTransport(settings.priorityTransport)
+          }
+          if (typeof settings.sources !== 'undefined') {
+            this.setSources(settings.sources)
+          }
+          if (typeof settings.restrictResolution !== 'undefined') {
+            this.setRestrictResolution(settings.restrictResolution)
+          }
+          if (typeof settings.clips !== 'undefined') {
+            this.setClipsText(settings.clips)
+          }
+          if (typeof settings.thumbnails !== 'undefined') {
+            this.setThumbnailsURL(settings.thumbnails.sprite)
+            this.setThumbnailsVTT(settings.thumbnails.vtt)
+          }
+          if (typeof settings.recycleVideo !== 'undefined') {
+            this.setRecycleVideo(settings.recycleVideo)
+          }
+          if (typeof settings.dash !== 'undefined') {
+            this.setDashSettings(settings.dash)
+          }
+          // if (typeof settings.debug !== 'undefined') {
+          //   this.setDebug(settings.debug)
+          // }
+          // if ('experimental' in settings) {
+          //   this.experimental = settings.experimental
+          // }
+        }
+        // if (storedSettings.data.value) {
+        //   loadSettings(storedSettings.data.value)    
+        // }
+      },
+      async persist() {
+        if (!this.persistKey) {
+          this.persistKey = crypto.randomUUID()
+          localPersistKey.set(this.persistKey)
+        }
+        const res = await $fetch(`/api/settings/${this.persistKey}`, {
+          method: 'PUT',
+          body: {
+            autoplay: this.autoplay,
+            clips: this.clips,
+            dash: this.dash,
+            debug: this.debug,
+            loop: this.loop,
+            mute: this.mute,
+            playbackType: this.playbackType,
+            plugins: this.plugins,
+            poster: this.poster,
+            priorityTransport: this.priorityTransport,
+            restrictResolution: this.restrictResolution,
+            recycleVideo: this.recycleVideo,
+            sources: this.sources,
+            thumbnails: this.thumbnails,
+          } as PersistentSettings,
+        })
+        return this.persistKey;
+      },
     },
   })()
 
   function persistBasicSettings(state: State) {
-    persistedBasic.set({
+    localBasic.set({
       autoplay: state.autoplay,
       loop: state.loop,
       mute: state.mute,
@@ -462,16 +520,15 @@ function parseBoolean(val: string | null, defaultValue = false): boolean {
 }
 
 function isCustomDashSettings(settings: DashSettings): boolean {
-  // TODO
   return (
-    settings.streaming.abr?.maxBitrate?.video !== -1 ||
-    settings.streaming.abr?.initialBitrate?.video !== -1 ||
-    settings.streaming.abr?.autoSwitchBitrate?.video !== true ||
-    Object.keys(settings.streaming.abr?.additionalAbrRules ?? {}).length > 0 ||
-    settings.streaming.delay?.liveDelay !== undefined ||
-    settings.streaming.liveCatchup?.maxDrift !== undefined ||
-    settings.streaming.liveCatchup?.playbackRate?.max !== undefined ||
-    settings.streaming.liveCatchup?.playbackRate?.min !== undefined
+    settings?.streaming?.abr?.maxBitrate?.video !== -1 ||
+    settings?.streaming?.abr?.initialBitrate?.video !== -1 ||
+    settings?.streaming?.abr?.autoSwitchBitrate?.video !== true ||
+    Object.keys(settings?.streaming?.abr?.additionalAbrRules ?? {}).length > 0 ||
+    settings?.streaming?.delay?.liveDelay !== undefined ||
+    settings?.streaming?.liveCatchup?.maxDrift !== undefined ||
+    settings?.streaming?.liveCatchup?.playbackRate?.max !== undefined ||
+    settings?.streaming?.liveCatchup?.playbackRate?.min !== undefined
   )
 }
 
@@ -489,56 +546,12 @@ function deserializeDashSettings(input: string): DashSettings {
 }
 
 function sanitizeDashSettings(settings: unknown): DashSettings {
-  const ruleSchema = z.object({ active: z.boolean() })
-  const schema = z.object({
-    streaming: z.object({
-      abr: z.object({
-        ABRStrategy: z
-          .enum(['abrDynamic', 'abrThroughput', 'abrBola'])
-          .optional(),
-        additionalAbrRules: z
-          .object({
-            throughputRule: z.boolean().optional(),
-            insufficientBufferRule: ruleSchema.optional(),
-            droppedFramesRule: ruleSchema.optional(),
-            switchHistoryRule: ruleSchema.optional(),
-          })
-          .optional(),
-        autoSwitchBitrate: z
-          .object({
-            audio: z.boolean().optional(),
-            video: z.boolean().optional(),
-          })
-          .optional(),
-        initialBitrate: z
-          .object({
-            audio: z.number().optional(),
-            video: z.number().optional(),
-          })
-          .optional(),
-        maxBitrate: z
-          .object({
-            audio: z.number().optional(),
-            video: z.number().optional(),
-          })
-          .optional(),
-      }),
-      delay: z.object({ liveDelay: z.number().optional() }).optional(),
-      liveCatchup: z
-        .object({
-          maxDrift: z.number().optional(),
-          playbackRate: z
-            .object({
-              max: z.number().optional(),
-              min: z.number().optional(),
-            })
-            .optional(),
-        })
-        .optional(),
-    }),
-  })
-  const { success, data } = schema.safeParse(settings)
-  return success ? (data as DashSettings) : DEFAULT_DASH_SETTINGS
+  try {
+    return parseDashSettings(settings)
+  } catch (e) {
+    console.error(e)
+    return DEFAULT_DASH_SETTINGS
+  }
 }
 
 export default useSettingsStore

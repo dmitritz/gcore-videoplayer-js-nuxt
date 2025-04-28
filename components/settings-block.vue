@@ -51,9 +51,6 @@
     </div>
     <div class="label">UI</div>
     <plugin-settings class="block mb-4" />
-    <div class="label">DASH</div>
-    <dash-settings class="block mb-4" />
-    <clips-settings v-if="settings.plugins.includes('clips')" />
   </div>
 </template>
 

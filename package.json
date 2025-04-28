@@ -18,6 +18,8 @@
     "@heroicons/vue": "^2.2.0",
     "@pinia/nuxt": "^0.10.1",
     "@sentry/nuxt": "^9.5.0",
+    "@types/mousetrap": "^1.6.15",
+    "@upstash/redis": "^1.34.8",
     "assert": "^2.1.0",
     "consola": "^3.4.1",
     "copy-to-clipboard": "^3.3.3",

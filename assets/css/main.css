@@ -1,3 +1,4 @@
+
 @import "tailwindcss";
 
 @import './base.css';
@@ -81,11 +82,24 @@ a:hover {
 }
 
 .loaded {
-  @apply px-2 py-1 text-slate-900 dark:text-slate-300;
+  @apply px-2 py-1 text-slate-900 dark:text-slate-300 border-1 border-transparent;
+}
+.btn {
+  @apply px-2 py-1 border rounded border-slate-300 dark:border-slate-100 text-slate-900 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 dark:border-slate-700;
 }
 
 .subscript {
   @apply text-slate-600 dark:text-slate-300 text-sm;
+}
+
+input.invalid,
+textarea.invalid {
+  @apply border-red-500;
+}
+
+input.changed,
+textarea.changed {
+  @apply border-orange-300;
 }
 
 @media (hover: hover) {
