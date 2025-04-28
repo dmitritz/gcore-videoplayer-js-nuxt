@@ -37,12 +37,20 @@
           />
           Loop
         </label>
+        <label for="option_recycle_video" class="sublabel">
+          <input
+            type="checkbox"
+            id="option_recycle_video"
+            :checked="settings.recycleVideo"
+            @change="e => settings.setRecycleVideo((e.target as HTMLInputElement)?.checked)"
+            class="mr-2"
+          />
+          Recycle video
+        </label>
       </div>
     </div>
     <div class="label">UI</div>
     <plugin-settings class="block mb-4" />
-    <div class="label">DASH</div>
-    <dash-settings class="block mb-4" />
   </div>
 </template>
 

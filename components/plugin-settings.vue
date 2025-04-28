@@ -8,14 +8,49 @@
     >
       {{ PLUGIN_LABELS[plugin] }}
       <star-icon class="w-3 h-3" v-if="PLUGIN_OPTIONS[plugin]?.starred" />
+      <device-phone-mobile-icon
+        v-if="plugin === 'skip_time'"
+        class="w-3 h-3"
+        title="Mobile devices only"
+      />
+      <router-link
+        to="/source"
+        v-if="plugin === 'thumbnails'"
+        class="inline-block"
+        title="Configure thumbnails"
+      >
+        <adjustments-horizontal-icon class="w-3 h-3" />
+      </router-link>
+      <a
+        href="https://cdn.cta.tech/cta/media/media/resources/standards/pdfs/cta-5004-final.pdf"
+        target="_blank"
+        v-if="plugin === 'cmcd'"
+        class="inline-flex text-xs items-center gap-1"
+      >
+        <question-mark-circle-icon class="w-3 h-3" />more
+      </a>
+      <play-pause-icon
+        v-if="plugin === 'media_control'"
+        class="w-3 h-3"
+        title="Media control UI"
+      />
     </plugin-item>
   </div>
   <div class="grid grid-cols-2 md:grid-cols-3 gap-2 my-2">
-    <div class="text-sm col-span-2 md:col-span-3">Some plugins depend on others, for instance:<br/>
-      <b>Gear button</b> and <b>Picture in picture</b> both depend on <b>Media control</b>,<br/>
-      <b>Nerd stats</b> depends on <b>Media control</b>, <b>Stats</b>, and <b>Gear button</b>,<br/>
-      etc.<br/>
-      See the <a href="https://github.com/G-Core/gcore-videoplayer-js/blob/main/packages/player/docs/api/player.md" target="_blank">documentation</a> for more details.
+    <div class="text-sm col-span-2 md:col-span-3">
+      Some plugins depend on others, for instance:<br />
+      <b>Gear button</b> and <b>Picture-in-picture</b> both depend on
+      <b>Media control</b>,<br />
+      <b>Nerd stats</b> depends on <b>Media control</b>, <b>Stats</b>, and
+      <b>Gear button</b>,<br />
+      etc.<br />
+      See the
+      <a
+        href="https://github.com/G-Core/gcore-videoplayer-js/blob/main/packages/player/docs/api/player.md"
+        target="_blank"
+        >documentation</a
+      >
+      for more details.
     </div>
   </div>
   <div class="mt-2 mb-4 grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -59,7 +94,13 @@
 </template>
 
 <script lang="ts" setup>
-import { StarIcon } from '@heroicons/vue/24/outline'
+import {
+  AdjustmentsHorizontalIcon,
+  DevicePhoneMobileIcon,
+  PlayPauseIcon,
+  QuestionMarkCircleIcon,
+  StarIcon,
+} from '@heroicons/vue/24/outline'
 
 import useSettingsStore from '../store/settings'
 import type { PluginName } from '../types'
@@ -67,9 +108,11 @@ import type { PluginName } from '../types'
 const { disabledPlugins } = usePluginsDeps()
 
 const PLUGIN_LABELS: Partial<Record<PluginName, string>> = {
-  audio_selector: 'Audio tracks',
+  audio_tracks: 'Audio tracks',
   big_mute_button: 'Big mute button',
   click_to_pause: 'Click to pause',
+  clips: 'Clips',
+  cmcd: 'CMCD',
   context_menu: 'Context menu',
   dvr_controls: 'DVR controls',
   error_screen: 'Error screen',
@@ -77,12 +120,13 @@ const PLUGIN_LABELS: Partial<Record<PluginName, string>> = {
   favicon: 'Favicon',
   bottom_gear: 'Gear button',
   media_control: 'Media controls',
-  multicamera: 'Multi camera',
+  // multicamera: 'Multi camera',
   level_selector: 'Quality levels',
   pip: 'Picture in picture',
   playback_rate: 'Playback rate',
   poster: 'Poster',
-  // seek_time: 'Seek time',
+  skip_time: 'Skip time',
+  seek_time: 'Seek time',
   // share: 'Share',
   source_controller: 'Source controller',
   spinner: 'Spinner',

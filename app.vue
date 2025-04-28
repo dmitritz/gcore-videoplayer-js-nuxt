@@ -3,6 +3,7 @@
 </template>
 
 <script lang="ts" setup>
+import mousetrap from 'mousetrap'
 import { setTracer } from '@gcorevideo/player'
 import {
   Logger,
@@ -28,7 +29,7 @@ if (import.meta.client) {
         Fingerprint.load()
           .then((agent) => agent.get())
           .then((res) => {
-            tracer.setTag('visitorId', res.visitorId)
+            tracer.setTag('visitor_id', res.visitorId)
             scope.setTags(tags)
             scope.setTag('visitor_id', res.visitorId)
             settings.setVisitorId(res.visitorId)
@@ -51,6 +52,17 @@ if (import.meta.client) {
     delay: 2000,
   })
   setTracer(tracer)
+
+  mousetrap.bind(['option+h', 'alt+h'], () => {
+    navigateTo('/')
+  })
+  mousetrap.bind(['option+e', 'alt+e'], () => {
+    navigateTo('/settings')
+  })
+  mousetrap.bind(['option+s', 'alt+s'], () => {
+    navigateTo('/source')
+  })
+  settings.load()
 }
 
 function createSentryTracer(setup: (scope: Sentry.Scope) => void) {

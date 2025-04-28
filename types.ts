@@ -2,7 +2,7 @@ export type StreamKind = 'stream' | 'video';
 export type StreamDto = Record<string, unknown>;
 
 export type PluginName =
-  | 'audio_selector'
+  | 'audio_tracks'
   | 'big_mute_button'
   | 'bottom_gear'
   | 'cc'
@@ -10,6 +10,7 @@ export type PluginName =
   | 'click_to_pause_custom'
   | 'clips'
   | 'clappr_stats'
+  | 'cmcd'
   | 'context_menu'
   | 'dvr_controls'
   | 'error_screen'
@@ -23,6 +24,7 @@ export type PluginName =
   | 'playback_rate'
   | 'poster'
   | 'seek_time'
+  | 'skip_time'
   | 'share'
   | 'spinner'
   | 'source_controller'
@@ -30,7 +32,7 @@ export type PluginName =
   | 'volume_fade'
 
 export const PLUGIN_NAMES: PluginName[] = [
-  'audio_selector',
+  'audio_tracks',
   'big_mute_button',
   'cc',
   'click_to_pause',

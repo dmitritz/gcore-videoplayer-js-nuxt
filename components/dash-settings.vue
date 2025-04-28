@@ -3,10 +3,7 @@
     class="flex flex-col md:grid gap-2 my-2 md:grid-cols-3 md:content-center md:items-center"
   >
     <div class="label">Bitrate</div>
-    <label
-      for="dash_bitrate_auto_switch"
-      class="sublabel text-sm"
-    >
+    <label for="dash_bitrate_auto_switch" class="sublabel text-sm">
       <input
         type="checkbox"
         id="dash_bitrate_auto_switch"
@@ -120,7 +117,9 @@
       />
       <span class="field-suffix">sec</span>
     </div>
-    <label for="dash_playback_rate_max" class="sublabel text-sm">playback rate max</label>
+    <label for="dash_playback_rate_max" class="sublabel text-sm"
+      >playback rate max</label
+    >
     <div class="row col-span-2">
       <input
         type="number"
@@ -133,7 +132,9 @@
       />
       <span class="field-suffix"> 0..1.0, 0.5=50% </span>
     </div>
-    <label for="dash_playback_rate_min" class="sublabel text-sm">playback rate min</label>
+    <label for="dash_playback_rate_min" class="sublabel text-sm"
+      >playback rate min</label
+    >
     <div class="row col-span-2">
       <input
         type="number"
@@ -148,7 +149,9 @@
     </div>
     <div class="mb-2 col-span-3"></div>
     <div class="label col-span-3">ABR</div>
-    <div class="sublabel text-sm col-span-3 md:col-span-1 self-start">strategy</div>
+    <div class="sublabel text-sm col-span-3 md:col-span-1 self-start">
+      strategy
+    </div>
     <div
       class="col-span-3 md:col-span-2 grid grid-cols-2 lg:grid-cols-3 gap-1 text-sm"
     >
@@ -202,7 +205,7 @@ import useSettingsStore, {
 import type {
   AdditionalAbrRulesSettings,
   DashAbrStrategy,
-} from '~/store/settings'
+} from '~/store/marshal'
 
 const settings = useSettingsStore()
 const maxBitrate = computed(
@@ -280,7 +283,7 @@ const ABR_STRATEGIES: DashAbrStrategy[] = [
   'abrThroughput',
   'abrBola',
   'abrL2A',
-  'abrLoLP'
+  'abrLoLP',
 ]
 const ABR_STRATEGY_LABELS: Record<DashAbrStrategy, string> = {
   abrDynamic: 'Dynamic',
@@ -535,7 +538,7 @@ function setAbrStrategy(strategy: DashAbrStrategy) {
 </script>
 
 <style lang="css" scoped>
-@import "tailwindcss";
+@import 'tailwindcss';
 
 .radiobtn {
   @apply text-xs;
@@ -549,7 +552,7 @@ function setAbrStrategy(strategy: DashAbrStrategy) {
 .field-suffix {
   @apply text-xs text-slate-600 dark:text-slate-300;
 }
-input[type="number"] {
+input[type='number'] {
   @apply text-sm rounded border p-1 w-20 mr-2;
 }
 </style>

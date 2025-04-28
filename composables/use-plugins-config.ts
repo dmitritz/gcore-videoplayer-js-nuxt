@@ -4,29 +4,32 @@ import {
   AudioTracks,
   BigMuteButton,
   BottomGear,
-  ClapprNerdStats,
   ClapprStats,
   ClickToPause,
+  Clips,
   ClosedCaptions,
   DvrControls,
   ErrorScreen,
   Favicon,
-  LevelSelector,
   MediaControl,
-  MultiCamera,
+  // MultiCamera,
+  NerdStats,
   PictureInPicture,
   PlaybackRate,
   Poster,
+  QualityLevels,
   SeekTime,
   Share,
   SourceController,
   SpinnerThreeBounce,
   Thumbnails,
-  VolumeFade,
   ContextMenu,
   type PlayerPluginConstructor,
   trace,
+  VolumeFade,
+  SkipTime,
   Logo,
+  CmcdConfig,
 } from '@gcorevideo/player'
 
 import useSettingsStore from '../store/settings'
@@ -40,23 +43,26 @@ const _P: PlayerPluginConstructor[] = [
   BigMuteButton,
   BottomGear,
   ClapprStats,
-  ClapprNerdStats,
+  CmcdConfig,
+  NerdStats,
   ClickToPause,
+  Clips,
   ClosedCaptions,
   ContextMenu,
   DvrControls,
   ErrorScreen,
   ExampleUI,
   Favicon,
-  LevelSelector,
   // Logo,
   MediaControl,
-  MultiCamera,
+  // MultiCamera,
   PictureInPicture,
   PlaybackRate,
   Poster,
+  QualityLevels,
   SeekTime,
   Share,
+  SkipTime,
   SourceController,
   SpinnerThreeBounce,
   Thumbnails,
@@ -83,7 +89,8 @@ const usePluginsConfig = () => {
         name
       })
       const plugin = PLUGINS[name as PluginName]
-      Player.unregisterPlugin(plugin?.prototype.name) // TODO or just name
+      assert(plugin, `Plugin ${name} not found`)
+      Player.unregisterPlugin(plugin.prototype.name) // TODO or just name
     })
   })
 

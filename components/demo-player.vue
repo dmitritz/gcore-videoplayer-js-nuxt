@@ -7,7 +7,7 @@
       >Source not configured</span
     >
   </div>
-  <div class="settings grid grid-cols-2 my-1 mb-2 px-2 items-baseline">
+  <div class="settings grid grid-cols-2 my-1 mb-2 px-2 items-baseline" v-if="exampleUi">
     <div class="buttons font-semibold flex flex-col gap-1 sm:flex-row">
       <button
         @click="play"
@@ -18,25 +18,45 @@
       >
         Play
       </button>
-      <button @click="pause" v-show="playing" class="playback" id="dashboard_pause">Pause</button>
-      <button @click="stop" v-show="ready && !stopped" class="playback" id="dashboard_stop">
+      <button
+        @click="pause"
+        v-show="playing"
+        class="playback"
+        id="dashboard_pause"
+      >
+        Pause
+      </button>
+      <button
+        @click="stop"
+        v-show="ready && !stopped"
+        class="playback"
+        id="dashboard_stop"
+      >
         Stop
       </button>
     </div>
     <div class="flex gap-2 items-center content-center justify-end flex-wrap">
-      <span class="text-slate-600 dark:text-slate-300 text-sm" v-if="noSource">no source</span>
-      <span class="text-xs sm:text-sm" v-if="width && height" id="dashboard_quality">{{
-        formatQuality(width, height)
-      }}</span>
+      <span class="text-slate-600 dark:text-slate-300 text-sm" v-if="noSource"
+        >no source</span
+      >
+      <span
+        class="text-xs sm:text-sm"
+        v-if="width && height"
+        id="dashboard_quality"
+        >{{ formatQuality(width, height) }}</span
+      >
       <span class="text-xs sm:text-sm" v-if="bitrate" id="dashboard_bitrate">{{
         formatBitrate(bitrate)
       }}</span>
       <span class="local-time text-xs sm:text-sm text-left" v-if="showTime">{{
         formatTime(currentTime)
       }}</span>
-      <span class="font-semibold text-sm uppercase" v-if="playbackType" id="dashboard_playback_type">{{
-        playbackType
-      }}</span>
+      <span
+        class="font-semibold text-sm uppercase"
+        v-if="playbackType"
+        id="dashboard_playback_type"
+        >{{ playbackType }}</span
+      >
       <button
         class="font-semibold text-sm sm:text-md uppercase"
         v-if="playback"
@@ -51,22 +71,48 @@
       @click="showSource = false"
       v-if="showSource"
     >
-      [{{ activeSourceType }}](html5: {{ html5VideoSupport }}) {{ activeSource }}
+      [{{ activeSourceType }}](html5: {{ html5VideoSupport }})
+      {{ activeSource }}
     </div>
     <div class="my-2" v-if="errors.length">
-      <div v-for="error of errors" :key="error" class="text-red-500 dark:text-red-400 p-2">{{ error }}</div>
+      <div
+        v-for="error of errors"
+        :key="error"
+        class="text-red-500 dark:text-red-400 p-2"
+      >
+        {{ error }}
+      </div>
+    </div>
+    <div class="my-2 col-span-2 flex flex-col gap-2 items-start" v-if="cmcdEnabled">
+      <a
+        href="https://cdn.cta.tech/cta/media/media/resources/standards/pdfs/cta-5004-final.pdf"
+        target="_blank"
+      >
+        CMCD
+      </a>
+      <span class="text-xs"
+        >sid=<code>{{ cmcdSid }}</code></span
+      >
+      <span class="text-xs"
+        >cid=<code>{{ cmcdCid }}</code></span
+      >
+    </div>
+    <div class="my-2 col-span-2 flex gap-2 justify-end items-center">
+      <span class="font-semibold">Viewport</span>
+      <span class="text-xs">{{ viewport.width }}&times;{{ viewport.height }}</span>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
-
+import { $ } from '@clappr/core'
 import {
+  MediaControl,
   Player,
   type PlaybackModule,
   type PlaybackType,
-  trace,
+  // trace,
 } from '@gcorevideo/player'
 
 import usePluginsConfig from '~/composables/use-plugins-config'
@@ -74,8 +120,9 @@ import useSettingsStore from '../store/settings'
 import { SPEEDTEST_SERVERS } from '../constants'
 import type { ExampleUIOptions } from './plugins/ExampleUI'
 import strings from '~/assets/strings.json'
+import gcoreSvg from '~/assets/img/gcore_orange_001.svg'
 
-const T = 'app.demo-player'
+// const T = 'app.demo-player'
 
 const container = ref<HTMLDivElement>()
 const playing = ref(false)
@@ -90,6 +137,10 @@ const width = ref(0)
 const height = ref(0)
 const playbackType = ref<PlaybackType | null>(null)
 const showTime = computed(() => playing.value)
+
+const exampleUi = computed(() => settings.plugins.includes('example_ui'))
+
+const cmcdEnabled = computed(() => settings.plugins.includes('cmcd'))
 
 const currentTime = ref<number>(0)
 
@@ -107,17 +158,29 @@ const html5VideoSupport = computed(() => {
   if (!activeSourceType.value) {
     return '-'
   }
-  const support = document.createElement('video').canPlayType(activeSourceType.value)
+  const support = document
+    .createElement('video')
+    .canPlayType(activeSourceType.value)
   return support === '' ? 'no' : support
 })
 
 const errors = ref<string[]>([])
 
+const cmcdSid = ref('')
+const cmcdCid = ref('') // TODO get from the plugin
+
+const viewport = ref<{ width: number, height: number }>({ width: 0, height: 0 })
+
 usePluginsConfig()
+
+const mediaControlSettings = MediaControl.extendSettings({
+  left: ['dvr', 'clips'],
+  right: ['*']
+})
 
 const config = computed(() => ({
   autoPlay: settings.autoplay,
-  dash: settings.dash,
+  dash: $.extend(true, {}, settings.dash),
   debug: settings.debug,
   mute: settings.mute,
   width: '100%',
@@ -127,9 +190,8 @@ const config = computed(() => ({
   playback: {
     hlsjsConfig: {
       lowLatencyMode: true,
-      liveSyncDurationCount: 0,
-      liveMaxLatencyDurationCount: 1,
     },
+    recycleVideo: !!settings.recycleVideo,
   },
   playbackType: settings.playbackType,
   priorityTransport: settings.priorityTransport,
@@ -138,10 +200,21 @@ const config = computed(() => ({
   clapprNerdStats: {
     speedTestServers: SPEEDTEST_SERVERS,
   },
+  clips: {
+    text: settings.clips,
+  },
   contextMenu: {
-    label: 'Benjamin Franklin',
-    preventShowContextMenu: true,
-    url: 'https://gcore.com/',
+    options: [
+      {
+        // label: 'Join us',
+        labelKey: 'joinus',
+        icon: `<img src="${gcoreSvg}" />`,
+        name: 'joinus',
+        handler() {
+          window.open('https://gcore.com/', '_blank')
+        },
+      },
+    ],
   },
   design: {
     // media_control
@@ -156,6 +229,8 @@ const config = computed(() => ({
   // disableClickOnPause: true, // vast_ads
   // disableMediaControl: true, // disable_controls, ...
   // embed: true, // share plugin
+  mediaControl: mediaControlSettings,
+  // hideMediaControlDelay: 3600000,
   exampleUI: {
     activeSource,
     activeSourceType,
@@ -172,6 +247,9 @@ const config = computed(() => ({
     starting,
     stopped,
     width,
+    cmcdSid,
+    cmcdCid,
+    viewport,
   } as ExampleUIOptions,
   faviconColor: '#000',
   // fullscreenDisable: true, // media_control
@@ -196,53 +274,55 @@ const config = computed(() => ({
   // shareURL: "https://gvideo.co", // share plugin
   subtitles: {
     language: 'en',
+    // language: 'zh',
   },
   thumbnails: {
-    backdropHeight: 200,
+    backdropHeight: settings.thumbnails.backdropHeight,
     backdropMinOpacity: 0.9,
     backdropMaxOpacity: 0.99,
-    spotlightHeight: 100,
-    vtt: '1\n00:00:00,000 --> 00:00:10,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=0,0,100,56\n\n2\n00:00:10,000 --> 00:00:20,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=100,0,100,56\n\n3\n00:00:20,000 --> 00:00:30,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=200,0,100,56\n\n4\n00:00:30,000 --> 00:00:40,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=300,0,100,56\n\n5\n00:00:40,000 --> 00:00:50,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=400,0,100,56\n\n6\n00:00:50,000 --> 00:01:00,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=500,0,100,56\n\n7\n00:01:00,000 --> 00:01:10,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=600,0,100,56\n\n8\n00:01:10,000 --> 00:01:20,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=0,56,100,56\n\n9\n00:01:20,000 --> 00:01:30,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=100,56,100,56\n\n10\n00:01:30,000 --> 00:01:40,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=200,56,100,56\n\n11\n00:01:40,000 --> 00:01:50,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=300,56,100,56\n\n12\n00:01:50,000 --> 00:02:00,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=400,56,100,56\n\n13\n00:02:00,000 --> 00:02:10,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=500,56,100,56\n\n14\n00:02:10,000 --> 00:02:20,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=600,56,100,56\n\n15\n00:02:20,000 --> 00:02:30,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=0,112,100,56\n\n16\n00:02:30,000 --> 00:02:40,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=100,112,100,56\n\n17\n00:02:40,000 --> 00:02:50,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=200,112,100,56\n\n18\n00:02:50,000 --> 00:03:00,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=300,112,100,56\n\n19\n00:03:00,000 --> 00:03:10,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=400,112,100,56\n\n20\n00:03:10,000 --> 00:03:20,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=500,112,100,56\n\n21\n00:03:20,000 --> 00:03:30,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=600,112,100,56\n\n22\n00:03:30,000 --> 00:03:40,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=0,168,100,56\n\n23\n00:03:40,000 --> 00:03:50,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=100,168,100,56\n\n24\n00:03:50,000 --> 00:04:00,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=200,168,100,56\n\n25\n00:04:00,000 --> 00:04:10,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=300,168,100,56\n\n26\n00:04:10,000 --> 00:04:20,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=400,168,100,56\n\n27\n00:04:20,000 --> 00:04:30,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=500,168,100,56\n\n28\n00:04:30,000 --> 00:04:40,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=600,168,100,56\n\n29\n00:04:40,000 --> 00:04:50,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=0,224,100,56\n\n30\n00:04:50,000 --> 00:05:00,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=100,224,100,56\n\n31\n00:05:00,000 --> 00:05:10,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=200,224,100,56\n\n32\n00:05:10,000 --> 00:05:20,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=300,224,100,56\n\n33\n00:05:20,000 --> 00:05:30,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=400,224,100,56\n\n34\n00:05:30,000 --> 00:05:40,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=500,224,100,56\n\n35\n00:05:40,000 --> 00:05:50,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=600,224,100,56\n\n36\n00:05:50,000 --> 00:06:00,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=0,280,100,56\n\n37\n00:06:00,000 --> 00:06:10,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=100,280,100,56\n\n38\n00:06:10,000 --> 00:06:20,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=200,280,100,56\n\n39\n00:06:20,000 --> 00:06:30,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=300,280,100,56\n\n40\n00:06:30,000 --> 00:06:40,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=400,280,100,56\n\n41\n00:06:40,000 --> 00:06:50,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=500,280,100,56\n\n42\n00:06:50,000 --> 00:07:00,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=600,280,100,56\n\n43\n00:07:00,000 --> 00:07:10,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=0,336,100,56\n\n44\n00:07:10,000 --> 00:07:20,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=100,336,100,56\n\n45\n00:07:20,000 --> 00:07:30,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=200,336,100,56\n\n46\n00:07:30,000 --> 00:07:40,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=300,336,100,56\n\n47\n00:07:40,000 --> 00:07:50,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=400,336,100,56\n\n48\n00:07:50,000 --> 00:08:00,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=500,336,100,56\n\n49\n00:08:00,000 --> 00:08:10,000\n3dk4NsRt6vWsffEr_sprite.jpg#xywh=600,336,100,56\n',
-    sprite:
-      'https://static.gvideo.co/videoplatform/sprites/2675/2452164_3dk4NsRt6vWsffEr.mp4_sprite.jpg',
+    spotlightHeight: settings.thumbnails.spotlightHeight || 100,
+    vtt: settings.thumbnails.vtt,
+    sprite: settings.thumbnails.sprite,
   },
   strings,
 }))
 
-const player = new Player(config.value)
+let player: Player | undefined
 
-const rob = useResizeObserver(({ width, height }) => {
-  player.resize({ width, height })
-})
+let rob: ReturnType<typeof useResizeObserver> | undefined
 
 onMounted(() => {
   if (!settings.sources.length) {
     return
   }
+  player = new Player(config.value)
+
+  rob = useResizeObserver(({ width, height }) => {
+    player?.resize({ width, height })
+  })
   setTimeout(() => {
     if (!container.value) {
       return
     }
-    trace(`${T} onMounted attachTo`)
-    player.attachTo(container.value)
-    rob.start(container.value)
+    player?.destroy()
+    player?.attachTo(container.value)
+    rob?.start(container.value)
   }, 0)
 })
 
 onBeforeUnmount(() => {
-  trace(`${T} onBeforeUnmount`)
-  rob.stop()
-  player.destroy()
+  rob?.stop()
+  player?.destroy()
 })
 
 watch(config, (newConfig) => {
   if (!newConfig.sources.length) {
     return
   }
-  player.configure(newConfig)
+  player?.configure(newConfig)
   if (container.value) {
-    player.destroy()
-    player.attachTo(container.value)
+    player?.destroy()
+    player?.attachTo(container.value)
   }
 })
 
@@ -298,7 +378,7 @@ function formatPlaybackModule(module: PlaybackModule): string {
 </script>
 
 <style lang="css" scoped>
-@import "tailwindcss";
+@import 'tailwindcss';
 
 .video-container {
   width: 100%;

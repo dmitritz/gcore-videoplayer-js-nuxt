@@ -1,5 +1,6 @@
 import { Events as CoreEvents, UICorePlugin, UIObject } from '@clappr/core'
 import {
+  CmcdConfig,
   type PlaybackModule,
   type PlaybackType,
   type QualityLevel,
@@ -23,6 +24,9 @@ export type ExampleUIOptions = {
   starting: Ref<boolean>
   stopped: Ref<boolean>
   width: Ref<number>
+  cmcdSid: Ref<string>
+  cmcdCid: Ref<string>
+  viewport: Ref<{ width: number, height: number }>
 }
 
 const CLAPPR_VERSION = '0.11.4'
@@ -70,6 +74,7 @@ export class ExampleUI extends UICorePlugin {
       CoreEvents.CORE_ACTIVE_CONTAINER_CHANGED,
       this.bindActiveContainerListeners
     )
+    this.listenTo(this.core, CoreEvents.CORE_RESIZE, this.onResize)
   }
 
   private get pins(): ExampleUIOptions {
@@ -77,8 +82,8 @@ export class ExampleUI extends UICorePlugin {
   }
 
   private onReady() {
-    // TODO
     this.pins.ready.value = true
+    this.setSize()
   }
 
   private onEnded() {
@@ -169,6 +174,12 @@ export class ExampleUI extends UICorePlugin {
       console.log('playback error', error)
       // this.pins.errors.value.push(error.message || error.description)
     })
+    const cmcd = this.core.getPlugin('cmcd') as CmcdConfig | undefined
+    if (cmcd) {
+      const { sid, cid } = cmcd.exportIds()
+      this.pins.cmcdSid.value = sid
+      this.pins.cmcdCid.value = cid
+    }
   }
 
   private setQualityLevel(level: QualityLevel) {
@@ -176,5 +187,23 @@ export class ExampleUI extends UICorePlugin {
     this.pins.width.value = level.width
     this.pins.height.value = level.height
     this.pins.hd.value = level.height >= 720
+  }
+
+  override onResize() {
+    this.setSize()
+    return super.onResize()
+  }
+
+  private setSize() {
+    const width = this.core.$el.width()
+    const height = this.core.$el.height()
+    trace(`${T} setSize`, {
+      width,
+      height,
+    })
+    this.pins.viewport.value = {
+      width,
+      height,
+    }
   }
 }
