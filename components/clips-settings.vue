@@ -1,25 +1,44 @@
 <template>
-  <div class="mb-4 grid grid-cols-3">
+  <div class="mb-8 flex flex-col gap-2 pb-4 border-b border-slate-200">
     <div>
-      <label for="clips_text" class="label">Clips</label>
-      <div class="text-sm text-slate-500">
-        Example:<br />
-        <pre class="overflow-auto">
-00 Introduction
-01:30 Our sponsors
-31:30 Questions
-01:00:30 Conclusion
-        </pre>
+      <div class="flex gap-2 justify-between">
+        <label for="clips_text" class="label text-lg">Clips</label>
+        <span v-show="loaded" class="loaded"
+          >Loaded</span
+        >
+        <button
+          @click="saveClipsText"
+          class="btn"
+          :disabled="!changed || empty"
+          v-show="!loaded"
+        >
+          Load
+        </button>
+      </div>
+      <div class="text-sm" v-if="!settingsStore.plugins.includes('clips')">
+        <exclamation-triangle-icon class="w-4 h-4 inline-block" />
+        Enable <b>Clips</b> plugin on the
+        <router-link to="settings">Settings</router-link> tab
       </div>
     </div>
-    <div class="row col-span-2 flex flex-col gap-2 items-start">
+    <div class="row flex flex-col gap-2 items-start">
       <textarea
         id="clips_text"
         v-model="clipsText"
         class="w-full rounded border border-slate-300 p-2"
+        :class="{ 'changed': changed }"
         rows="10"
       />
-      <div class="flex flex-row gap-2">
+      <div class="text-sm text-slate-500">
+        Example:<br />
+        <pre class="overflow-auto">
+  00 Introduction
+  01:30 Our sponsors
+  31:30 Questions
+  01:00:30 Conclusion
+        </pre>
+      </div>
+      <!-- <div class="flex flex-row gap-2">
         <span v-show="loaded" class="px-2 py-2 text-sm text-slate-500"
           >Loaded</span
         >
@@ -38,7 +57,7 @@
         >
           Clear
         </button>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -66,3 +85,8 @@ function clear() {
   settingsStore.setClipsText('')
 }
 </script>
+
+
+<style scoped>
+@reference '~/assets/css/main.css';
+</style>

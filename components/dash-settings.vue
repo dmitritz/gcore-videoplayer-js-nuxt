@@ -205,7 +205,7 @@ import useSettingsStore, {
 import type {
   AdditionalAbrRulesSettings,
   DashAbrStrategy,
-} from '~/store/settings'
+} from '~/store/marshal'
 
 const settings = useSettingsStore()
 const maxBitrate = computed(

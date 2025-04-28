@@ -16,9 +16,9 @@
       </reference-links>
     </template>
     <div class="source-settings w-full px-2">
-      <div class="controls flex flex-col gap-y-3 mb-4 gap-1">
+      <div class="controls flex flex-col gap-y-3 mb-8 gap-1 pb-4 border-b border-slate-200">
         <div>
-          <label for="sources" class="label">Sources</label>
+          <label for="sources" class="label text-lg">Sources</label>
           <span class="subscript">
             one per line in the priority order. The first supported one will be
             used
@@ -34,7 +34,7 @@
             placeholder="https://example.com/stream.mpd"
           ></textarea>
         </div>
-        <div class="flex gap-2">
+        <div class="flex gap-2" v-if="false">
           <div class="label">Prefer</div>
           <label for="priority_transport_dash" class="sublabel">
             <input
@@ -56,7 +56,10 @@
           </label>
         </div>
         <div>
-          <label for="poster" class="label">Poster</label>
+          <label for="poster" class="label text-lg">Poster</label>
+          <span class="subscript">
+            is shown when the video is loading or stopped.
+          </span>
         </div>
         <div>
           <input
@@ -85,9 +88,10 @@
             Clear
           </button>
         </div>
+        <div v-if="error" class="text-red-950 dark:text-red-400">{{ error }}</div>
       </div>
-      <div v-if="error" class="text-red-950 dark:text-red-400">{{ error }}</div>
       <thumbnails-block />
+      <clips-settings />
     </div>
   </nuxt-layout>
 </template>

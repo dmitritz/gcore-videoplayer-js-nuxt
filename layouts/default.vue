@@ -98,6 +98,11 @@ function copyVisitorId() {
             class="w-3 h-3 inline align-baseline"
           />
         </router-link>
+        <transition name="fade">
+          <router-link :to="{ path: '/dash', query }" id="nav_dash" v-if="settings.godMode">
+            DASH
+          </router-link>
+        </transition>
       </nav>
       <slot name="header"></slot>
     </header>
@@ -138,7 +143,7 @@ function copyVisitorId() {
 </template>
 
 <style scoped>
-@import 'tailwindcss';
+@import '~/assets/css/main.css';
 
 header,
 header .wrapper {
@@ -229,5 +234,22 @@ footer b {
   .g-container {
     grid-template-rows: max-content var(--footer-height);
   }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition-delay: 0.1s;
+  transition-duration: 0.5s;
+  transition-property: opacity background-color;
+  transition-timing-function: ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+a.fade-enter-to {
+  @apply bg-orange-500 text-white;
 }
 </style>
