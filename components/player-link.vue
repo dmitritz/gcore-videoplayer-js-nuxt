@@ -45,10 +45,6 @@ const playerLink = computed(() => {
 
 function copySettingsUrl() {
   settings.persist().then(persistKey => {
-    trace(`${T} copySettingsUrl`, {
-      persistKey,
-      baseUrl: playerLink.value,
-    })
     const url = new URL(playerLink.value)
     url.searchParams.set('k', persistKey)
     copy(url.href, {
