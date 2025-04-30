@@ -82,10 +82,10 @@ export class ExampleUI extends UICorePlugin {
   }
 
   private onReady() {
-    setTimeout(() => {
+    Promise.resolve().then(() => {
       this.pins.ready.value = true
       this.setSize()
-    }, 0)
+    })
   }
 
   private onEnded() {
