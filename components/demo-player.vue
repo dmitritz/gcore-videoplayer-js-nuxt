@@ -1,6 +1,8 @@
 <template>
   <div class="demo-player relative">
-    <div ref="container" class="video-container"></div>
+    <div class="video-container-wrap">
+      <div ref="container" class="video-container"></div>
+    </div>
     <span
       class="absolute inset-1/2 text-white w-20 text-center text-sm no-source"
       v-if="noSource"
@@ -97,7 +99,7 @@
         >cid=<code>{{ cmcdCid }}</code></span
       >
     </div>
-    <div class="my-2 col-span-2 flex gap-2 justify-end items-center">
+    <div class="my-2 col-span-2 flex gap-2 justify-end items-baseline">
       <span class="font-semibold">Viewport</span>
       <span class="text-xs">{{ viewport.width }}&times;{{ viewport.height }}</span>
     </div>
@@ -110,9 +112,9 @@ import { $ } from '@clappr/core'
 import {
   MediaControl,
   Player,
+  // trace,
   type PlaybackModule,
   type PlaybackType,
-  // trace,
 } from '@gcorevideo/player'
 
 import usePluginsConfig from '~/composables/use-plugins-config'
@@ -277,10 +279,11 @@ const config = computed(() => ({
     // language: 'zh',
   },
   thumbnails: {
-    backdropHeight: settings.thumbnails.backdropHeight,
+    // backdropHeight: settings.thumbnails.backdropHeight,
     backdropMinOpacity: 0.9,
     backdropMaxOpacity: 0.99,
-    spotlightHeight: settings.thumbnails.spotlightHeight || 100,
+    // spotlightHeight: settings.thumbnails.spotlightHeight || 100,
+    spotlightHeight: 100,
     vtt: settings.thumbnails.vtt,
     sprite: settings.thumbnails.sprite,
   },
@@ -378,15 +381,23 @@ function formatPlaybackModule(module: PlaybackModule): string {
 </script>
 
 <style lang="css" scoped>
-@import 'tailwindcss';
+@reference '~/assets/css/main.css';
 
-.video-container {
+.video-container-wrap {
   width: 100%;
   height: 0;
   padding-bottom: 56.25%;
   position: relative;
   background-color: black;
   color: #fff;
+}
+
+.video-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .settings {
