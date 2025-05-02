@@ -182,7 +182,15 @@ const mediaControlSettings = MediaControl.extendSettings({
 
 const config = computed(() => ({
   autoPlay: settings.autoplay,
-  dash: $.extend(true, {}, settings.dash),
+  dash: $.extend(true, {
+    streaming: {
+      retryAttempts: {
+        MPD: 10,
+        IndexSegment: 10,
+        InitializationSegment: 10,
+      }
+    }
+  }, settings.dash),
   debug: settings.debug,
   mute: settings.mute,
   width: '100%',
