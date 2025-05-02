@@ -47,6 +47,19 @@ export type DashSettings = {
         min?: number
       }
     }
+    retryAttempts?: {
+      MPD?: number
+      IndexSegment?: number
+      InitializationSegment?: number
+      MediaSegment?: number
+      BitstreamSwitchingSegment?: number
+      FragmentInfoSegment?: number
+      XLinkExpansion?: number
+      license?: number
+      other?: number
+      lowLatencyReductionFactor?: number
+      lowLatencyMultiplyFactor?: number
+    }
   }
 }
 
