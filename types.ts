@@ -21,6 +21,7 @@ export type PluginName =
   | 'multicamera'
   | 'pip'
   | 'playback_rate'
+  | 'playback_settings'
   | 'poster'
   | 'seek_time'
   | 'skip_time'
@@ -49,6 +50,7 @@ export const PLUGIN_NAMES: PluginName[] = [
   'multicamera',
   'pip',
   'playback_rate',
+  // playback_settings is a phantom plugin
   'poster',
   'seek_time',
   'share',

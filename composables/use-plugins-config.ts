@@ -25,7 +25,7 @@ import {
   Thumbnails,
   ContextMenu,
   type PlayerPluginConstructor,
-  trace,
+  // trace,
   VolumeFade,
   SkipTime,
   Logo,
@@ -34,6 +34,7 @@ import {
 
 import useSettingsStore from '../store/settings'
 import { ExampleUI } from '../components/plugins/ExampleUI'
+import { PlaybackSettings } from '../components/plugins/PlaybackSettings'
 import type { PluginName } from '../types'
 import assert from 'assert'
 
@@ -58,6 +59,7 @@ const _P: PlayerPluginConstructor[] = [
   // MultiCamera,
   PictureInPicture,
   PlaybackRate,
+  PlaybackSettings,
   Poster,
   QualityLevels,
   SeekTime,
@@ -73,7 +75,7 @@ const PLUGINS: Plugins = _P.reduce((ps: Plugins, p: PlayerPluginConstructor) => 
   return ps
 }, {}) as Plugins
 
-const T = 'app.use-plugins-config'
+// const T = 'app.use-plugins-config'
 
 const usePluginsConfig = () => {
   const settings = useSettingsStore()
@@ -81,11 +83,7 @@ const usePluginsConfig = () => {
 
   onBeforeMount(configurePlugins)
   onBeforeUnmount(() => {
-    trace(`${T} unregister plugins`)
     settings.plugins.forEach((name) => {
-      trace(`${T} unregister plugin`, {
-        name
-      })
       const plugin = PLUGINS[name as PluginName]
       assert(plugin, `Plugin ${name} not found`)
       Player.unregisterPlugin(plugin.prototype.name) // TODO or just name
@@ -93,7 +91,6 @@ const usePluginsConfig = () => {
   })
 
   function configurePlugins() {
-    trace(`${T} register plugins`)
     getRegistrationOrder(settings.plugins).forEach((name) => {
       const plugin = PLUGINS[name as PluginName]
       assert(plugin, `Plugin ${name} not found`)
