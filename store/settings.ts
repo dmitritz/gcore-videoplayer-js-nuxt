@@ -385,7 +385,9 @@ const useSettingsStore = () => {
       setRestrictResolution(value: number) {
         this.restrictResolution = value
         if (value) {
-          this.plugins.push('playback_settings')
+          if (!this.plugins.includes('playback_settings')) {
+            this.plugins.push('playback_settings')
+          }
         } else {
           this.plugins = this.plugins.filter(p => p !== 'playback_settings')
         }
