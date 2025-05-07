@@ -26,7 +26,7 @@ export type ExampleUIOptions = {
   width: Ref<number>
   cmcdSid: Ref<string>
   cmcdCid: Ref<string>
-  viewport: Ref<{ width: number, height: number }>
+  viewport: Ref<{ width: number; height: number }>
 }
 
 const CLAPPR_VERSION = '0.11.4'
@@ -159,17 +159,22 @@ export class ExampleUI extends UICorePlugin {
     activePlayback.on(
       CoreEvents.PLAYBACK_LEVELS_AVAILABLE,
       (levels: QualityLevel[]) => {
-        trace(`${T}.on PLAYBACK_LEVELS_AVAILABLE`, {
+        trace(`${T} PLAYBACK_LEVELS_AVAILABLE`, {
           levels,
           currentLevel: activePlayback.currentLevel,
         })
         if (activePlayback.currentLevel !== -1) {
-          this.setQualityLevel(levels[activePlayback.currentLevel])
+          const level = levels.find(
+            (l) => l.level === activePlayback.currentLevel
+          )
+          if (level) {
+            this.setQualityLevel(level)
+          }
         }
       }
     )
     activePlayback.on(CoreEvents.PLAYBACK_BITRATE, (level: QualityLevel) => {
-      trace(`${T}.on PLAYBACK_BITRATE`, { level })
+      trace(`${T} PLAYBACK_BITRATE`, { level })
       this.setQualityLevel(level)
     })
     activePlayback.on(CoreEvents.PLAYBACK_ERROR, (error: Error) => {
