@@ -63,7 +63,6 @@
           value="0"
           :checked="restrictResolution === 0"
           @change="e => restrictResolution = parseInt((e.target as HTMLInputElement).value, 10)"
-          :disabled="levelSelectorPluginDisabled"
         />
         Off
       </label>
@@ -74,7 +73,6 @@
           value="360"
           :checked="restrictResolution === 360"
           @change="e => restrictResolution = parseInt((e.target as HTMLInputElement).value, 10)"
-          :disabled="levelSelectorPluginDisabled"
         />
         360
       </label>
@@ -85,7 +83,6 @@
           value="720"
           :checked="restrictResolution === 720"
           @change="e => restrictResolution = parseInt((e.target as HTMLInputElement).value, 10)"
-          :disabled="levelSelectorPluginDisabled"
         />
         720
       </label>

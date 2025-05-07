@@ -381,8 +381,14 @@ const useSettingsStore = () => {
         this.dash = structuredClone(DEFAULT_DASH_SETTINGS)
         this.restrictResolution = 0
       },
+      // TODO implement plugins getter that would mix in playback_settings plugin if restrictResolution is set
       setRestrictResolution(value: number) {
         this.restrictResolution = value
+        if (value) {
+          this.plugins.push('playback_settings')
+        } else {
+          this.plugins = this.plugins.filter(p => p !== 'playback_settings')
+        }
       },
       setRecycleVideo(value: boolean) {
         this.recycleVideo = value
