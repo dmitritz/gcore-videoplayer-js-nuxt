@@ -28,7 +28,7 @@
     "pinia": "^3.0.1",
     "vue": "latest",
     "vue-router": "latest",
-    "zod": "^3.24.2"
+    "zod": "^3.25.28"
   },
   "version": "0.16.6",
   "devDependencies": {
@@ -36,7 +36,7 @@
     "@types/mousetrap": "^1.6.15",
     "@types/ms": "^2.1.0",
     "tailwindcss": "^4.0.6",
-    "vitest": "^3.1.2"
+    "vitest": "^3.1.4"
   },
   "overrides": {
     "ofetch": "^1.4.0",
