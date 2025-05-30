@@ -269,7 +269,7 @@ const config = computed(() => ({
       '1080': 'Full HD',
       '720': 'HD',
     },
-    // restrictResolution: settings.restrictResolution,
+    restrictResolution: settings.restrictResolution,
   },
   multisourcesMode: 'show_all', // multi_camera
   playbackSettings: {

@@ -16,7 +16,10 @@
     <div class="h-full px-2">
       <settings-block />
     </div>
-    <div v-if="godModeNotification" class="god-mode-notification fixed bottom-0 right-0 text-white py-3 px-6 uppercase text-xl font-bold">
+    <div
+      v-if="godModeNotification"
+      class="god-mode-notification fixed bottom-0 right-0 text-white py-3 px-6 uppercase text-xl font-bold"
+    >
       God mode
     </div>
   </nuxt-layout>
@@ -34,20 +37,29 @@ const KEYS_GODMODE = 'i d d q d'
 
 onMounted(() => {
   mousetrap.bind(KEYS_GODMODE, () => {
+    setGodMode()
     if (godModeNotification.value) {
       return
-  }
-  godModeNotification.value = true
-  settings.setGodMode()
-  setTimeout(() => {
+    }
+    godModeNotification.value = true
+    setTimeout(() => {
       godModeNotification.value = false
     }, 3000)
   })
+  const url = useRequestURL()
+  const godMode = url.searchParams.get('iddqd')
+  if (godMode !== null) {
+    setGodMode()
+  }
 })
 
 onBeforeUnmount(() => {
   mousetrap.unbind(KEYS_GODMODE)
 })
+
+function setGodMode() {
+  settings.setGodMode()
+}
 </script>
 
 <style scoped>
