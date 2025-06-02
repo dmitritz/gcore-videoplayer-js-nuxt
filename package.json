@@ -36,7 +36,7 @@
     "@types/mousetrap": "^1.6.15",
     "@types/ms": "^2.1.0",
     "tailwindcss": "^4.0.6",
-    "vitest": "^3.1.4"
+    "vitest": "^3.2.0"
   },
   "overrides": {
     "ofetch": "^1.4.0",
