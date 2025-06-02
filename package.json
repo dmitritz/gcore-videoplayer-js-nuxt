@@ -30,7 +30,7 @@
     "vue-router": "latest",
     "zod": "^3.25.28"
   },
-  "version": "0.16.8",
+  "version": "0.16.9",
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.7",
     "@types/mousetrap": "^1.6.15",
