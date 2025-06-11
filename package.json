@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@clappr/core": "^0.11.4",
-    "@gcorevideo/player": "^2.26.6",
+    "@gcorevideo/player": "^2.26.7",
     "@gcorevideo/utils": "^0.6.0",
     "@heroicons/vue": "^2.2.0",
     "@pinia/nuxt": "^0.11.0",
@@ -36,7 +36,7 @@
     "@types/mousetrap": "^1.6.15",
     "@types/ms": "^2.1.0",
     "tailwindcss": "^4.1.8",
-    "vitest": "^3.2.0"
+    "vitest": "^3.2.3"
   },
   "overrides": {
     "ofetch": "^1.4.0",
