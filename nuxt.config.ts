@@ -1,4 +1,9 @@
 import tailwindcss from '@tailwindcss/vite'
+
+import dotenv from 'dotenv'
+
+dotenv.config({ path: '.env.development.local' })
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
@@ -14,6 +19,11 @@ export default defineNuxtConfig({
   //   },
   // },
   ssr: false,
+  runtimeConfig: {
+    // Server-side environment variables
+    redisUrl: process.env.AMBER_KV_REST_API_URL,
+    redisToken: process.env.AMBER_KV_REST_API_TOKEN,
+  },
   vite: {
     assetsInclude: ['**/*.svg'],
     build: {

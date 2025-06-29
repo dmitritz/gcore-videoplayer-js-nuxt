@@ -41,6 +41,7 @@ function copyVisitorId() {
 <template>
   <NuxtRouteAnnouncer />
   <div
+    id="app"
     class="flex flex-col md:grid md:grid-cols-2 h-screen xmd:grid-rows-2 md:py-4 g-container"
   >
     <header
@@ -99,7 +100,11 @@ function copyVisitorId() {
           />
         </router-link>
         <transition name="fade">
-          <router-link :to="{ path: '/dash', query }" id="nav_dash" v-if="settings.godMode">
+          <router-link
+            :to="{ path: '/dash', query }"
+            id="nav_dash"
+            v-if="settings.godMode"
+          >
             DASH
           </router-link>
         </transition>

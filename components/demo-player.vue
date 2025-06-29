@@ -1,15 +1,9 @@
 <template>
-  <div class="demo-player relative">
-    <div class="video-container-wrap">
-      <div ref="container" class="video-container"></div>
-    </div>
-    <span
-      class="absolute inset-1/2 text-white w-20 text-center text-sm no-source"
-      v-if="noSource"
-      >Source not configured</span
-    >
-  </div>
-  <div class="settings grid grid-cols-2 my-1 mb-2 px-2 items-baseline" v-if="exampleUi">
+  <player-container :options="uiConfig" @init="player = $event" />
+  <div
+    class="settings grid grid-cols-2 my-1 mb-2 px-2 items-baseline"
+    v-if="exampleUi"
+  >
     <div class="buttons font-semibold flex flex-col gap-1 sm:flex-row">
       <button
         @click="play"
@@ -85,7 +79,10 @@
         {{ error }}
       </div>
     </div>
-    <div class="my-2 col-span-2 flex flex-col gap-2 items-start" v-if="cmcdEnabled">
+    <div
+      class="my-2 col-span-2 flex flex-col gap-2 items-start"
+      v-if="cmcdEnabled"
+    >
       <a
         href="https://cdn.cta.tech/cta/media/media/resources/standards/pdfs/cta-5004-final.pdf"
         target="_blank"
@@ -101,32 +98,25 @@
     </div>
     <div class="my-2 col-span-2 flex gap-2 justify-end items-baseline">
       <span class="font-semibold">Viewport</span>
-      <span class="text-xs">{{ viewport.width }}&times;{{ viewport.height }}</span>
+      <span class="text-xs"
+        >{{ viewport.width }}&times;{{ viewport.height }}</span
+      >
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue'
-import { $ } from '@clappr/core'
+import { computed, ref } from 'vue'
 import {
-  MediaControl,
   Player,
-  // trace,
   type PlaybackModule,
   type PlaybackType,
 } from '@gcorevideo/player'
 
 import usePluginsConfig from '~/composables/use-plugins-config'
 import useSettingsStore from '../store/settings'
-import { SPEEDTEST_SERVERS } from '../constants'
 import type { ExampleUIOptions } from './plugins/ExampleUI'
-import strings from '~/assets/strings.json'
-import gcoreSvg from '~/assets/img/gcore_orange_001.svg'
 
-// const T = 'app.demo-player'
-
-const container = ref<HTMLDivElement>()
 const playing = ref(false)
 const paused = ref(false)
 const ready = ref(false)
@@ -171,76 +161,11 @@ const errors = ref<string[]>([])
 const cmcdSid = ref('')
 const cmcdCid = ref('') // TODO get from the plugin
 
-const viewport = ref<{ width: number, height: number }>({ width: 0, height: 0 })
+const viewport = ref<{ width: number; height: number }>({ width: 0, height: 0 })
 
 usePluginsConfig()
 
-const mediaControlSettings = MediaControl.extendSettings({
-  left: ['dvr', 'clips'],
-  right: ['*']
-})
-
-const config = computed(() => ({
-  autoPlay: settings.autoplay,
-  dash: $.extend(true, {
-    streaming: {
-      retryAttempts: {
-        MPD: 10,
-        IndexSegment: 10,
-        InitializationSegment: 10,
-      }
-    }
-  }, settings.dash),
-  debug: settings.debug,
-  mute: settings.mute,
-  width: '100%',
-  height: '100%',
-  // language: "en", // strings plugin
-  loop: settings.loop,
-  playback: {
-    hlsjsConfig: {
-      lowLatencyMode: true,
-    },
-    recycleVideo: !!settings.recycleVideo,
-  },
-  playbackType: settings.playbackType,
-  priorityTransport: settings.priorityTransport,
-  sources: settings.sources,
-  // Below go the plugin settings
-  clapprNerdStats: {
-    speedTestServers: SPEEDTEST_SERVERS,
-  },
-  clips: {
-    text: settings.clips,
-  },
-  contextMenu: {
-    options: [
-      {
-        // label: 'Join us',
-        labelKey: 'joinus',
-        icon: `<img src="${gcoreSvg}" />`,
-        name: 'joinus',
-        handler() {
-          window.open('https://gcore.com/', '_blank')
-        },
-      },
-    ],
-  },
-  design: {
-    // media_control
-    background_color: 'rgba(0,0,0,1.0)',
-    foreground_color: 'rgba(255,255,255,1)',
-    hover_color: 'rgba(239,144,71,1)',
-    text_color: 'rgba(255,255,255,1)',
-  },
-  errorScreen: {
-    reloadOnError: false,
-  },
-  // disableClickOnPause: true, // vast_ads
-  // disableMediaControl: true, // disable_controls, ...
-  // embed: true, // share plugin
-  mediaControl: mediaControlSettings,
-  // hideMediaControlDelay: 3600000,
+const uiConfig = computed(() => ({
   exampleUI: {
     activeSource,
     activeSourceType,
@@ -261,84 +186,9 @@ const config = computed(() => ({
     cmcdCid,
     viewport,
   } as ExampleUIOptions,
-  faviconColor: '#000',
-  // fullscreenDisable: true, // media_control
-  levelSelector: {
-    labels: {
-      '2160': '4K',
-      '1080': 'Full HD',
-      '720': 'HD',
-    },
-    restrictResolution: settings.restrictResolution,
-  },
-  multisourcesMode: 'show_all', // multi_camera
-  playbackSettings: {
-    restrictResolution: settings.restrictResolution,
-  },
-  poster: {
-    url: settings.poster,
-    showOnError: false,
-  },
-  spinner: {
-    // showOnError: true,
-    showOnError: false,
-    // showOnStart: true,
-  },
-  // shareURL: "https://gvideo.co", // share plugin
-  subtitles: {
-    language: 'en',
-    // language: 'zh',
-  },
-  thumbnails: {
-    // backdropHeight: settings.thumbnails.backdropHeight,
-    backdropMinOpacity: 0.9,
-    backdropMaxOpacity: 0.99,
-    // spotlightHeight: settings.thumbnails.spotlightHeight || 100,
-    spotlightHeight: 100,
-    vtt: settings.thumbnails.vtt,
-    sprite: settings.thumbnails.sprite,
-  },
-  strings,
 }))
 
 let player: Player | undefined
-
-let rob: ReturnType<typeof useResizeObserver> | undefined
-
-onMounted(() => {
-  if (!settings.sources.length) {
-    return
-  }
-  player = new Player(config.value)
-
-  rob = useResizeObserver(({ width, height }) => {
-    player?.resize({ width, height })
-  })
-  setTimeout(() => {
-    if (!container.value) {
-      return
-    }
-    player?.destroy()
-    player?.attachTo(container.value)
-    rob?.start(container.value)
-  }, 0)
-})
-
-onBeforeUnmount(() => {
-  rob?.stop()
-  player?.destroy()
-})
-
-watch(config, (newConfig) => {
-  if (!newConfig.sources.length) {
-    return
-  }
-  player?.configure(newConfig)
-  if (container.value) {
-    player?.destroy()
-    player?.attachTo(container.value)
-  }
-})
 
 function play() {
   if (!player) {
@@ -389,27 +239,14 @@ function formatPlaybackModule(module: PlaybackModule): string {
       return module
   }
 }
+
+function setPlayer(p: Player) {
+  player = p
+}
 </script>
 
 <style lang="css" scoped>
 @reference '~/assets/css/main.css';
-
-.video-container-wrap {
-  width: 100%;
-  height: 0;
-  padding-bottom: 56.25%;
-  position: relative;
-  background-color: black;
-  color: #fff;
-}
-
-.video-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
 
 .settings {
   grid-auto-rows: minmax(1.5rem, auto);
