@@ -28,7 +28,7 @@ import {
   // trace,
   VolumeFade,
   SkipTime,
-  Logo,
+  // Logo,
   CmcdConfig,
 } from '@gcorevideo/player'
 
@@ -70,20 +70,26 @@ const _P: PlayerPluginConstructor[] = [
   Thumbnails,
   VolumeFade,
 ]
-const PLUGINS: Plugins = _P.reduce((ps: Plugins, p: PlayerPluginConstructor) => {
-  ps[p.prototype.name as PluginName] = p
-  return ps
-}, {}) as Plugins
+const PLUGINS: Plugins = _P.reduce(
+  (ps: Plugins, p: PlayerPluginConstructor) => {
+    ps[p.prototype.name as PluginName] = p
+    return ps
+  },
+  {}
+) as Plugins
 
 // const T = 'app.use-plugins-config'
 
-const usePluginsConfig = () => {
+const usePluginsConfig = (excludePlugins: PluginName[] = []) => {
   const settings = useSettingsStore()
   const { disabledPlugins } = usePluginsDeps()
 
   onBeforeMount(configurePlugins)
   onBeforeUnmount(() => {
     settings.plugins.forEach((name) => {
+      if (excludePlugins.includes(name)) {
+        return
+      }
       const plugin = PLUGINS[name as PluginName]
       assert(plugin, `Plugin ${name} not found`)
       Player.unregisterPlugin(plugin.prototype.name) // TODO or just name
@@ -92,6 +98,9 @@ const usePluginsConfig = () => {
 
   function configurePlugins() {
     getRegistrationOrder(settings.plugins).forEach((name) => {
+      if (excludePlugins.includes(name)) {
+        return
+      }
       const plugin = PLUGINS[name as PluginName]
       assert(plugin, `Plugin ${name} not found`)
       if (!disabledPlugins.value.includes(name)) {
