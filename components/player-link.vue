@@ -23,9 +23,9 @@ import {
 import copy from 'copy-to-clipboard'
 
 import useSettingsStore from '../store/settings'
-import { trace } from '@gcorevideo/player'
+// import { trace } from '@gcorevideo/player'
 
-const T = 'player-link'
+// const T = 'player-link'
 
 const settings = useSettingsStore()
 
@@ -44,7 +44,7 @@ const playerLink = computed(() => {
 })
 
 function copySettingsUrl() {
-  settings.persist().then(persistKey => {
+  settings.persist().then((persistKey) => {
     const url = new URL(playerLink.value)
     url.searchParams.set('k', persistKey)
     copy(url.href, {
