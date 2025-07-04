@@ -1,18 +1,21 @@
-import { Redis } from "@upstash/redis";
-import consola from "consola";
-import { defineEventHandler } from "h3";
+import { Redis } from '@upstash/redis'
+import consola from 'consola'
+import { defineEventHandler } from 'h3'
 
-import { parseSettings } from "~/store/marshal";
+import { parseSettings } from '~/store/marshal'
 
-// Initialize Redis
-const redis = Redis.fromEnv();
+const config = useRuntimeConfig()
+const redis = new Redis({
+  url: config.redisUrl,
+  token: config.redisToken,
+})
 
 export default defineEventHandler(async (event) => {
   const key = getRouterParam(event, 'key')
   if (!key) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Key is required'
+      statusMessage: 'Key is required',
     })
   }
 
@@ -21,8 +24,8 @@ export default defineEventHandler(async (event) => {
   switch (event.method) {
     case 'GET':
       // Fetch data from Redis
-      const result = await redis.get(key);
-      return { result };
+      const result = await redis.get(key)
+      return { result }
     case 'PUT':
       const body = await readBody(event)
       await redis.set(key, validateSettings(body))
@@ -30,10 +33,10 @@ export default defineEventHandler(async (event) => {
     default:
       throw createError({
         statusCode: 405,
-        statusMessage: 'Method not allowed'
+        statusMessage: 'Method not allowed',
       })
   }
-});
+})
 
 function validateSettings(body: any) {
   try {
@@ -42,7 +45,7 @@ function validateSettings(body: any) {
     consola.error(error)
     throw createError({
       statusCode: 400,
-      statusMessage: 'Invalid settings'
+      statusMessage: 'Invalid settings',
     })
   }
 }
