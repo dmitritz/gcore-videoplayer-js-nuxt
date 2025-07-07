@@ -35,7 +35,7 @@
     "@tailwindcss/vite": "^4.1.10",
     "@types/mousetrap": "^1.6.15",
     "@types/ms": "^2.1.0",
-    "dotenv": "^16.5.0",
+    "dotenv": "^17.0.1",
     "tailwindcss": "^4.1.8",
     "vitest": "^3.2.4"
   },
