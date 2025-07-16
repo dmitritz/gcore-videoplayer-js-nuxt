@@ -17,8 +17,8 @@
     "@gcorevideo/utils": "^0.6.0",
     "@heroicons/vue": "^2.2.0",
     "@pinia/nuxt": "^0.11.1",
-    "@sentry/nuxt": "^9.34.0",
     "@upstash/redis": "^1.35.1",
+    "@sentry/nuxt": "^9.38.0",
     "assert": "^2.1.0",
     "consola": "^3.4.1",
     "copy-to-clipboard": "^3.3.3",
@@ -35,7 +35,7 @@
     "@tailwindcss/vite": "^4.1.10",
     "@types/mousetrap": "^1.6.15",
     "@types/ms": "^2.1.0",
-    "dotenv": "^16.5.0",
+    "dotenv": "^17.2.0",
     "tailwindcss": "^4.1.8",
     "vitest": "^3.2.4"
   },
