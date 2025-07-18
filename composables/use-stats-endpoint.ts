@@ -5,14 +5,10 @@ export default function useStatsEndpoint(
   streamConfigUrl: Readonly<Ref<string>>
 ) {
   let sp: Promise<WebSocket> | null = null
-  // let socket: WebSocket | null = null
-
-  console.log('useStatsEndpoint streamConfigUrl: %s', streamConfigUrl.value)
 
   async function send(data: any) {
     try {
       const s = await openSocket()
-      console.log('useStatsEndpoint socket is open: %s', s.readyState)
       s.send(JSON.stringify(data))
     } catch (error) {
       console.error('useStatsEndpoint send', error)
@@ -41,11 +37,6 @@ export default function useStatsEndpoint(
   }
 
   function fetchStatsEndpointUrl(): Promise<string> {
-    console.log(
-      'fetchStatsEndpointUrl fetchStatsEndpointUrl streamConfigUrl: %s',
-      streamConfigUrl.value
-    )
-
     if (!streamConfigUrl.value) {
       return Promise.reject(new Error('Stream config URL is not set'))
     }

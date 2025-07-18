@@ -202,7 +202,6 @@ const pluginOptions = computed(() => ({
   } as ExampleUIOptions,
   telemetry: {
     send: (data) => {
-      console.log('telemetry send', data)
       stats.send(data)
     },
   } as TelemetryPluginSettings,
