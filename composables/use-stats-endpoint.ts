@@ -1,12 +1,14 @@
 import type { Ref } from 'vue'
 
+import type { TelemetryRecord } from '@gcorevideo/player'
+
 // TODO construct the URL on the caller side
 export default function useStatsEndpoint(
   streamConfigUrl: Readonly<Ref<string>>
 ) {
   let sp: Promise<WebSocket> | null = null
 
-  async function send(data: any) {
+  async function send(data: TelemetryRecord) {
     try {
       const s = await openSocket()
       s.send(JSON.stringify(data))
