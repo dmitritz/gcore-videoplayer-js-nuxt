@@ -1,5 +1,5 @@
 <template>
-  <player-container :options="uiConfig" @init="player = $event" />
+  <player-container :options="pluginOptions" @init="player = $event" />
   <div
     class="settings grid grid-cols-2 my-1 mb-2 px-2 items-baseline"
     v-if="exampleUi"
@@ -111,10 +111,13 @@ import {
   Player,
   type PlaybackModule,
   type PlaybackType,
+  type TelemetryPluginSettings,
 } from '@gcorevideo/player'
 
+import useStatsEndpoint from '~/composables/use-stats-endpoint'
 import usePluginsConfig from '~/composables/use-plugins-config'
 import useSettingsStore from '../store/settings'
+
 import type { ExampleUIOptions } from './plugins/ExampleUI'
 
 const playing = ref(false)
@@ -163,9 +166,20 @@ const cmcdCid = ref('') // TODO get from the plugin
 
 const viewport = ref<{ width: number; height: number }>({ width: 0, height: 0 })
 
+const streamUrl = computed(() => {
+  if (!settings.sources.length) {
+    return ''
+  }
+  const srcUrl = new URL(settings.sources[0])
+  const path = srcUrl.pathname.split('/').slice(0, -1).join('/')
+  return `https://player.gvideo.co${path}/config.json`
+})
+
+const stats = useStatsEndpoint(streamUrl)
+
 usePluginsConfig()
 
-const uiConfig = computed(() => ({
+const pluginOptions = computed(() => ({
   exampleUI: {
     activeSource,
     activeSourceType,
@@ -186,6 +200,12 @@ const uiConfig = computed(() => ({
     cmcdCid,
     viewport,
   } as ExampleUIOptions,
+  telemetry: {
+    send: (data) => {
+      console.log('telemetry send', data)
+      stats.send(data)
+    },
+  } as TelemetryPluginSettings,
 }))
 
 let player: Player | undefined

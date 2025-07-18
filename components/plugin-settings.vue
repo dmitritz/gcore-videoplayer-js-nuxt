@@ -34,6 +34,11 @@
         class="w-3 h-3"
         title="Media control UI"
       />
+      <chart-bar-icon
+        v-if="plugin === 'telemetry'"
+        class="w-3 h-3"
+        title="Usage statistics"
+      />
     </plugin-item>
   </div>
   <div class="grid grid-cols-2 md:grid-cols-3 gap-2 my-2">
@@ -93,6 +98,7 @@
 <script lang="ts" setup>
 import {
   AdjustmentsHorizontalIcon,
+  ChartBarIcon,
   DevicePhoneMobileIcon,
   PlayPauseIcon,
   QuestionMarkCircleIcon,
@@ -131,6 +137,7 @@ const PLUGIN_LABELS: Partial<Record<PluginName, string>> = {
   nerd_stats: 'Stats for nerds',
   cc: 'Subtitles',
   thumbnails: 'Thumbnails',
+  telemetry: 'Usage statistics',
   volume_fade: 'Volume fade',
 }
 

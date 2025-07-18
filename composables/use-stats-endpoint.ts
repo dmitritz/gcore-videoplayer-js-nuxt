@@ -1,0 +1,61 @@
+import type { Ref } from 'vue'
+
+// TODO construct the URL on the caller side
+export default function useStatsEndpoint(
+  streamConfigUrl: Readonly<Ref<string>>
+) {
+  let sp: Promise<WebSocket> | null = null
+  // let socket: WebSocket | null = null
+
+  console.log('useStatsEndpoint streamConfigUrl: %s', streamConfigUrl.value)
+
+  async function send(data: any) {
+    try {
+      const s = await openSocket()
+      console.log('useStatsEndpoint socket is open: %s', s.readyState)
+      s.send(JSON.stringify(data))
+    } catch (error) {
+      console.error('useStatsEndpoint send', error)
+    }
+  }
+
+  function close() {
+    if (sp) {
+      sp.then((s) => s.close())
+    }
+  }
+
+  function openSocket(): Promise<WebSocket> {
+    if (!sp) {
+      sp = new Promise<WebSocket>((resolve, reject) => {
+        fetchStatsEndpointUrl()
+          .then((url: string) => {
+            const socket = new WebSocket(url)
+            socket.onopen = () => resolve(socket as WebSocket)
+            socket.onerror = (error) => reject(error)
+          })
+          .catch(reject)
+      })
+    }
+    return sp
+  }
+
+  function fetchStatsEndpointUrl(): Promise<string> {
+    console.log(
+      'fetchStatsEndpointUrl fetchStatsEndpointUrl streamConfigUrl: %s',
+      streamConfigUrl.value
+    )
+
+    if (!streamConfigUrl.value) {
+      return Promise.reject(new Error('Stream config URL is not set'))
+    }
+    return fetch(streamConfigUrl.value)
+      .then((res) => res.json())
+      .then((data) => data.realtimeStats)
+  }
+
+  return {
+    send,
+    close,
+  }
+}
