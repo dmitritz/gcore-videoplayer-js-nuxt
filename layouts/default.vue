@@ -21,6 +21,20 @@ const settings = useSettingsStore()
 const noSource = computed(() => !settings.sources.length)
 const showVisitorId = ref(false)
 
+const godModeNotification = ref(false)
+watch(
+  () => settings.godMode,
+  (value) => {
+    if (value) {
+      godModeNotification.value = true
+      godModeNotification.value = true
+      setTimeout(() => {
+        godModeNotification.value = false
+      }, 3000)
+    }
+  }
+)
+
 function report() {
   reported.value = true
   if (settings.visitorId) {
@@ -113,6 +127,12 @@ function copyVisitorId() {
     </header>
     <main class="basis-full md:pt-1 md:px-2 w-full md:h-full">
       <slot></slot>
+      <div
+        v-if="godModeNotification"
+        class="god-mode-notification fixed bottom-0 right-0 text-white py-3 px-6 uppercase text-xl font-bold"
+      >
+        God mode
+      </div>
     </main>
     <footer
       class="w-full py-2 mx-auto basis-auto md:col-span-2 flex md:items-end justify-end gap-4 px-2 items-center"
@@ -256,5 +276,8 @@ footer b {
 
 a.fade-enter-to {
   @apply bg-orange-500 text-white;
+}
+.god-mode-notification {
+  background-color: oklch(82.8% 0.189 84.429 / 67%);
 }
 </style>

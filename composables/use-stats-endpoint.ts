@@ -46,7 +46,9 @@ export default function useStatsEndpoint(
       .then((data) => {
         if (!data.realtimeStats) {
           return Promise.reject(
-            new Error('Realtime statistics is not available')
+            new Error(
+              `Realtime statistics is not available - check the player config at ${streamConfigUrl.value}`
+            )
           )
         }
         return data.realtimeStats

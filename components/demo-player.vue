@@ -167,6 +167,9 @@ const cmcdCid = ref('') // TODO get from the plugin
 const viewport = ref<{ width: number; height: number }>({ width: 0, height: 0 })
 
 const streamConfigUrl = computed(() => {
+  if (settings.streamConfigUrl) {
+    return settings.streamConfigUrl
+  }
   if (!settings.sources.length) {
     return ''
   }
@@ -264,10 +267,6 @@ function formatPlaybackModule(module: PlaybackModule): string {
     default:
       return module
   }
-}
-
-function setPlayer(p: Player) {
-  player = p
 }
 </script>
 
