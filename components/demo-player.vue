@@ -171,8 +171,15 @@ const streamUrl = computed(() => {
     return ''
   }
   const srcUrl = new URL(settings.sources[0])
-  const path = srcUrl.pathname.split('/').slice(0, -1).join('/')
-  return `https://player.gvideo.co${path}/config.json`
+  const m = srcUrl.pathname.match(/^\/\w+\/\d+_\w+\//)
+  if (!m) {
+    return ''
+  }
+  const path = m[0]
+  const domain = srcUrl.hostname.includes('preprod')
+    ? 'player.preprod.gvideo.co'
+    : 'player.gvideo.co'
+  return `https://${domain}${path}/config.json`
 })
 
 const stats = useStatsEndpoint(streamUrl)
