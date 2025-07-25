@@ -166,7 +166,7 @@ const cmcdCid = ref('') // TODO get from the plugin
 
 const viewport = ref<{ width: number; height: number }>({ width: 0, height: 0 })
 
-const streamUrl = computed(() => {
+const streamConfigUrl = computed(() => {
   if (!settings.sources.length) {
     return ''
   }
@@ -182,7 +182,7 @@ const streamUrl = computed(() => {
   return `https://${domain}${path}/config.json`
 })
 
-const stats = useStatsEndpoint(streamUrl)
+const stats = useStatsEndpoint(streamConfigUrl)
 
 usePluginsConfig()
 

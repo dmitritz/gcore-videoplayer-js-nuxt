@@ -8,13 +8,12 @@ export default function useStatsEndpoint(
 ) {
   let sp: Promise<WebSocket> | null = null
 
-  async function send(data: TelemetryRecord) {
-    try {
-      const s = await openSocket()
-      s.send(JSON.stringify(data))
-    } catch (error) {
-      console.error('useStatsEndpoint send', error)
-    }
+  function send(data: TelemetryRecord) {
+    return openSocket()
+      .then((s) => s.send(JSON.stringify(data)))
+      .catch((error) => {
+        console.error('useStatsEndpoint', error)
+      })
   }
 
   function close() {
@@ -44,7 +43,14 @@ export default function useStatsEndpoint(
     }
     return fetch(streamConfigUrl.value)
       .then((res) => res.json())
-      .then((data) => data.realtimeStats)
+      .then((data) => {
+        if (!data.realtimeStats) {
+          return Promise.reject(
+            new Error('Realtime statistics is not available')
+          )
+        }
+        return data.realtimeStats
+      })
   }
 
   return {
