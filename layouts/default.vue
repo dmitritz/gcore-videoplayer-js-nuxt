@@ -27,7 +27,6 @@ watch(
   (value) => {
     if (value) {
       godModeNotification.value = true
-      godModeNotification.value = true
       setTimeout(() => {
         godModeNotification.value = false
       }, 3000)
