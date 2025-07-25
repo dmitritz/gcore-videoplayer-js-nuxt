@@ -30,6 +30,7 @@ import {
   SkipTime,
   // Logo,
   CmcdConfig,
+  Telemetry,
 } from '@gcorevideo/player'
 
 import useSettingsStore from '../store/settings'
@@ -67,6 +68,7 @@ const _P: PlayerPluginConstructor[] = [
   SkipTime,
   SourceController,
   SpinnerThreeBounce,
+  Telemetry,
   Thumbnails,
   VolumeFade,
 ]

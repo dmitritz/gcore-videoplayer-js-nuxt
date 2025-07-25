@@ -17,6 +17,8 @@ import { Browser } from '@clappr/core'
 // import Fingerprint from '@fingerprintjs/fingerprintjs'
 import useSettings from '~/store/settings'
 
+const KEYS_GODMODE = 'i d d q d'
+
 const settings = useSettings()
 
 if (import.meta.client) {
@@ -65,6 +67,14 @@ if (import.meta.client) {
     navigateTo('/source')
   })
   settings.load()
+  mousetrap.bind(KEYS_GODMODE, () => {
+    settings.setGodMode()
+  })
+  const url = useRequestURL()
+  const godMode = url.searchParams.get('iddqd')
+  if (godMode !== null) {
+    settings.setGodMode()
+  }
 }
 
 function createSentryTracer(setup: (scope: Sentry.Scope) => void) {
