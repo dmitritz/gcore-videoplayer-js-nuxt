@@ -102,6 +102,16 @@
         >{{ viewport.width }}&times;{{ viewport.height }}</span
       >
     </div>
+    <div class="my-2 col-span-2 flex gap-2 justify-end items-baseline">
+      <input
+        v-model="newMediaSource"
+        placeholder="Change media source"
+        class="textfield"
+      />
+      <button @click="changeMediaSource" :disabled="!newMediaSource">
+        Set
+      </button>
+    </div>
   </div>
 </template>
 
@@ -132,6 +142,7 @@ const width = ref(0)
 const height = ref(0)
 const playbackType = ref<PlaybackType | null>(null)
 const showTime = computed(() => playing.value)
+const newMediaSource = ref('')
 
 const exampleUi = computed(() => settings.plugins.includes('example_ui'))
 
@@ -267,6 +278,11 @@ function formatPlaybackModule(module: PlaybackModule): string {
     default:
       return module
   }
+}
+
+function changeMediaSource() {
+  player?.load([newMediaSource.value])
+  newMediaSource.value = ''
 }
 </script>
 
