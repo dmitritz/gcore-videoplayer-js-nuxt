@@ -16,7 +16,9 @@
       </reference-links>
     </template>
     <div class="source-settings w-full px-2">
-      <div class="controls flex flex-col gap-y-3 mb-8 gap-1 pb-4 border-b border-slate-200">
+      <div
+        class="controls flex flex-col gap-y-3 mb-8 gap-1 pb-4 border-b border-slate-200"
+      >
         <div>
           <label for="sources" class="label text-lg">Sources</label>
           <span class="subscript">
@@ -55,6 +57,24 @@
             HLS
           </label>
         </div>
+        <div v-if="settings.godMode" class="flex flex-col gap-2">
+          <div class="label">
+            <label for="stream_config_url" class="text-lg"
+              >Player config URL</label
+            >
+            <div class="subscript">
+              If not specified, it will be derived from the media source URL.
+            </div>
+          </div>
+          <input
+            type="text"
+            id="stream_config_url"
+            :value="settings.streamConfigUrl"
+            @change="e => settings.setStreamConfigUrl((e.target as HTMLInputElement)?.value)"
+            class="w-full textfield"
+            placeholder="https://player.gvideo.co/video/{stream_id}_{slug}/config.json"
+          />
+        </div>
         <div>
           <label for="poster" class="label text-lg">Poster</label>
           <span class="subscript">
@@ -88,7 +108,9 @@
             Clear
           </button>
         </div>
-        <div v-if="error" class="text-red-950 dark:text-red-400">{{ error }}</div>
+        <div v-if="error" class="text-red-950 dark:text-red-400">
+          {{ error }}
+        </div>
       </div>
       <thumbnails-block />
       <clips-settings />

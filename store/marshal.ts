@@ -85,57 +85,60 @@ export type PersistentSettings = {
     // backdropMinOpacity: number
     // backdropMaxOpacity: number
     // spotlightHeight: number
-  },
+  }
   sources: string[]
+  streamConfigUrl: string
 }
 
 const dashRuleSchema = z.object({ active: z.boolean() })
 const dashSchema = z.object({
-  streaming: z.object({
-    abr: z.object({
-      ABRStrategy: z
-        .enum(['abrDynamic', 'abrThroughput', 'abrBola'])
-        .optional(),
-      additionalAbrRules: z
-        .object({
-          throughputRule: z.boolean().optional(),
-          insufficientBufferRule: dashRuleSchema.optional(),
-          droppedFramesRule: dashRuleSchema.optional(),
-          switchHistoryRule: dashRuleSchema.optional(),
-        })
-        .optional(),
-      autoSwitchBitrate: z
-        .object({
-          audio: z.boolean().optional(),
-          video: z.boolean().optional(),
-        })
-        .optional(),
-      initialBitrate: z
-        .object({
-          audio: z.number().optional(),
-          video: z.number().optional(),
-        })
-        .optional(),
-      maxBitrate: z
-        .object({
-          audio: z.number().optional(),
-          video: z.number().optional(),
-        })
-        .optional(),
-    }),
-    delay: z.object({ liveDelay: z.number().optional() }).optional(),
-    liveCatchup: z
-      .object({
-        maxDrift: z.number().optional(),
-        playbackRate: z
+  streaming: z
+    .object({
+      abr: z.object({
+        ABRStrategy: z
+          .enum(['abrDynamic', 'abrThroughput', 'abrBola'])
+          .optional(),
+        additionalAbrRules: z
           .object({
-            max: z.number().optional(),
-            min: z.number().optional(),
+            throughputRule: z.boolean().optional(),
+            insufficientBufferRule: dashRuleSchema.optional(),
+            droppedFramesRule: dashRuleSchema.optional(),
+            switchHistoryRule: dashRuleSchema.optional(),
           })
           .optional(),
-      })
-      .optional(),
-  }).optional(),
+        autoSwitchBitrate: z
+          .object({
+            audio: z.boolean().optional(),
+            video: z.boolean().optional(),
+          })
+          .optional(),
+        initialBitrate: z
+          .object({
+            audio: z.number().optional(),
+            video: z.number().optional(),
+          })
+          .optional(),
+        maxBitrate: z
+          .object({
+            audio: z.number().optional(),
+            video: z.number().optional(),
+          })
+          .optional(),
+      }),
+      delay: z.object({ liveDelay: z.number().optional() }).optional(),
+      liveCatchup: z
+        .object({
+          maxDrift: z.number().optional(),
+          playbackRate: z
+            .object({
+              max: z.number().optional(),
+              min: z.number().optional(),
+            })
+            .optional(),
+        })
+        .optional(),
+    })
+    .optional(),
 })
 
 const schema = z.object({
@@ -153,10 +156,12 @@ const schema = z.object({
   recycleVideo: z.boolean().optional(),
   restrictResolution: z.number().optional(),
   sources: z.array(z.string()).optional(),
-  thumbnails: z.object({
-    sprite: z.string().optional(),
-    vtt: z.string().optional(),
-  }).optional(),
+  thumbnails: z
+    .object({
+      sprite: z.string().optional(),
+      vtt: z.string().optional(),
+    })
+    .optional(),
 })
 
 export function parseSettings(data: unknown): Partial<PersistentSettings> {
