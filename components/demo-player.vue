@@ -102,6 +102,16 @@
         >{{ viewport.width }}&times;{{ viewport.height }}</span
       >
     </div>
+    <div class="my-2 col-span-2 flex gap-2 justify-end items-baseline">
+      <input
+        v-model="newMediaSource"
+        placeholder="Change media source"
+        class="textfield"
+      />
+      <button @click="changeMediaSource" :disabled="!newMediaSource">
+        Set
+      </button>
+    </div>
   </div>
 </template>
 
@@ -132,6 +142,7 @@ const width = ref(0)
 const height = ref(0)
 const playbackType = ref<PlaybackType | null>(null)
 const showTime = computed(() => playing.value)
+const newMediaSource = ref('')
 
 const exampleUi = computed(() => settings.plugins.includes('example_ui'))
 
@@ -166,7 +177,10 @@ const cmcdCid = ref('') // TODO get from the plugin
 
 const viewport = ref<{ width: number; height: number }>({ width: 0, height: 0 })
 
-const streamUrl = computed(() => {
+const streamConfigUrl = computed(() => {
+  if (settings.streamConfigUrl) {
+    return settings.streamConfigUrl
+  }
   if (!settings.sources.length) {
     return ''
   }
@@ -182,7 +196,7 @@ const streamUrl = computed(() => {
   return `https://${domain}${path}/config.json`
 })
 
-const stats = useStatsEndpoint(streamUrl)
+const stats = useStatsEndpoint(streamConfigUrl)
 
 usePluginsConfig()
 
@@ -266,8 +280,9 @@ function formatPlaybackModule(module: PlaybackModule): string {
   }
 }
 
-function setPlayer(p: Player) {
-  player = p
+function changeMediaSource() {
+  player?.load([newMediaSource.value])
+  newMediaSource.value = ''
 }
 </script>
 
