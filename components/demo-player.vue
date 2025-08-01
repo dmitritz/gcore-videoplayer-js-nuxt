@@ -190,9 +190,11 @@ const streamConfigUrl = computed(() => {
     return ''
   }
   const path = m[0]
-  const domain = srcUrl.hostname.includes('preprod')
-    ? 'player.preprod.gvideo.co'
-    : 'player.gvideo.co'
+  const domain =
+    srcUrl.hostname.includes('preprod') ||
+    srcUrl.hostname.includes('gvideo.dev')
+      ? 'player.preprod.gvideo.co'
+      : 'player.gvideo.co'
   return `https://${domain}${path}/config.json`
 })
 
