@@ -1,8 +1,19 @@
 import type { Ref } from 'vue'
 
-import type { TelemetryRecord } from '@gcorevideo/player'
+import {
+  TelemetryEvent,
+  type PlaybackType,
+  type TelemetryRecord,
+} from '@gcorevideo/player'
 
-// TODO construct the URL on the caller side
+type GcoreRealtimeStatsRecord = {
+  event: 'init' | 'start' | 'watch' | 'heatmap'
+  type?: PlaybackType
+  count?: number
+  time?: number
+  total_ms?: number
+}
+
 export default function useStatsEndpoint(
   streamConfigUrl: Readonly<Ref<string>>
 ) {
@@ -10,7 +21,7 @@ export default function useStatsEndpoint(
 
   function send(data: TelemetryRecord) {
     return openSocket()
-      .then((s) => s.send(JSON.stringify(data)))
+      .then((s) => s.send(JSON.stringify(translateEvent(data))))
       .catch((error) => {
         console.error('useStatsEndpoint', error)
       })
@@ -58,5 +69,30 @@ export default function useStatsEndpoint(
   return {
     send,
     close,
+  }
+}
+
+function translateEvent(data: TelemetryRecord): GcoreRealtimeStatsRecord {
+  const { event, ...rest } = data
+  return {
+    event: fromTelemetryEvent(event),
+    ...rest,
+  }
+}
+
+function fromTelemetryEvent(
+  event: TelemetryEvent
+): GcoreRealtimeStatsRecord['event'] {
+  switch (event) {
+    case TelemetryEvent.Init:
+      return 'init'
+    case TelemetryEvent.Start:
+      return 'start'
+    case TelemetryEvent.Watch:
+      return 'watch'
+    case TelemetryEvent.Stall:
+      return 'heatmap'
+    default:
+      throw new Error(`Unknown telemetry event: ${event}`)
   }
 }
