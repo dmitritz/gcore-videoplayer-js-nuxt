@@ -1,5 +1,5 @@
 <template>
-  <player-container :options="uiConfig" @init="player = $event" />
+  <player-container :options="pluginOptions" @init="player = $event" />
   <div
     class="settings grid grid-cols-2 my-1 mb-2 px-2 items-baseline"
     v-if="exampleUi"
@@ -102,6 +102,16 @@
         >{{ viewport.width }}&times;{{ viewport.height }}</span
       >
     </div>
+    <div class="my-2 col-span-2 flex gap-2 justify-end items-baseline">
+      <input
+        v-model="newMediaSource"
+        placeholder="Change media source"
+        class="textfield"
+      />
+      <button @click="changeMediaSource" :disabled="!newMediaSource">
+        Set
+      </button>
+    </div>
   </div>
 </template>
 
@@ -111,10 +121,13 @@ import {
   Player,
   type PlaybackModule,
   type PlaybackType,
+  type TelemetryPluginSettings,
 } from '@gcorevideo/player'
 
+import useStatsEndpoint from '~/composables/use-stats-endpoint'
 import usePluginsConfig from '~/composables/use-plugins-config'
 import useSettingsStore from '../store/settings'
+
 import type { ExampleUIOptions } from './plugins/ExampleUI'
 
 const playing = ref(false)
@@ -129,6 +142,7 @@ const width = ref(0)
 const height = ref(0)
 const playbackType = ref<PlaybackType | null>(null)
 const showTime = computed(() => playing.value)
+const newMediaSource = ref('')
 
 const exampleUi = computed(() => settings.plugins.includes('example_ui'))
 
@@ -163,9 +177,32 @@ const cmcdCid = ref('') // TODO get from the plugin
 
 const viewport = ref<{ width: number; height: number }>({ width: 0, height: 0 })
 
+const streamConfigUrl = computed(() => {
+  if (settings.streamConfigUrl) {
+    return settings.streamConfigUrl
+  }
+  if (!settings.sources.length) {
+    return ''
+  }
+  const srcUrl = new URL(settings.sources[0])
+  const m = srcUrl.pathname.match(/^\/\w+\/\d+_\w+\//)
+  if (!m) {
+    return ''
+  }
+  const path = m[0]
+  const domain =
+    srcUrl.hostname.includes('preprod') ||
+    srcUrl.hostname.includes('gvideo.dev')
+      ? 'player.preprod.gvideo.co'
+      : 'player.gvideo.co'
+  return `https://${domain}${path}/config.json`
+})
+
+const stats = useStatsEndpoint(streamConfigUrl)
+
 usePluginsConfig()
 
-const uiConfig = computed(() => ({
+const pluginOptions = computed(() => ({
   exampleUI: {
     activeSource,
     activeSourceType,
@@ -186,6 +223,11 @@ const uiConfig = computed(() => ({
     cmcdCid,
     viewport,
   } as ExampleUIOptions,
+  telemetry: {
+    send: (data) => {
+      stats.send(data)
+    },
+  } as TelemetryPluginSettings,
 }))
 
 let player: Player | undefined
@@ -240,8 +282,9 @@ function formatPlaybackModule(module: PlaybackModule): string {
   }
 }
 
-function setPlayer(p: Player) {
-  player = p
+function changeMediaSource() {
+  player?.load([newMediaSource.value])
+  newMediaSource.value = ''
 }
 </script>
 

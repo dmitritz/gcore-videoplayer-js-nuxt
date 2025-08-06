@@ -1,5 +1,5 @@
-export type StreamKind = 'stream' | 'video';
-export type StreamDto = Record<string, unknown>;
+export type StreamKind = 'stream' | 'video'
+export type StreamDto = Record<string, unknown>
 
 export type PluginName =
   | 'audio_tracks'
@@ -28,6 +28,7 @@ export type PluginName =
   | 'share'
   | 'spinner'
   | 'source_controller'
+  | 'telemetry'
   | 'thumbnails'
   | 'volume_fade'
 
@@ -56,6 +57,7 @@ export const PLUGIN_NAMES: PluginName[] = [
   'share',
   'spinner',
   'source_controller',
+  'telemetry',
   'thumbnails',
   'volume_fade',
 ]

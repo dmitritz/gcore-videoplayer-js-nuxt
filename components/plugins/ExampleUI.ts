@@ -88,11 +88,27 @@ export class ExampleUI extends UICorePlugin {
     })
   }
 
+  private onContainerDestroyed() {
+    this.stop()
+  }
+
   private onEnded() {
+    this.stop()
+  }
+
+  private stop() {
     this.pins.playing.value = false
+    this.pins.playback.value = null
+    this.pins.playbackType.value = null
+    this.pins.stopped.value = true
+    this.pins.hd.value = false
+    this.pins.bitrate.value = 0
+    this.pins.width.value = 0
+    this.pins.height.value = 0
     this.pins.paused.value = false
     this.pins.starting.value = false
-    this.pins.stopped.value = true
+    this.pins.currentTime.value = 0
+    this.stopTimer()
   }
 
   private onPause() {
@@ -115,18 +131,7 @@ export class ExampleUI extends UICorePlugin {
   }
 
   private onStop() {
-    this.pins.playing.value = false
-    this.pins.playback.value = null
-    this.pins.playbackType.value = null
-    this.pins.stopped.value = true
-    this.pins.hd.value = false
-    this.pins.bitrate.value = 0
-    this.pins.width.value = 0
-    this.pins.height.value = 0
-    this.pins.paused.value = false
-    this.pins.starting.value = false
-    this.pins.currentTime.value = 0
-    this.stopTimer()
+    this.stop()
   }
 
   private stopTimer() {
@@ -149,6 +154,11 @@ export class ExampleUI extends UICorePlugin {
       activePlayback: activePlayback?.name,
     })
 
+    this.listenTo(
+      container,
+      CoreEvents.CONTAINER_DESTROYED,
+      this.onContainerDestroyed
+    )
     this.listenTo(container, CoreEvents.CONTAINER_ENDED, this.onEnded)
     this.listenTo(container, CoreEvents.CONTAINER_PLAY, this.onPlay)
     this.listenTo(container, CoreEvents.CONTAINER_PAUSE, this.onPause)

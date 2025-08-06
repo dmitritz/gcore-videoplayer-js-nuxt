@@ -10,7 +10,12 @@ import { defineStore } from 'pinia'
 import usePersistence from '@/composables/use-persistence'
 import { PLUGIN_NAMES, type PluginName } from '~/types'
 export type { DashSettings, PersistentSettings } from './marshal'
-import { parseDashSettings, parseSettings, type DashSettings, type PersistentSettings } from './marshal'
+import {
+  parseDashSettings,
+  parseSettings,
+  type DashSettings,
+  type PersistentSettings,
+} from './marshal'
 
 export const DASH_DEFAULT_LIVE_DELAY = 2.2
 export const DASH_DEFAULT_MAX_DRIFT = 1
@@ -44,6 +49,7 @@ type State = {
     // spotlightHeight: number
   }
   recycleVideo: boolean
+  streamConfigUrl: string
 }
 
 type MainSettings = {
@@ -75,6 +81,7 @@ type Actions = {
   setSources(value: string[]): void
   reset(): void
   setVisitorId(value: string): void
+  setStreamConfigUrl(value: string): void
   setRestrictResolution(value: number): void
   setClipsText(value: string): void
   setThumbnailsURL(value: string): void
@@ -256,6 +263,7 @@ const useSettingsStore = () => {
       clips: localClips.get(),
       thumbnails,
       recycleVideo: localBasic.get().recycleVideo,
+      streamConfigUrl: '',
     }),
     getters: {
       serialized() {
@@ -364,7 +372,7 @@ const useSettingsStore = () => {
       setThumbnailsOptions(
         options: Partial<{ backdropHeight: number; spotlightHeight: number }>
       ) {
-        this.thumbnails = {...this.thumbnails, ...options}
+        this.thumbnails = { ...this.thumbnails, ...options }
         localThumbnails.set(this.thumbnails)
       },
       setVisitorId(value: string) {
@@ -380,6 +388,10 @@ const useSettingsStore = () => {
         this.recycleVideo = DEFAULT_MAIN_SETTINGS.recycleVideo
         this.dash = structuredClone(DEFAULT_DASH_SETTINGS)
         this.restrictResolution = 0
+        this.streamConfigUrl = ''
+      },
+      setStreamConfigUrl(value: string) {
+        this.streamConfigUrl = value
       },
       // TODO implement plugins getter that would mix in playback_settings plugin if restrictResolution is set
       setRestrictResolution(value: number) {
@@ -389,7 +401,7 @@ const useSettingsStore = () => {
             this.plugins.push('playback_settings')
           }
         } else {
-          this.plugins = this.plugins.filter(p => p !== 'playback_settings')
+          this.plugins = this.plugins.filter((p) => p !== 'playback_settings')
         }
       },
       setRecycleVideo(value: boolean) {
@@ -443,16 +455,10 @@ const useSettingsStore = () => {
           if (typeof settings.dash !== 'undefined') {
             this.setDashSettings(settings.dash)
           }
-          // if (typeof settings.debug !== 'undefined') {
-          //   this.setDebug(settings.debug)
-          // }
-          // if ('experimental' in settings) {
-          //   this.experimental = settings.experimental
-          // }
+          if (typeof settings.streamConfigUrl !== 'undefined') {
+            this.setStreamConfigUrl(settings.streamConfigUrl)
+          }
         }
-        // if (storedSettings.data.value) {
-        //   loadSettings(storedSettings.data.value)    
-        // }
       },
       async persist() {
         if (!this.persistKey) {
@@ -478,7 +484,7 @@ const useSettingsStore = () => {
             thumbnails: this.thumbnails,
           } as PersistentSettings,
         })
-        return this.persistKey;
+        return this.persistKey
       },
     },
   })()
@@ -532,7 +538,8 @@ function isCustomDashSettings(settings: DashSettings): boolean {
     settings?.streaming?.abr?.maxBitrate?.video !== -1 ||
     settings?.streaming?.abr?.initialBitrate?.video !== -1 ||
     settings?.streaming?.abr?.autoSwitchBitrate?.video !== true ||
-    Object.keys(settings?.streaming?.abr?.additionalAbrRules ?? {}).length > 0 ||
+    Object.keys(settings?.streaming?.abr?.additionalAbrRules ?? {}).length >
+      0 ||
     settings?.streaming?.delay?.liveDelay !== undefined ||
     settings?.streaming?.liveCatchup?.maxDrift !== undefined ||
     settings?.streaming?.liveCatchup?.playbackRate?.max !== undefined ||
