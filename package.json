@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@clappr/core": "^0.11.5",
-    "@gcorevideo/player": "^2.28.3",
+    "@gcorevideo/player": "^2.28.10",
     "@gcorevideo/utils": "^0.6.0",
     "@heroicons/vue": "^2.2.0",
     "@pinia/nuxt": "^0.11.2",
@@ -30,7 +30,7 @@
     "vue-router": "latest",
     "zod": "^4.0.5"
   },
-  "version": "0.17.5",
+  "version": "0.17.6",
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.10",
     "@types/mousetrap": "^1.6.15",
