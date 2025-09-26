@@ -28,6 +28,7 @@ export default defineNuxtConfig({
     assetsInclude: ['**/*.svg'],
     build: {
       assetsInlineLimit: 0,
+      target: 'esnext',
     },
     plugins: [tailwindcss()],
   },
