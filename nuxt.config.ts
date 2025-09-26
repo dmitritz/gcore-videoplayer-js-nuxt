@@ -28,6 +28,7 @@ export default defineNuxtConfig({
     assetsInclude: ['**/*.svg'],
     build: {
       assetsInlineLimit: 0,
+      target: ['es2015', 'safari15'],
     },
     plugins: [tailwindcss()],
   },

@@ -96,6 +96,8 @@ type Actions = {
   persist(): Promise<string>
 }
 
+export type SettingsStore = ReturnType<typeof useSettingsStore>
+
 const DEFAULT_MAIN_SETTINGS: MainSettings = {
   autoplay: false,
   loop: false,
@@ -415,76 +417,9 @@ const useSettingsStore = () => {
         if (!this.persistKey) {
           return
         }
-        const res = await $fetch(`/api/settings/${this.persistKey}`)
-        if (res.result) {
-          const settings = parseSettings(res.result)
-          if (typeof settings.autoplay !== 'undefined') {
-            this.setAutoplay(settings.autoplay)
-          }
-          if (typeof settings.loop !== 'undefined') {
-            this.setLoop(settings.loop)
-          }
-          if (typeof settings.mute !== 'undefined') {
-            this.setMute(settings.mute)
-          }
-          if (typeof settings.playbackType !== 'undefined') {
-            this.setPlaybackType(settings.playbackType)
-          }
-          if (typeof settings.poster !== 'undefined') {
-            this.setPoster(settings.poster)
-          }
-          if (typeof settings.priorityTransport !== 'undefined') {
-            this.setPriorityTransport(settings.priorityTransport)
-          }
-          if (typeof settings.sources !== 'undefined') {
-            this.setSources(settings.sources)
-          }
-          if (typeof settings.restrictResolution !== 'undefined') {
-            this.setRestrictResolution(settings.restrictResolution)
-          }
-          if (typeof settings.clips !== 'undefined') {
-            this.setClipsText(settings.clips)
-          }
-          if (typeof settings.thumbnails !== 'undefined') {
-            this.setThumbnailsURL(settings.thumbnails.sprite)
-            this.setThumbnailsVTT(settings.thumbnails.vtt)
-          }
-          if (typeof settings.recycleVideo !== 'undefined') {
-            this.setRecycleVideo(settings.recycleVideo)
-          }
-          if (typeof settings.dash !== 'undefined') {
-            this.setDashSettings(settings.dash)
-          }
-          if (typeof settings.streamConfigUrl !== 'undefined') {
-            this.setStreamConfigUrl(settings.streamConfigUrl)
-          }
-        }
       },
       async persist() {
-        if (!this.persistKey) {
-          this.persistKey = crypto.randomUUID()
-          localPersistKey.set(this.persistKey)
-        }
-        const res = await $fetch(`/api/settings/${this.persistKey}`, {
-          method: 'PUT',
-          body: {
-            autoplay: this.autoplay,
-            clips: this.clips,
-            dash: this.dash,
-            debug: this.debug,
-            loop: this.loop,
-            mute: this.mute,
-            playbackType: this.playbackType,
-            plugins: this.plugins,
-            poster: this.poster,
-            priorityTransport: this.priorityTransport,
-            restrictResolution: this.restrictResolution,
-            recycleVideo: this.recycleVideo,
-            sources: this.sources,
-            thumbnails: this.thumbnails,
-          } as PersistentSettings,
-        })
-        return this.persistKey
+        return ''
       },
     },
   })()

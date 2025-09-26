@@ -17,7 +17,12 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { $ } from '@clappr/core'
-import { MediaControl, Player, type PlayerConfig } from '@gcorevideo/player'
+import {
+  MediaControl,
+  Player,
+  type PlayerConfig,
+  type TelemetryPluginSettings,
+} from '@gcorevideo/player'
 
 import useSettingsStore from '../store/settings'
 import { SPEEDTEST_SERVERS } from '../constants'
@@ -43,6 +48,10 @@ const mediaControlSettings = MediaControl.extendSettings({
   left: ['dvr', 'clips'],
   right: ['*'],
 })
+
+const streamConfigUrl = useStreamConfig(settings)
+
+const stats = useStatsEndpoint(streamConfigUrl)
 
 const config = computed(() =>
   $.extend(
@@ -149,6 +158,11 @@ const config = computed(() =>
         sprite: settings.thumbnails.sprite,
       },
       strings,
+      telemetry: {
+        send: (data) => {
+          stats.send(data)
+        },
+      } as TelemetryPluginSettings,
     },
     props.options
   )
