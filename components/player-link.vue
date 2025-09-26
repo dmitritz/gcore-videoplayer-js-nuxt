@@ -46,7 +46,9 @@ const playerLink = computed(() => {
 function copySettingsUrl() {
   settings.persist().then((persistKey) => {
     const url = new URL(playerLink.value)
-    url.searchParams.set('k', persistKey)
+    if (persistKey) {
+      url.searchParams.set('k', persistKey)
+    }
     copy(url.href, {
       format: 'text/plain',
     })
