@@ -96,6 +96,8 @@ type Actions = {
   persist(): Promise<string>
 }
 
+export type SettingsStore = ReturnType<typeof useSettingsStore>
+
 const DEFAULT_MAIN_SETTINGS: MainSettings = {
   autoplay: false,
   loop: false,

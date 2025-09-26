@@ -121,10 +121,8 @@ import {
   Player,
   type PlaybackModule,
   type PlaybackType,
-  type TelemetryPluginSettings,
 } from '@gcorevideo/player'
 
-import useStatsEndpoint from '~/composables/use-stats-endpoint'
 import usePluginsConfig from '~/composables/use-plugins-config'
 import useSettingsStore from '../store/settings'
 
@@ -177,29 +175,6 @@ const cmcdCid = ref('') // TODO get from the plugin
 
 const viewport = ref<{ width: number; height: number }>({ width: 0, height: 0 })
 
-const streamConfigUrl = computed(() => {
-  if (settings.streamConfigUrl) {
-    return settings.streamConfigUrl
-  }
-  if (!settings.sources.length) {
-    return ''
-  }
-  const srcUrl = new URL(settings.sources[0])
-  const m = srcUrl.pathname.match(/^\/\w+\/\d+_\w+\//)
-  if (!m) {
-    return ''
-  }
-  const path = m[0]
-  const domain =
-    srcUrl.hostname.includes('preprod') ||
-    srcUrl.hostname.includes('gvideo.dev')
-      ? 'player.preprod.gvideo.co'
-      : 'player.gvideo.co'
-  return `https://${domain}${path}/config.json`
-})
-
-const stats = useStatsEndpoint(streamConfigUrl)
-
 usePluginsConfig()
 
 const pluginOptions = computed(() => ({
@@ -223,11 +198,6 @@ const pluginOptions = computed(() => ({
     cmcdCid,
     viewport,
   } as ExampleUIOptions,
-  telemetry: {
-    send: (data) => {
-      stats.send(data)
-    },
-  } as TelemetryPluginSettings,
 }))
 
 let player: Player | undefined
