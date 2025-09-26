@@ -39,7 +39,7 @@ export default function useStatsEndpoint(
         fetchStatsEndpointUrl()
           .then((url: string) => {
             const socket = new WebSocket(url)
-            socket.onopen = () => resolve(socket as WebSocket)
+            socket.onopen = () => resolve(socket)
             socket.onerror = (error) => reject(error)
           })
           .catch(reject)
