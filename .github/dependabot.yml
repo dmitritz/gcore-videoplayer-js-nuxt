@@ -7,5 +7,14 @@ version: 2
 updates:
   - package-ecosystem: "npm" # See documentation for possible values
     directory: "/" # Location of package manifests
+    groups:
+      security:
+        applies-to: security-updates
+        dependency-type: production
+      all:
+        applies-to: version-updates
+        target-branch: "develop"
+    assignees:
+      - dmitritz
     schedule:
       interval: "weekly"
