@@ -1,16 +1,10 @@
 <template>
   <div class="relative">
-    <div
-      class="video-container-wrap bg-black text-white relative"
-      :class="{ 'full-page': fullPage }"
-    >
+    <div class="video-container-wrap bg-black text-white relative" :class="{ 'full-page': fullPage }">
       <div ref="container" class="video-container absolute"></div>
     </div>
-    <span
-      class="absolute inset-1/2 text-white w-20 text-center text-sm no-source"
-      v-if="noSource"
-      >Source not configured</span
-    >
+    <span class="absolute inset-1/2 text-white w-20 text-center text-sm no-source" v-if="noSource">Source not
+      configured</span>
   </div>
 </template>
 
