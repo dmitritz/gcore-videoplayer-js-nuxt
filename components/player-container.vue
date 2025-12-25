@@ -139,8 +139,10 @@ const config = computed(() =>
       },
       // shareURL: "https://gvideo.co", // share plugin
       subtitles: {
-        language: 'en',
+        // language: 'en',
         // language: 'zh',
+        language: 'none',
+        // mode: 'native',
       },
       thumbnails: {
         // backdropHeight: settings.thumbnails.backdropHeight,
