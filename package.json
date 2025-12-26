@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "gcore-videoplayer-nuxt-app",
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@clappr/core": "^0.13.2",
-    "@gcorevideo/player": "^2.28.25",
-    "@gcorevideo/utils": "^0.6.0",
+    "@gcorevideo/player": "^2.28.26",
+    "@gcorevideo/utils": "^0.7.1",
     "@heroicons/vue": "^2.2.0",
     "@pinia/nuxt": "^0.11.2",
     "@sentry/nuxt": "^10.5.0",
