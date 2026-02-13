@@ -4,40 +4,57 @@
 
 <script lang="ts" setup>
 import mousetrap from 'mousetrap'
-import { setTracer } from '@gcorevideo/player'
 import {
+  setTracer,
+  version
+} from '@gcorevideo/player'
+import {
+  ChainedTracer,
   Logger,
   LogTracer,
   RemoteTracer,
   SentryTracer,
+  type Tracer,
 } from '@gcorevideo/utils'
+
 import * as Sentry from '@sentry/nuxt'
 import pkg from './package.json'
 import { Browser } from '@clappr/core'
-// import Fingerprint from '@fingerprintjs/fingerprintjs'
 import useSettings from '~/store/settings'
 
 const KEYS_GODMODE = 'i d d q d'
 
 const settings = useSettings()
 
+console.log("gcore-videoplayer-nuxt-app version %s/%s %s", pkg.version, version().gplayer, new Date().toISOString())
+
+const tracers: Tracer[] = [
+  createLogTracer(),
+]
+
 if (import.meta.client) {
   const tags = {
     client: pkg.name,
     build_id: import.meta.env.VITE_SENTRY_BUILD_ID,
   }
-  const baseTracer = import.meta.env.VITE_SENTRY_DSN
-    ? createSentryTracer((scope: Sentry.Scope) => {
-        getVisitorId().then((visitorId: string) => {
-          tracer.setTag('visitor_id', visitorId)
-          scope.setTags(tags)
-          scope.setTag('visitor_id', visitorId)
-          settings.setVisitorId(visitorId)
+  if (import.meta.env.VITE_SENTRY_DSN) {
+    tracers.push(createSentryTracer((scope: Sentry.Scope) => {
+      getVisitorId().then((visitorId: string) => {
+        tracers.forEach((tracer) => {
+          // TODO support setTag on all tracers
+          if (tracer instanceof RemoteTracer) {
+            tracer.setTag('visitor_id', visitorId)
+          }
         })
+        scope.setTags(tags)
+        scope.setTag('visitor_id', visitorId)
+        settings.setVisitorId(visitorId)
+        console.log("gcore-videoplayer-nuxt-app visitor_id %s", visitorId)
       })
-    : createLogTracer()
-  const tracer = new RemoteTracer(
-    baseTracer,
+    }))
+  }
+  tracers.push(new RemoteTracer(
+    undefined,
     {
       device: Browser.device?.replace(/ /g, '_'),
       browser: Browser.name,
@@ -54,7 +71,8 @@ if (import.meta.client) {
     {
       delay: 2000,
     }
-  )
+  ))
+  const tracer = new ChainedTracer(tracers)
   setTracer(tracer)
 
   mousetrap.bind('option+h', () => {
@@ -81,7 +99,11 @@ function createSentryTracer(setup: (scope: Sentry.Scope) => void) {
   const client = Sentry.getClient()
   if (!client) {
     console.error('Sentry client is not initialized')
-    return
+    return {
+      reportError: () => { },
+      trace: () => { },
+      setTag: () => { },
+    } as Tracer
   }
   const sentryScope = Sentry.getGlobalScope()
   setup(sentryScope)
@@ -94,9 +116,6 @@ function createLogTracer() {
 }
 
 function getVisitorId() {
-  // return Fingerprint.load()
-  //   .then((agent) => agent.get())
-  //   .then((res) => res.visitorId)
   return new Promise<string>((resolve) => {
     const storedVisitorId = sessionStorage.getItem('visitor_id')
     if (storedVisitorId) {
