@@ -28,7 +28,7 @@
     "pinia": "^3.0.4",
     "vue": "latest",
     "vue-router": "latest",
-    "zod": "^4.2.1"
+    "zod": "^4.3.6"
   },
   "version": "0.17.31",
   "devDependencies": {
