@@ -37,7 +37,7 @@
     "@types/ms": "^2.1.0",
     "dotenv": "^17.2.0",
     "tailwindcss": "^4.1.18",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.18"
   },
   "overrides": {
     "ofetch": "^1.4.0",
