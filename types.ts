@@ -30,6 +30,7 @@ export type PluginName =
   | 'source_controller'
   | 'telemetry'
   | 'thumbnails'
+  | 'token_refresh'
   | 'volume_fade'
 
 export const PLUGIN_NAMES: PluginName[] = [
@@ -59,5 +60,6 @@ export const PLUGIN_NAMES: PluginName[] = [
   'source_controller',
   'telemetry',
   'thumbnails',
+  'token_refresh',
   'volume_fade',
 ]

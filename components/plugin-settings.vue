@@ -14,6 +14,7 @@
       </a>
       <play-pause-icon v-if="plugin === 'media_control'" class="w-3 h-3" title="Media control UI" />
       <chart-bar-icon v-if="plugin === 'telemetry'" class="w-3 h-3" title="Usage statistics" />
+      <key-icon v-if="plugin === 'token_refresh'" class="w-3 h-3" title="Protected content token refresh" />
     </plugin-item>
   </div>
   <div class="grid grid-cols-2 md:grid-cols-3 gap-2 my-2">
@@ -57,6 +58,7 @@ import {
   AdjustmentsHorizontalIcon,
   ChartBarIcon,
   DevicePhoneMobileIcon,
+  KeyIcon,
   PlayPauseIcon,
   QuestionMarkCircleIcon,
   StarIcon,
@@ -94,6 +96,7 @@ const PLUGIN_LABELS: Partial<Record<PluginName, string>> = {
   nerd_stats: 'Stats for nerds',
   cc: 'Subtitles (CC)',
   thumbnails: 'Thumbnails',
+  token_refresh: 'Token refresh',
   telemetry: 'Usage statistics',
   volume_fade: 'Volume fade',
 }
