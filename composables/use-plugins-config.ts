@@ -23,6 +23,7 @@ import {
   SourceController,
   SpinnerThreeBounce,
   Thumbnails,
+  TokenRefreshPlugin,
   ContextMenu,
   type PlayerPluginConstructor,
   // trace,
@@ -70,6 +71,7 @@ const _P: PlayerPluginConstructor[] = [
   SpinnerThreeBounce,
   Telemetry,
   Thumbnails,
+  TokenRefreshPlugin,
   VolumeFade,
 ]
 const PLUGINS: Plugins = _P.reduce(
