@@ -1,20 +1,57 @@
 <template>
   <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
-    <plugin-item v-for="plugin of PLUGIN_NAMES" :key="plugin" :name="plugin"
-      :disabled="disabledPlugins.includes(plugin)">
+    <plugin-item
+      v-for="plugin of PLUGIN_NAMES"
+      :key="plugin"
+      :name="plugin"
+      :disabled="disabledPlugins.includes(plugin)"
+    >
       {{ PLUGIN_LABELS[plugin] }}
       <star-icon class="w-3 h-3" v-if="PLUGIN_OPTIONS[plugin]?.starred" />
-      <device-phone-mobile-icon v-if="plugin === 'skip_time'" class="w-3 h-3" title="Mobile devices only" />
-      <router-link to="/source" v-if="plugin === 'thumbnails'" class="inline-block" title="Configure thumbnails">
+      <device-phone-mobile-icon
+        v-if="plugin === 'skip_time'"
+        class="w-3 h-3"
+        title="Mobile devices only"
+      />
+      <router-link
+        to="/source"
+        v-if="plugin === 'thumbnails'"
+        class="inline-block"
+        title="Configure thumbnails"
+      >
         <adjustments-horizontal-icon class="w-3 h-3" />
       </router-link>
-      <a href="https://cdn.cta.tech/cta/media/media/resources/standards/pdfs/cta-5004-final.pdf" target="_blank"
-        v-if="plugin === 'cmcd'" class="inline-flex text-xs items-center gap-1">
+      <router-link
+        to="/source"
+        v-if="plugin === 'logo'"
+        class="inline-block"
+        title="Configure logo"
+      >
+        <adjustments-horizontal-icon class="w-3 h-3" />
+      </router-link>
+      <a
+        href="https://cdn.cta.tech/cta/media/media/resources/standards/pdfs/cta-5004-final.pdf"
+        target="_blank"
+        v-if="plugin === 'cmcd'"
+        class="inline-flex text-xs items-center gap-1"
+      >
         <question-mark-circle-icon class="w-3 h-3" />more
       </a>
-      <play-pause-icon v-if="plugin === 'media_control'" class="w-3 h-3" title="Media control UI" />
-      <chart-bar-icon v-if="plugin === 'telemetry'" class="w-3 h-3" title="Usage statistics" />
-      <key-icon v-if="plugin === 'token_refresh'" class="w-3 h-3" title="Protected content token refresh" />
+      <play-pause-icon
+        v-if="plugin === 'media_control'"
+        class="w-3 h-3"
+        title="Media control UI"
+      />
+      <chart-bar-icon
+        v-if="plugin === 'telemetry'"
+        class="w-3 h-3"
+        title="Usage statistics"
+      />
+      <key-icon
+        v-if="plugin === 'token_refresh'"
+        class="w-3 h-3"
+        title="Protected content token refresh"
+      />
     </plugin-item>
   </div>
   <div class="grid grid-cols-2 md:grid-cols-3 gap-2 my-2">
@@ -26,8 +63,11 @@
       <b>Gear button</b>,<br />
       etc.<br />
       See the
-      <a href="https://github.com/G-Core/gcore-videoplayer-js/blob/main/packages/player/docs/api/player.md"
-        target="_blank">documentation</a>
+      <a
+        href="https://github.com/G-Core/gcore-videoplayer-js/blob/main/packages/player/docs/api/player.md"
+        target="_blank"
+        >documentation</a
+      >
       for more details.
     </div>
   </div>
@@ -35,18 +75,51 @@
     <div class="label">Quality level restriction</div>
     <div class="flex gap-2 md:col-span-2">
       <label for="option_restrict_quality_level_0">
-        <input type="radio" id="option_restrict_quality_level_0" value="0" :checked="restrictResolution === 0"
-          @change="e => restrictResolution = parseInt((e.target as HTMLInputElement).value, 10)" />
+        <input
+          type="radio"
+          id="option_restrict_quality_level_0"
+          value="0"
+          :checked="restrictResolution === 0"
+          @change="
+            (e) =>
+              (restrictResolution = parseInt(
+                (e.target as HTMLInputElement).value,
+                10,
+              ))
+          "
+        />
         Off
       </label>
       <label for="option_restrict_quality_level_360">
-        <input type="radio" id="option_restrict_quality_level_360" value="360" :checked="restrictResolution === 360"
-          @change="e => restrictResolution = parseInt((e.target as HTMLInputElement).value, 10)" />
+        <input
+          type="radio"
+          id="option_restrict_quality_level_360"
+          value="360"
+          :checked="restrictResolution === 360"
+          @change="
+            (e) =>
+              (restrictResolution = parseInt(
+                (e.target as HTMLInputElement).value,
+                10,
+              ))
+          "
+        />
         360
       </label>
       <label for="option_restrict_quality_level_720">
-        <input type="radio" id="option_restrict_quality_level_720" value="720" :checked="restrictResolution === 720"
-          @change="e => restrictResolution = parseInt((e.target as HTMLInputElement).value, 10)" />
+        <input
+          type="radio"
+          id="option_restrict_quality_level_720"
+          value="720"
+          :checked="restrictResolution === 720"
+          @change="
+            (e) =>
+              (restrictResolution = parseInt(
+                (e.target as HTMLInputElement).value,
+                10,
+              ))
+          "
+        />
         720
       </label>
     </div>
@@ -84,6 +157,7 @@ const PLUGIN_LABELS: Partial<Record<PluginName, string>> = {
   media_control: 'Media controls',
   // multicamera: 'Multi camera',
   level_selector: 'Quality levels',
+  logo: 'Logo',
   pip: 'Picture in picture',
   playback_rate: 'Playback rate',
   poster: 'Poster',
