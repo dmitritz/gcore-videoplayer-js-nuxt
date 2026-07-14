@@ -1,4 +1,6 @@
 import { type PluginName } from '../types'
+import { type LogoOptions } from '@gcorevideo/player'
+import type { LogoPosition, LogoSettings } from '~/store/settings'
 
 export function getDisabledPlugins(plugins: PluginName[]): PluginName[] {
   const disabled: PluginName[] = []
@@ -17,7 +19,7 @@ export function getRegistrationOrder(plugins: PluginName[]): PluginName[] {
   const independent: PluginName[] = []
   const dependent: PluginName[] = []
   const DEPS = PLUGIN_DEPS_CHECK_CHAIN.map(([p]) => p)
-  plugins.forEach(plugin => {
+  plugins.forEach((plugin) => {
     if (!DEPS.includes(plugin)) {
       independent.push(plugin)
     } else {
@@ -25,30 +27,30 @@ export function getRegistrationOrder(plugins: PluginName[]): PluginName[] {
     }
   })
   return independent.concat(
-    PLUGIN_DEPS_CHECK_CHAIN.map(([p]) => p).filter(p => dependent.includes(p))
+    PLUGIN_DEPS_CHECK_CHAIN.map(([p]) => p).filter((p) =>
+      dependent.includes(p),
+    ),
   )
 }
 
-const PLUGIN_DEPS_CHECK_CHAIN = buildPluginDepsCheckChain(
-  {
-    audio_tracks: ['media_control'],
-    bottom_gear: ['media_control'],
-    cc: ['media_control'],
-    clips: ['media_control'],
-    dvr_controls: ['media_control'],
-    level_selector: ['media_control','bottom_gear'],
-    multicamera: ['media_control'],
-    nerd_stats: ['media_control','bottom_gear', 'clappr_stats'],
-    playback_rate: ['media_control','bottom_gear'],
-    pip: ['media_control'],
-    seek_time: ['media_control'],
-    share: ['media_control'],
-    thumbnails: ['media_control'],
-  }
-)
+const PLUGIN_DEPS_CHECK_CHAIN = buildPluginDepsCheckChain({
+  audio_tracks: ['media_control'],
+  bottom_gear: ['media_control'],
+  cc: ['media_control'],
+  clips: ['media_control'],
+  dvr_controls: ['media_control'],
+  level_selector: ['media_control', 'bottom_gear'],
+  multicamera: ['media_control'],
+  nerd_stats: ['media_control', 'bottom_gear', 'clappr_stats'],
+  playback_rate: ['media_control', 'bottom_gear'],
+  pip: ['media_control'],
+  seek_time: ['media_control'],
+  share: ['media_control'],
+  thumbnails: ['media_control'],
+})
 
 function buildPluginDepsCheckChain(
-  rules: Partial<Record<PluginName, PluginName[]>>
+  rules: Partial<Record<PluginName, PluginName[]>>,
 ): Array<[PluginName, PluginName[]]> {
   const checked: PluginName[] = []
   const queue: PluginName[] = Object.keys(rules) as PluginName[]
@@ -65,11 +67,67 @@ function buildPluginDepsCheckChain(
     iter++
     if (iter > 10) {
       throw new Error(
-        'Plugin deps chain build took too many iterations, probably circular dependency'
+        'Plugin deps chain build took too many iterations, probably circular dependency',
       )
     }
   }
   return checked.map((p) => [p, rules[p]] as [PluginName, PluginName[]])
 }
 
+export function getLogoOptions(settings: LogoSettings): LogoOptions {
+  const { url: path, width, height, position, x, y } = settings
+  const { left, right, top, bottom } = computeLogoPosition(position, x, y)
+  return {
+    path,
+    width,
+    height,
+    left,
+    top,
+    bottom,
+    right,
+  }
+}
 
+function computeLogoPosition(
+  position: LogoPosition,
+  x: number,
+  y: number,
+): {
+  left?: number
+  top?: number
+  right?: number
+  bottom?: number
+} {
+  const base = {
+    right: 0,
+    top: 0,
+    left: 0,
+    bottom: 0,
+  }
+  switch (position) {
+    case 'topleft':
+      return {
+        ...base,
+        left: x,
+        top: y,
+      }
+    case 'topright':
+      return {
+        ...base,
+        right: x,
+        top: y,
+      }
+    case 'bottomleft':
+      return {
+        ...base,
+        bottom: y,
+        left: x,
+      }
+    case 'bottomright':
+      return {
+        ...base,
+        bottom: y,
+        right: x,
+      }
+  }
+}

@@ -8,9 +8,12 @@ import {
   ClickToPause,
   Clips,
   ClosedCaptions,
+  CmcdConfig,
+  ContextMenu,
   DvrControls,
   ErrorScreen,
   Favicon,
+  Logo,
   MediaControl,
   // MultiCamera,
   NerdStats,
@@ -20,18 +23,15 @@ import {
   QualityLevels,
   SeekTime,
   Share,
+  SkipTime,
   SourceController,
   SpinnerThreeBounce,
+  Telemetry,
   Thumbnails,
   TokenRefreshPlugin,
-  ContextMenu,
   type PlayerPluginConstructor,
   // trace,
   VolumeFade,
-  SkipTime,
-  // Logo,
-  CmcdConfig,
-  Telemetry,
 } from '@gcorevideo/player'
 
 import useSettingsStore from '../store/settings'
@@ -56,7 +56,7 @@ const _P: PlayerPluginConstructor[] = [
   ErrorScreen,
   ExampleUI,
   Favicon,
-  // Logo,
+  Logo,
   MediaControl,
   // MultiCamera,
   PictureInPicture,
@@ -79,7 +79,7 @@ const PLUGINS: Plugins = _P.reduce(
     ps[p.prototype.name as PluginName] = p
     return ps
   },
-  {}
+  {},
 ) as Plugins
 
 // const T = 'app.use-plugins-config'

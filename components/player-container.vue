@@ -1,10 +1,16 @@
 <template>
   <div class="relative">
-    <div class="video-container-wrap bg-black text-white relative" :class="{ 'full-page': fullPage }">
+    <div
+      class="video-container-wrap bg-black text-white relative"
+      :class="{ 'full-page': fullPage }"
+    >
       <div ref="container" class="video-container absolute"></div>
     </div>
-    <span class="absolute inset-1/2 text-white w-20 text-center text-sm no-source" v-if="noSource">Source not
-      configured</span>
+    <span
+      class="absolute inset-1/2 text-white w-20 text-center text-sm no-source"
+      v-if="noSource"
+      >Source not configured</span
+    >
   </div>
 </template>
 
@@ -24,6 +30,7 @@ import strings from '~/assets/strings.json'
 import gcoreSvg from '~/assets/img/gcore_orange_001.svg'
 import usePluginsConfig from '~/composables/use-plugins-config'
 import type { PluginName } from '~/types'
+import { getLogoOptions } from '~/utils/plugins'
 
 const props = defineProps<{
   options?: Partial<PlayerConfig>
@@ -63,7 +70,7 @@ const config = computed(() =>
             },
           },
         },
-        settings.dash
+        settings.dash,
       ),
       debug: settings.debug,
       mute: settings.mute,
@@ -124,6 +131,7 @@ const config = computed(() =>
         },
         restrictResolution: settings.restrictResolution,
       },
+      logo: getLogoOptions(settings.logo),
       multisourcesMode: 'show_all', // multi_camera
       playbackSettings: {
         restrictResolution: settings.restrictResolution,
@@ -160,8 +168,8 @@ const config = computed(() =>
         },
       } as TelemetryPluginSettings,
     },
-    props.options
-  )
+    props.options,
+  ),
 )
 
 let player: Player | undefined

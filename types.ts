@@ -18,6 +18,7 @@ export type PluginName =
   | 'media_control'
   | 'nerd_stats'
   | 'level_selector'
+  | 'logo'
   | 'multicamera'
   | 'pip'
   | 'playback_rate'
@@ -44,6 +45,7 @@ export const PLUGIN_NAMES: PluginName[] = [
   'error_screen',
   'example_ui',
   'favicon',
+  'logo',
   'media_control',
   'nerd_stats',
   'dvr_controls',
