@@ -10,12 +10,7 @@ import { defineStore } from 'pinia'
 import usePersistence from '@/composables/use-persistence'
 import { PLUGIN_NAMES, type PluginName } from '~/types'
 export type { DashSettings, PersistentSettings } from './marshal'
-import {
-  parseDashSettings,
-  parseSettings,
-  type DashSettings,
-  type PersistentSettings,
-} from './marshal'
+import { parseDashSettings, type DashSettings } from './marshal'
 
 export const DASH_DEFAULT_LIVE_DELAY = 2.2
 export const DASH_DEFAULT_MAX_DRIFT = 1
@@ -23,12 +18,23 @@ export const DASH_DEFAULT_LC_PLAYBACK_RATE_MAX = 0.1
 export const DASH_DEFAULT_LC_PLAYBACK_RATE_MIN = -0.1
 export const DEFAULT_PRIORITY_TRANSPORT: TransportPreference = 'dash'
 
+export type LogoPosition = 'topleft' | 'topright' | 'bottomleft' | 'bottomright'
+export type LogoSettings = {
+  url: string
+  width: number
+  height: number
+  x: number
+  y: number
+  position: LogoPosition
+}
+
 type State = {
   autoplay: boolean
   dash: DashSettings
   debug: PlayerDebugTag
   experimental: Record<string, unknown>
   godMode: boolean
+  logo: LogoSettings
   loop: boolean
   mute: boolean
   persistKey: string
@@ -73,6 +79,12 @@ type Actions = {
   removePlugin(name: string): void
   setAutoplay(value: boolean): void
   setDashSettings(value: Partial<DashSettings>): void
+  setLogoUrl(value: string): void
+  setLogoWidth(value: number): void
+  setLogoHeight(value: number): void
+  setLogoPosition(value: LogoPosition): void
+  setLogoX(value: number): void
+  setLogoY(value: number): void
   setLoop(value: boolean): void
   setMute(value: boolean): void
   setPlaybackType(value: PlaybackType): void
@@ -87,7 +99,7 @@ type Actions = {
   setThumbnailsURL(value: string): void
   setThumbnailsVTT(value: string): void
   setThumbnailsOptions(
-    options: Partial<{ backdropHeight: number; spotlightHeight: number }>
+    options: Partial<{ backdropHeight: number; spotlightHeight: number }>,
   ): void
   setRecycleVideo(value: boolean): void
   setGodMode(): void
@@ -151,20 +163,20 @@ const useSettingsStore = () => {
     'settings.sources',
     String,
     (s) => s.split(',').filter(Boolean),
-    []
+    [],
   )
   const localPlugins = usePersistence<PluginName[]>(
     'settings.plugins',
     (a: PluginName[]) => a.join(','),
     (v: string) => sanitizePlugins(v.split(',')),
-    DEFAULT_PLUGINS
+    DEFAULT_PLUGINS,
   )
 
   const localBasic = usePersistence<MainSettings>(
     'settings.basic',
     JSON.stringify,
     JSON.parse,
-    DEFAULT_MAIN_SETTINGS
+    DEFAULT_MAIN_SETTINGS,
   )
 
   const localPoster = usePersistence('settings.poster', id, id, '')
@@ -172,7 +184,7 @@ const useSettingsStore = () => {
     'settings.thumbnails',
     JSON.stringify,
     JSON.parse,
-    { sprite: '', vtt: '', backdropHeight: 0, spotlightHeight: 0 }
+    { sprite: '', vtt: '', backdropHeight: 0, spotlightHeight: 0 },
   )
   const localClips = usePersistence('settings.clips', id, id, '')
   if (
@@ -187,29 +199,29 @@ const useSettingsStore = () => {
       ...localBasic.get(),
       autoplay: parseBoolean(
         url.searchParams.get('autoplay'),
-        pm.autoplay ?? DEFAULT_MAIN_SETTINGS.autoplay
+        pm.autoplay ?? DEFAULT_MAIN_SETTINGS.autoplay,
       ),
       loop: parseBoolean(
         url.searchParams.get('loop'),
-        pm.loop ?? DEFAULT_MAIN_SETTINGS.loop
+        pm.loop ?? DEFAULT_MAIN_SETTINGS.loop,
       ),
       mute: parseBoolean(
         url.searchParams.get('mute'),
-        pm.mute ?? DEFAULT_MAIN_SETTINGS.mute
+        pm.mute ?? DEFAULT_MAIN_SETTINGS.mute,
       ),
       playbackType:
         parseSelectOption<PlaybackType>(
           ['vod', 'live'],
-          url.searchParams.get('playback_type')
+          url.searchParams.get('playback_type'),
         ) ??
         pm.playbackType ??
         DEFAULT_MAIN_SETTINGS.playbackType, // TODO sanitize
       priorityTransport: transportPreference(
-        url.searchParams.get('priority_transport') || pm.priorityTransport
+        url.searchParams.get('priority_transport') || pm.priorityTransport,
       ),
       recycleVideo: parseBoolean(
         url.searchParams.get('recycle_video'),
-        pm.recycleVideo ?? DEFAULT_MAIN_SETTINGS.recycleVideo
+        pm.recycleVideo ?? DEFAULT_MAIN_SETTINGS.recycleVideo,
       ),
     })
   }
@@ -222,12 +234,12 @@ const useSettingsStore = () => {
     (usePersistedPlugins
       ? localPlugins.get()
       : sanitizePlugins(
-          url.searchParams.get('plugins')?.split(',') ?? DEFAULT_PLUGINS
+          url.searchParams.get('plugins')?.split(',') ?? DEFAULT_PLUGINS,
         )) ?? []
   const usePersistedSources = !url.searchParams.has('sources')
   const sources = usePersistedSources
     ? localSources.get()
-    : url.searchParams.get('sources')?.split(',') ?? []
+    : (url.searchParams.get('sources')?.split(',') ?? [])
   localSources.set(sources)
 
   if (url.searchParams.has('poster')) {
@@ -243,6 +255,14 @@ const useSettingsStore = () => {
       debug,
       experimental: {},
       godMode: false,
+      logo: {
+        url: '',
+        width: 60,
+        height: 60,
+        position: 'topleft',
+        x: 10,
+        y: 10,
+      },
       loop,
       mute,
       persistKey: persistKey ?? '',
@@ -250,7 +270,7 @@ const useSettingsStore = () => {
       plugins,
       priorityTransport: transportPreference(
         priorityTransport,
-        DEFAULT_PRIORITY_TRANSPORT
+        DEFAULT_PRIORITY_TRANSPORT,
       ),
       poster,
       sources,
@@ -258,9 +278,9 @@ const useSettingsStore = () => {
       restrictResolution: parseInt(
         parseSelectOption(
           ['360', '720', '0'],
-          url.searchParams.get('restrict_resolution')
+          url.searchParams.get('restrict_resolution'),
         ) ?? '0',
-        10
+        10,
       ),
       clips: localClips.get(),
       thumbnails,
@@ -339,6 +359,24 @@ const useSettingsStore = () => {
         this.dash = $.extend(true, {}, this.dash, value)
         // TODO persist?
       },
+      setLogoUrl(value: string) {
+        this.logo.url = value
+      },
+      setLogoWidth(value: number) {
+        this.logo.width = value
+      },
+      setLogoHeight(value: number) {
+        this.logo.height = value
+      },
+      setLogoPosition(value: LogoPosition) {
+        this.logo.position = value
+      },
+      setLogoX(value: number) {
+        this.logo.x = value
+      },
+      setLogoY(value: number) {
+        this.logo.y = value
+      },
       setLoop(value: boolean) {
         this.loop = value
         persistBasicSettings(this)
@@ -372,7 +410,7 @@ const useSettingsStore = () => {
         localThumbnails.set(this.thumbnails)
       },
       setThumbnailsOptions(
-        options: Partial<{ backdropHeight: number; spotlightHeight: number }>
+        options: Partial<{ backdropHeight: number; spotlightHeight: number }>,
       ) {
         this.thumbnails = { ...this.thumbnails, ...options }
         localThumbnails.set(this.thumbnails)
@@ -444,14 +482,14 @@ function debugTag(input: string): PlayerDebugTag | undefined {
 
 function transportPreference(
   input: string | null,
-  def: TransportPreference = 'dash'
+  def: TransportPreference = 'dash',
 ): TransportPreference {
   return parseSelectOption<TransportPreference>(['dash', 'hls'], input) ?? def
 }
 
 function parseSelectOption<T extends string>(
   options: string[], // T[]
-  input: string | null
+  input: string | null,
 ): T | undefined {
   if (input === null) {
     return
@@ -512,6 +550,6 @@ function id<T = string>(a: string) {
 
 function sanitizePlugins(plugins: string[]): PluginName[] {
   return plugins.filter((p) =>
-    PLUGIN_NAMES.includes(p as PluginName)
+    PLUGIN_NAMES.includes(p as PluginName),
   ) as PluginName[]
 }

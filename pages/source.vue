@@ -70,7 +70,12 @@
             type="text"
             id="stream_config_url"
             :value="settings.streamConfigUrl"
-            @change="e => settings.setStreamConfigUrl((e.target as HTMLInputElement)?.value)"
+            @change="
+              (e) =>
+                settings.setStreamConfigUrl(
+                  (e.target as HTMLInputElement)?.value,
+                )
+            "
             class="w-full textfield"
             placeholder="https://player.gvideo.co/video/{stream_id}_{slug}/config.json"
           />
@@ -112,6 +117,90 @@
           {{ error }}
         </div>
       </div>
+      <div
+        class="controls flex flex-col gap-y-3 mb-8 gap-1 pb-4 border-b border-slate-200"
+      >
+        <div>
+          <span class="label text-lg">Logo</span>
+          <div class="subscript" v-if="logoDisabled">
+            <exclamation-triangle-icon class="w-4 h-4 inline-block" />
+            Enable
+            <b>Logo</b> plugin on the
+            <router-link to="/settings">Settings</router-link> tab
+          </div>
+        </div>
+        <div class="flex-col gap-2">
+          <label for="logo_url" class="label">Image URL</label>
+          <input
+            :value="settings.logo.url"
+            @change="
+              (e) => settings.setLogoUrl((e.target as HTMLInputElement)?.value)
+            "
+            :disabled="logoDisabled"
+            type="text"
+            id="logo_url"
+            class="w-full textfield"
+            placeholder="https://my-company.com/files/1.png"
+          />
+        </div>
+        <div class="flex flex-col gap-2">
+          <span class="label">Position</span>
+          <div class="flex flex-row gap-4 content-center items-center">
+            <label
+              v-for="item of LOGO_POSITIONS"
+              :for="`logo_position-${item}`"
+            >
+              <input
+                type="radio"
+                name="logo_position"
+                :id="`logo_position-${item}`"
+                :checked="settings.logo.position == item"
+                @change="settings.setLogoPosition(item)"
+                :disabled="logoDisabled"
+              />
+              {{ LOGO_POSITION_LABEL[item] }}
+            </label>
+          </div>
+        </div>
+        <div class="flex gap-4 content-center items-center">
+          <label class="label" for="logo_width">Width</label>
+          <input
+            type="number"
+            :value="settings.logo.width"
+            @change="(e) => settings.setLogoWidth(parseInt(e.target.value))"
+            class="textfield text-sm w-15"
+            id="logo_width"
+            :disabled="logoDisabled"
+          />
+          <label class="label" for="logo_height">Height</label>
+          <input
+            type="number"
+            :value="settings.logo.height"
+            @change="(e) => settings.setLogoHeight(parseInt(e.target.value))"
+            class="textfield text-sm w-15"
+            id="logo_height"
+            :disabled="logoDisabled"
+          />
+          <label for="logo_x" class="label">X</label>
+          <input
+            type="number"
+            :value="settings.logo.x"
+            @change="(e) => settings.setLogoX(parseInt(e.target.value))"
+            class="textfield text-sm w-15"
+            id="logo_x"
+            :disabled="logoDisabled"
+          />
+          <label for="logo_y" class="label">Y</label>
+          <input
+            type="number"
+            :value="settings.logo.y"
+            @change="(e) => settings.setLogoY(parseInt(e.target.value))"
+            class="textfield text-sm w-15"
+            id="logo_y"
+            :disabled="logoDisabled"
+          />
+        </div>
+      </div>
       <thumbnails-block />
       <clips-settings />
     </div>
@@ -120,8 +209,17 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
+import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
 
 import useSettingsStore from '../store/settings'
+
+const LOGO_POSITIONS = ['topleft', 'topright', 'bottomright', 'bottomleft']
+const LOGO_POSITION_LABEL = {
+  topleft: 'Top left',
+  topright: 'Top right',
+  bottomleft: 'Bottom left',
+  bottomright: 'Bottom right',
+}
 
 const error = ref('')
 
@@ -137,10 +235,12 @@ const loaded = computed(
   () =>
     parsedSources.value.length &&
     sameItems(parsedSources.value, settings.sources) &&
-    poster.value === settings.poster
+    poster.value === settings.poster,
 )
 
 const hasValidSources = computed(() => parsedSources.value.length > 0)
+
+const logoDisabled = computed(() => !settings.plugins.includes('logo'))
 
 onMounted(() => {
   rawSources.value = settings.sources.join('\n')
