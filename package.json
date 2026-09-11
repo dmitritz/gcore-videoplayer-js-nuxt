@@ -12,7 +12,7 @@
     "bump": "npm version --sign-git-tag"
   },
   "dependencies": {
-    "@clappr/core": "^0.14.5",
+    "@clappr/core": "^0.16.2",
     "@gcorevideo/player": "^2.30.10",
     "@gcorevideo/utils": "^0.7.1",
     "@heroicons/vue": "^2.2.0",
