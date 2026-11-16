@@ -14,7 +14,7 @@
   "dependencies": {
     "@clappr/core": "^0.17.1",
     "@gcorevideo/player": "^2.30.12",
-    "@gcorevideo/utils": "^0.7.1",
+    "@gcorevideo/utils": "^0.7.4",
     "@heroicons/vue": "^2.2.0",
     "@pinia/nuxt": "^1.0.2",
     "@sentry/nuxt": "^11.11.0",
