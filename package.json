@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@clappr/core": "^0.17.1",
-    "@gcorevideo/player": "^2.30.12",
+    "@gcorevideo/player": "^2.31.0",
     "@gcorevideo/utils": "^0.7.4",
     "@heroicons/vue": "^2.2.0",
     "@pinia/nuxt": "^1.0.2",
